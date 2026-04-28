@@ -73,6 +73,6 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to your location to show your position on the map.</string>
 	<key>GOOGLE_MAPS_API_KEY</key>
-	<string>YOUR_GOOGLE_MAPS_API_KEY</string>
+	<string>AIzaSyCkm8MeZroKsSMuTC4ks_FdJBhoFl5VRxc</string>
 </dict>
 </plist>
