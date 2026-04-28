@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_journal_app/models/location.dart';
+import 'package:travel_journal_app/models/country.dart';
 import 'package:travel_journal_app/services/location_search_service.dart';
+import 'package:travel_journal_app/services/country_service.dart';
+import 'package:travel_journal_app/screens/country_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onMapCreated: (GoogleMapController controller) {
               _mapController = controller;
             },
+            onTap: _onMapTapped,
             zoomControlsEnabled: true,
             zoomGesturesEnabled: true,
             mapToolbarEnabled: false,
@@ -118,6 +122,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  void _onMapTapped(LatLng position) {
+    final country = CountryService.findCountryByLocation(
+      position.latitude,
+      position.longitude,
+    );
+    if (country != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CountryPage(country: country),
+        ),
+      );
+    }
   }
 
   void _onSearchChanged(String query) {
