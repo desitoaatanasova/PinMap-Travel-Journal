@@ -6,6 +6,7 @@ class Place {
   final String description;
   final IconData placeholderIcon;
   final Color placeholderColor;
+  final List<String> imageUrls;
 
   const Place({
     required this.name,
@@ -13,5 +14,6 @@ class Place {
     required this.description,
     this.placeholderIcon = Icons.place,
     this.placeholderColor = Colors.grey,
+    this.imageUrls = const [],
   });
 }

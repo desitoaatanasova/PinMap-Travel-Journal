@@ -10,6 +10,7 @@ class PlaceService {
       description: p['description'] as String,
       placeholderIcon: p['icon'] as IconData,
       placeholderColor: p['color'] as Color,
+      imageUrls: List<String>.from(p['imageUrls'] ?? []),
     )).toList();
   }
 
@@ -21,6 +22,11 @@ class PlaceService {
         'description': 'A magnificent medieval castle that has stood the test of time. Explore the ancient halls, climb the tower for panoramic views, and discover the rich history within these walls.',
         'icon': Icons.account_balance,
         'color': Colors.brown,
+        'imageUrls': [
+          'https://picsum.photos/seed/castle1/400/300',
+          'https://picsum.photos/seed/castle2/400/300',
+          'https://picsum.photos/seed/castle3/400/300',
+        ],
       },
       {
         'name': 'Ancient Ruins',
@@ -28,6 +34,10 @@ class PlaceService {
         'description': 'Walk through the preserved ruins of an ancient Roman settlement. See the remains of temples, houses, and public buildings that tell the story of life centuries ago.',
         'icon': Icons.architecture,
         'color': Colors.brown.shade700,
+        'imageUrls': [
+          'https://picsum.photos/seed/ruins1/400/300',
+          'https://picsum.photos/seed/ruins2/400/300',
+        ],
       },
       {
         'name': 'Historic Square',
@@ -35,6 +45,10 @@ class PlaceService {
         'description': 'The heart of the city for over 600 years. Surrounded by historic buildings, cafes, and monuments. Street performers and markets often animate this vibrant space.',
         'icon': Icons.location_city,
         'color': Colors.brown.shade500,
+        'imageUrls': [
+          'https://picsum.photos/seed/square1/400/300',
+          'https://picsum.photos/seed/square2/400/300',
+        ],
       },
       {
         'name': 'Medieval Wall',
