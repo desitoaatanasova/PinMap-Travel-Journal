@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_journal_app/models/country.dart';
 
 class CountryService {
@@ -9,9 +9,7 @@ class CountryService {
   static Country? findCountryByLocation(double lat, double lng) {
     final point = LatLng(lat, lng);
     for (final country in _countries) {
-      if (country.contains(point)) {
-        return country;
-      }
+      if (country.contains(point)) return country;
     }
     return null;
   }

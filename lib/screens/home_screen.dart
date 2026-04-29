@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_journal_app/models/location.dart';
 import 'package:travel_journal_app/models/country.dart';
 import 'package:travel_journal_app/services/location_search_service.dart';
@@ -14,15 +15,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(20.0, 0.0),
-    zoom: 1.5,
-  );
-
-  GoogleMapController? _mapController;
+  final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
   List<Location> _searchResults = [];
   bool _showSuggestions = false;
+  List<Country> _countries = [];
+
+  static final LatLng _initialCenter = LatLng(20.0, 0.0);
+
+  @override
+  void initState() {
+    super.initState();
+    _countries = CountryService.getAllCountries();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,27 +36,36 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Travel Journal'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Stack(
+      body: Column(
         children: [
-          GoogleMap(
-            initialCameraPosition: _initialPosition,
-            onMapCreated: (GoogleMapController controller) {
-              _mapController = controller;
-            },
-            onTap: _onMapTapped,
-            zoomControlsEnabled: true,
-            zoomGesturesEnabled: true,
-            mapToolbarEnabled: false,
-            myLocationButtonEnabled: false,
-            compassEnabled: true,
-            rotateGesturesEnabled: true,
-            tiltGesturesEnabled: true,
-            scrollGesturesEnabled: true,
+          Container(
+            height: MediaQuery.of(context).size.height / 3,
+            margin: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade400, width: 2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: _initialCenter,
+                  initialZoom: 1.5,
+                  onTap: (_, latLng) => _onMapTapped(latLng),
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: const ['a', 'b', 'c'],
+                  ),
+                ],
+              ),
+            ),
           ),
-          Positioned(
-            top: 16,
-            left: 16,
-            right: 16,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 Container(
@@ -60,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -94,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -104,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _searchResults.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final location = _searchResults[index];
                         return ListTile(
@@ -117,6 +132,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
               ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _countries.length,
+              itemBuilder: (context, index) {
+                final country = _countries[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: const Icon(Icons.public, size: 40),
+                    title: Text(
+                      country.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(country.description),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CountryPage(country: country),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -155,13 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onLocationSelected(Location location) {
-    _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(location.latitude, location.longitude),
-          zoom: 10,
-        ),
-      ),
+    _mapController.move(
+      LatLng(location.latitude, location.longitude),
+      10.0,
     );
     setState(() {
       _showSuggestions = false;
@@ -171,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _mapController?.dispose();
+    _mapController.dispose();
     _searchController.dispose();
     super.dispose();
   }

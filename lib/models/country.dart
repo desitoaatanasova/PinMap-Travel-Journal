@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 class Country {
   final String name;
@@ -17,20 +17,16 @@ class Country {
     required this.cityPins,
   });
 
-  LatLng get capital => LatLng(latitude, longitude);
+  LatLng get latLng => LatLng(latitude, longitude);
 
-  LatLngBounds get bounds {
+  bool contains(LatLng point) {
     const double kmToDeg = 1.0 / 111.0;
     final latDelta = radiusKm * kmToDeg;
     final lngDelta = radiusKm * kmToDeg;
-    return LatLngBounds(
-      southwest: LatLng(latitude - latDelta, longitude - lngDelta),
-      northeast: LatLng(latitude + latDelta, longitude + lngDelta),
-    );
-  }
-
-  bool contains(LatLng point) {
-    return bounds.contains(point);
+    return (point.latitude >= latitude - latDelta &&
+            point.latitude <= latitude + latDelta) &&
+        (point.longitude >= longitude - lngDelta &&
+            point.longitude <= longitude + lngDelta);
   }
 }
 
@@ -45,5 +41,5 @@ class CityPin {
     required this.longitude,
   });
 
-  LatLng get position => LatLng(latitude, longitude);
+  LatLng get latLng => LatLng(latitude, longitude);
 }
