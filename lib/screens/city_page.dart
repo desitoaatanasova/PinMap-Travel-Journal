@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_journal_app/models/city_category.dart';
+import 'package:travel_journal_app/screens/category_page.dart';
 
 class CityPage extends StatelessWidget {
   final String cityName;
@@ -42,7 +43,16 @@ class CityPage extends StatelessWidget {
               elevation: 4,
               child: InkWell(
                 onTap: () {
-                  // TODO: Handle category tap
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoryPage(
+                        categoryName: cat.name,
+                        cityName: cityName,
+                        countryName: countryName,
+                      ),
+                    ),
+                  );
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Column(
