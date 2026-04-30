@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/country.dart';
 import 'package:travel_journal_app/models/country_theme.dart';
 import 'package:travel_journal_app/services/country_theme_service.dart';
 import 'package:travel_journal_app/screens/city_page.dart';
+import 'package:travel_journal_app/theme/app_theme.dart';
 
 class CountryPage extends StatefulWidget {
   final Country country;
@@ -24,23 +26,34 @@ class _CountryPageState extends State<CountryPage> {
     final theme = CountryThemeService.getThemeForCountry(widget.country.name);
 
     return Scaffold(
+      backgroundColor: theme.backgroundColor,
+      extendBody: true,
       appBar: AppBar(
-        title: Text(widget.country.name),
+        title: Text(
+          widget.country.name,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: theme.textColor ?? AppTheme.darkBrown,
+          ),
+        ),
         backgroundColor: theme.primaryColor,
+        elevation: 0,
       ),
-      body: Container(
-        color: theme.backgroundColor,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                height: 250,
-                margin: const EdgeInsets.all(16),
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Map with rounded corners and shadow
+            Container(
+              height: 250,
+              margin: const EdgeInsets.all(AppTheme.space4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                boxShadow: AppTheme.shadowMd,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 child: FlutterMap(
                   mapController: _mapController,
                   options: MapOptions(
@@ -53,121 +66,128 @@ class _CountryPageState extends State<CountryPage> {
                           "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                       subdomains: const ['a', 'b', 'c'],
                     ),
-                      MarkerLayer(
-                        markers: widget.country.cityPins.map((city) {
-                          return Marker(
-                            point: city.latLng,
-                            width: 40,
-                            height: 40,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CityPage(
-                                      cityName: city.name,
-                                      countryName: widget.country.name,
-                                    ),
+                    MarkerLayer(
+                      markers: widget.country.cityPins.map((city) {
+                        return Marker(
+                          point: city.latLng,
+                          width: 40,
+                          height: 40,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CityPage(
+                                    cityName: city.name,
+                                    countryName: widget.country.name,
                                   ),
-                                );
-                              },
-                              child: Icon(
-                                Icons.location_on,
-                                color: theme.primaryColor,
-                                size: 40,
-                              ),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.location_on,
+                              color: theme.primaryColor,
+                              size: 40,
                             ),
-                          );
-                        }).toList(),
-                      ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Action buttons
+                  Row(
+                    children: [
                       Expanded(
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: theme.primaryColor,
-                            foregroundColor: theme.backgroundColor,
+                            foregroundColor: theme.backgroundColor ?? Colors.white,
                           ),
                           onPressed: () => _showRatingDialog(theme),
-                            icon: const Icon(Icons.star),
-                            label: const Text('Rate'),
+                          icon: const Icon(Icons.star),
+                          label: const Text('Rate'),
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.space4),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: theme.primaryColor,
+                            side: BorderSide(color: theme.primaryColor),
+                          ),
+                          onPressed: _toggleWishList,
+                          icon: Icon(
+                            _isInWishList
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: _isInWishList ? theme.primaryColor : null,
+                          ),
+                          label: Text(
+                            _isInWishList ? 'In Wish List' : 'Add to Wish List',
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: theme.primaryColor,
-                              side: BorderSide(color: theme.primaryColor),
-                            ),
-                            onPressed: _toggleWishList,
-                            icon: Icon(
-                              _isInWishList
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: _isInWishList
-                                  ? theme.primaryColor
-                                  : null,
-                            ),
-                            label: Text(
-                              _isInWishList
-                                  ? 'In Wish List'
-                                  : 'Add to Wish List',
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppTheme.space6),
+                  // About section
+                  Text(
+                    'About ${widget.country.name}',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColor,
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'About ${widget.country.name}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  ),
+                  const SizedBox(height: AppTheme.space2),
+                  Text(
+                    widget.country.description,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      color: theme.textColor ?? AppTheme.warmGray,
+                      height: 1.6,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.country.description,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: theme.textColor,
-                          ),
+                  ),
+                  const SizedBox(height: AppTheme.space6),
+                  // Cities section
+                  Text(
+                    'Major Cities',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColor,
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Major Cities',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(height: 8),
-                    ...widget.country.cityPins.map(
-                      (city) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(
-                          Icons.location_city,
-                          color: theme.primaryColor,
-                        ),
-                        title: Text(
-                          city.name,
-                          style: TextStyle(color: theme.textColor),
+                  ),
+                  const SizedBox(height: AppTheme.space2),
+                  ...widget.country.cityPins.map(
+                    (city) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.location_city,
+                        color: theme.primaryColor,
+                      ),
+                      title: Text(
+                        city.name,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: theme.textColor ?? AppTheme.darkBrown,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

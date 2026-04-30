@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/place.dart';
+import 'package:travel_journal_app/widgets/section_header.dart';
+import 'package:travel_journal_app/theme/app_theme.dart';
 
 class PlaceDetailsPage extends StatefulWidget {
   final Place place;
@@ -27,13 +30,19 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.bg,
+      extendBody: true,
       appBar: AppBar(
         title: Row(
           children: [
             Expanded(
               child: Text(
                 widget.place.name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.darkBrown,
+                ),
               ),
             ),
             if (_isVisited)
@@ -44,29 +53,31 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: AppTheme.bg.withValues(alpha: 0.8),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.space4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image carousel
             if (widget.place.imageUrls.isNotEmpty)
               SizedBox(
-                height: 250,
+                height: 280,
                 child: PageView.builder(
                   itemCount: widget.place.imageUrls.length,
                   controller: PageController(viewportFraction: 0.9),
                   itemBuilder: (context, index) {
                     final url = widget.place.imageUrls[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      margin: const EdgeInsets.symmetric(horizontal: AppTheme.space1),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                        boxShadow: AppTheme.shadowMd,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                         child: Image.network(
                           url,
                           fit: BoxFit.cover,
@@ -99,10 +110,10 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               )
             else
               Container(
-                height: 250,
+                height: 280,
                 decoration: BoxDecoration(
                   color: widget.place.placeholderColor.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 ),
                 child: Icon(
                   widget.place.placeholderIcon,
@@ -110,31 +121,31 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                   color: widget.place.placeholderColor,
                 ),
               ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.space6),
             // Place name and subtitle
             Text(
               widget.place.name,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.displaySmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.space2),
             Text(
               widget.place.subtitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.grey.shade700,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.space6),
             // Map preview
+            const SectionHeader(title: 'Location'),
+            const SizedBox(height: AppTheme.space3),
             Container(
               height: 200,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                border: Border.all(
+                    color: AppTheme.lightGray.withValues(alpha: 0.5)),
+                boxShadow: AppTheme.shadowSm,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 child: FlutterMap(
                   options: MapOptions(
                     initialCenter: const LatLng(48.8566, 2.3522),
@@ -167,38 +178,41 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppTheme.space6),
             // Description section
-            Text(
-              'About this place',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
+            const SectionHeader(title: 'About this place'),
+            const SizedBox(height: AppTheme.space3),
             Text(
               widget.place.description,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    height: 1.6,
+                  ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.space4),
             Row(
               children: [
-                Icon(Icons.category, size: 16, color: Colors.grey),
-                const SizedBox(width: 8),
+                Icon(Icons.category, size: 16, color: AppTheme.warmGray),
+                const SizedBox(width: AppTheme.space2),
                 Text(
                   widget.categoryName,
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: GoogleFonts.dmSans(
+                    color: AppTheme.warmGray,
+                    fontSize: 14,
+                  ),
                 ),
-                const SizedBox(width: 16),
-                Icon(Icons.location_city, size: 16, color: Colors.grey),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppTheme.space4),
+                Icon(Icons.location_city, size: 16, color: AppTheme.warmGray),
+                const SizedBox(width: AppTheme.space2),
                 Text(
                   widget.cityName,
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: GoogleFonts.dmSans(
+                    color: AppTheme.warmGray,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppTheme.space8),
             // Visited button
             ElevatedButton.icon(
               onPressed: () {
@@ -211,7 +225,9 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                       _isVisited
                           ? 'Marked as visited!'
                           : 'Removed visited status',
+                      style: GoogleFonts.dmSans(),
                     ),
+                    backgroundColor: AppTheme.primary,
                     duration: const Duration(seconds: 2),
                   ),
                 );
@@ -220,16 +236,16 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                 backgroundColor:
                     _isVisited ? Colors.green : widget.place.placeholderColor,
                 foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 56),
               ),
               icon: Icon(
                 _isVisited ? Icons.check_circle : Icons.check_circle_outlined,
               ),
               label: Text(
                 _isVisited ? 'Visited' : 'Mark as Visited',
-                style: const TextStyle(
+                style: GoogleFonts.dmSans(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
