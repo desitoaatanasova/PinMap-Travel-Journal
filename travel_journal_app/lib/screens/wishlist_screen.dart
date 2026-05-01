@@ -19,7 +19,20 @@ class _WishListScreenState extends State<WishListScreen> {
   @override
   void initState() {
     super.initState();
-    _items = WishlistService.getAllItems();
+    _load();
+  }
+
+  Future<void> _load() async {
+    await WishlistService.loadItems();
+    setState(() {
+      _items = WishlistService.getAllItems();
+    });
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _items = WishlistService.getAllItems();
+    });
   }
 
   @override
@@ -221,6 +234,19 @@ class _WishListScreenState extends State<WishListScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                if (item.category != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    item.category!,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ],
             ),
           ),
@@ -323,6 +349,19 @@ class _WishListScreenState extends State<WishListScreen> {
                       color: AppTheme.warmGray,
                     ),
                   ),
+                  if (item.category != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      item.category!,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                   const SizedBox(height: AppTheme.space2),
                   Row(
                     children: [
@@ -398,8 +437,8 @@ class _WishListScreenState extends State<WishListScreen> {
     );
   }
 
-  void _confirmRemove(BuildContext context, WishlistItem item) {
-    showDialog(
+  Future<void> _confirmRemove(BuildContext context, WishlistItem item) async {
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
@@ -415,29 +454,14 @@ class _WishListScreenState extends State<WishListScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: Text(
               'Cancel',
               style: GoogleFonts.dmSans(color: AppTheme.warmGray),
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                WishlistService.removeItem(item.id);
-                _items = WishlistService.getAllItems();
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${item.name} removed from wishlist',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
+            onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
@@ -450,5 +474,20 @@ class _WishListScreenState extends State<WishListScreen> {
         ],
       ),
     );
+    if (confirmed == true) {
+      await WishlistService.removeItem(item.id);
+      await _refresh();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${item.name} removed from wishlist',
+              style: GoogleFonts.dmSans(),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 }

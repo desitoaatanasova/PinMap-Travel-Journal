@@ -18,6 +18,10 @@ class TripService {
     _mockTrips.removeWhere((trip) => trip.id == id);
   }
 
+  static void addTrip(Trip trip) {
+    _mockTrips.add(trip);
+  }
+
   static final List<Trip> _mockTrips = [
     Trip(
       id: 'paris-001',

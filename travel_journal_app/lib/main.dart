@@ -9,12 +9,14 @@ import 'package:travel_journal_app/screens/new_trip_screen.dart';
 import 'package:travel_journal_app/screens/trip_plan_screen.dart';
 import 'package:travel_journal_app/screens/journal_screen.dart';
 import 'package:travel_journal_app/screens/journal_editor_screen.dart';
-import 'package:travel_journal_app/screens/settings_screen.dart';
 import 'package:travel_journal_app/screens/wishlist_screen.dart';
 import 'package:travel_journal_app/screens/profile_screen.dart';
+import 'package:travel_journal_app/services/wishlist_service.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await WishlistService.loadItems();
   runApp(const TravelJournalApp());
 }
 

@@ -3,7 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/place.dart';
+import 'package:travel_journal_app/models/wishlist_item.dart';
+import 'package:travel_journal_app/services/marker_service.dart';
+import 'package:travel_journal_app/services/wishlist_service.dart';
 import 'package:travel_journal_app/widgets/section_header.dart';
+import 'package:travel_journal_app/widgets/custom_marker.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
 
 class PlaceDetailsPage extends StatefulWidget {
@@ -26,6 +30,49 @@ class PlaceDetailsPage extends StatefulWidget {
 
 class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   bool _isVisited = false;
+  bool _isInWishlist = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isInWishlist = WishlistService.isInWishlist(widget.place.name);
+  }
+
+  Future<void> _toggleWishlist() async {
+    if (_isInWishlist) {
+      await WishlistService.removeItem(widget.place.name);
+    } else {
+      await WishlistService.addItem(WishlistItem(
+        id: widget.place.name,
+        name: widget.place.name,
+        country: widget.countryName,
+        city: widget.cityName,
+        imageUrl: widget.place.imageUrls.isNotEmpty
+            ? widget.place.imageUrls.first
+            : null,
+        category: widget.categoryName,
+        type: 'place',
+        latitude: widget.place.latitude,
+        longitude: widget.place.longitude,
+      ));
+    }
+    setState(() {
+      _isInWishlist = !_isInWishlist;
+    });
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isInWishlist
+                ? '${widget.place.name} added to wishlist'
+                : '${widget.place.name} removed from wishlist',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   LatLng get _placeLocation {
     if (widget.place.latitude != null && widget.place.longitude != null) {
@@ -63,6 +110,15 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isInWishlist ? Icons.favorite : Icons.favorite_border,
+              color: _isInWishlist ? Colors.redAccent : AppTheme.warmGray,
+            ),
+            onPressed: _toggleWishlist,
+          ),
+        ],
         backgroundColor: AppTheme.bg.withValues(alpha: 0.8),
         elevation: 0,
       ),
@@ -264,12 +320,16 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               markers: [
                 Marker(
                   point: _placeLocation,
-                  width: 40,
-                  height: 40,
-                  child: Icon(
-                    Icons.location_on,
-                    color: markerColor,
-                    size: 40,
+                  width: 44,
+                  height: 52,
+                  child: CustomMarker(
+                    marker: MarkerService.buildPlaceMarker(
+                      id: place.name,
+                      position: _placeLocation,
+                      title: place.name,
+                      categoryName: widget.categoryName,
+                    ),
+                    size: 36,
                   ),
                 ),
               ],

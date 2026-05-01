@@ -4,11 +4,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/country.dart';
 import 'package:travel_journal_app/models/location.dart';
+import 'package:travel_journal_app/models/map_marker.dart';
 import 'package:travel_journal_app/services/country_service.dart';
 import 'package:travel_journal_app/services/location_search_service.dart';
-import 'package:travel_journal_app/services/country_theme_service.dart';
 import 'package:travel_journal_app/screens/country_page.dart';
 import 'package:travel_journal_app/widgets/travel_progress_bar.dart';
+import 'package:travel_journal_app/widgets/custom_marker.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,25 +38,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Marker> get _mapMarkers {
     return _countries.map((country) {
-      final theme = CountryThemeService.getThemeForCountry(country.name);
       final isVisited = country.isVisited;
       return Marker(
         point: country.latLng,
-        width: 12,
-        height: 12,
-        child: Container(
-          decoration: BoxDecoration(
-            color: isVisited ? theme.primaryColor : AppTheme.warmGray,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppTheme.card, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+        width: 44,
+        height: 52,
+        child: CustomMarker(
+          marker: MapMarker(
+            id: country.name,
+            position: country.latLng,
+            title: country.name,
+            category: MarkerCategory.hiddenGems,
+            isVisited: isVisited,
           ),
+          size: 36,
         ),
       );
     }).toList();

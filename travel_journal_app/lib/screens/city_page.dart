@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/city_category.dart';
+import 'package:travel_journal_app/models/wishlist_item.dart';
 import 'package:travel_journal_app/screens/category_page.dart';
+import 'package:travel_journal_app/services/wishlist_service.dart';
 import 'package:travel_journal_app/widgets/section_header.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
 
-class CityPage extends StatelessWidget {
+class CityPage extends StatefulWidget {
   final String cityName;
   final String countryName;
 
@@ -14,6 +16,51 @@ class CityPage extends StatelessWidget {
     required this.cityName,
     required this.countryName,
   });
+
+  @override
+  State<CityPage> createState() => _CityPageState();
+}
+
+class _CityPageState extends State<CityPage> {
+  bool _isInWishlist = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isInWishlist =
+        WishlistService.isInWishlist('${widget.countryName}-${widget.cityName}');
+  }
+
+  Future<void> _toggleWishlist() async {
+    final id = '${widget.countryName}-${widget.cityName}';
+    if (_isInWishlist) {
+      await WishlistService.removeItem(id);
+    } else {
+      await WishlistService.addItem(WishlistItem(
+        id: id,
+        name: widget.cityName,
+        country: widget.countryName,
+        city: widget.cityName,
+        type: 'city',
+      ));
+    }
+    setState(() {
+      _isInWishlist = !_isInWishlist;
+    });
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isInWishlist
+                ? '${widget.cityName} added to wishlist'
+                : '${widget.cityName} removed from wishlist',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   final List<CityCategory> _categories = const [
     CityCategory(
@@ -101,12 +148,21 @@ class CityPage extends StatelessWidget {
       pinned: true,
       backgroundColor: AppTheme.darkBrown,
       iconTheme: const IconThemeData(color: Colors.white),
+      actions: [
+        IconButton(
+          icon: Icon(
+            _isInWishlist ? Icons.favorite : Icons.favorite_border,
+            color: _isInWishlist ? Colors.redAccent : Colors.white,
+          ),
+          onPressed: _toggleWishlist,
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
           children: [
             Image.network(
-              'https://source.unsplash.com/800x400/?$cityName,city',
+              'https://source.unsplash.com/800x400/?${widget.cityName},city',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stack) => Container(
                 color: AppTheme.darkBrown,
@@ -133,7 +189,7 @@ class CityPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    cityName,
+                    widget.cityName,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 34,
                       fontWeight: FontWeight.bold,
@@ -143,7 +199,7 @@ class CityPage extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.space1),
                   Text(
-                    countryName,
+                    widget.countryName,
                     style: GoogleFonts.dancingScript(
                       fontSize: 18,
                       color: AppTheme.warmGray,
@@ -180,8 +236,8 @@ class CityPage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => CategoryPage(
                   categoryName: cat.name,
-                  cityName: cityName,
-                  countryName: countryName,
+                  cityName: widget.cityName,
+                  countryName: widget.countryName,
                 ),
               ),
             );

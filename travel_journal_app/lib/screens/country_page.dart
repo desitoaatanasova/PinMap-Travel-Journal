@@ -3,8 +3,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/country.dart';
 import 'package:travel_journal_app/models/country_theme.dart';
+import 'package:travel_journal_app/models/map_marker.dart';
+import 'package:travel_journal_app/models/wishlist_item.dart';
 import 'package:travel_journal_app/services/country_theme_service.dart';
+import 'package:travel_journal_app/services/wishlist_service.dart';
 import 'package:travel_journal_app/screens/city_page.dart';
+import 'package:travel_journal_app/widgets/custom_marker.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
 
 class CountryPage extends StatefulWidget {
@@ -360,11 +364,15 @@ class _CountryPageState extends State<CountryPage> {
                   markers: widget.country.cityPins.map((city) {
                     return Marker(
                       point: city.latLng,
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.location_on,
-                        color: theme.primaryColor,
+                      width: 44,
+                      height: 52,
+                      child: CustomMarker(
+                        marker: MapMarker(
+                          id: city.name,
+                          position: city.latLng,
+                          title: city.name,
+                          category: MarkerCategory.hiddenGems,
+                        ),
                         size: 36,
                       ),
                     );
@@ -421,23 +429,42 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  void _toggleWishList() {
+  @override
+  void initState() {
+    super.initState();
+    _isInWishList = WishlistService.isInWishlist(widget.country.name);
+  }
+
+  Future<void> _toggleWishList() async {
     final theme = CountryThemeService.getThemeForCountry(widget.country.name);
+    if (_isInWishList) {
+      await WishlistService.removeItem(widget.country.name);
+    } else {
+      await WishlistService.addItem(WishlistItem(
+        id: widget.country.name,
+        name: widget.country.name,
+        country: widget.country.name,
+        imageUrl: widget.country.imageUrl,
+        type: 'country',
+      ));
+    }
     setState(() {
       _isInWishList = !_isInWishList;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: theme.primaryColor,
-        content: Text(
-          _isInWishList
-              ? '${widget.country.name} added to wish list'
-              : '${widget.country.name} removed from wish list',
-          style: GoogleFonts.dmSans(color: theme.backgroundColor),
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: theme.primaryColor,
+          content: Text(
+            _isInWishList
+                ? '${widget.country.name} added to wish list'
+                : '${widget.country.name} removed from wish list',
+            style: GoogleFonts.dmSans(color: theme.backgroundColor),
+          ),
+          duration: const Duration(seconds: 2),
         ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+      );
+    }
   }
 
   @override

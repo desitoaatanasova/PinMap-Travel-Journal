@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_journal_app/models/place.dart';
+import 'package:travel_journal_app/models/wishlist_item.dart';
 import 'package:travel_journal_app/services/place_service.dart';
+import 'package:travel_journal_app/services/wishlist_service.dart';
 import 'package:travel_journal_app/screens/place_details_page.dart';
 import 'package:travel_journal_app/widgets/section_header.dart';
 import 'package:travel_journal_app/theme/app_theme.dart';
@@ -140,6 +142,55 @@ class _CategoryPageState extends State<CategoryPage> {
                               ),
                             ),
                           ),
+                          IconButton(
+                            icon: Icon(
+                              WishlistService.isInWishlist(place.name)
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color:
+                                  WishlistService.isInWishlist(place.name)
+                                      ? Colors.redAccent
+                                      : AppTheme.warmGray,
+                              size: 20,
+                            ),
+                            onPressed: () async {
+                              final inWish =
+                                  WishlistService.isInWishlist(place.name);
+                              if (inWish) {
+                                await WishlistService.removeItem(place.name);
+                              } else {
+                                await WishlistService.addItem(WishlistItem(
+                                  id: place.name,
+                                  name: place.name,
+                                  country: widget.countryName,
+                                  city: widget.cityName,
+                                  imageUrl: place.imageUrls.isNotEmpty
+                                      ? place.imageUrls.first
+                                      : null,
+                                  category: widget.categoryName,
+                                  type: 'place',
+                                  latitude: place.latitude,
+                                  longitude: place.longitude,
+                                ));
+                              }
+                              setState(() {});
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      inWish
+                                          ? '${place.name} removed from wishlist'
+                                          : '${place.name} added to wishlist',
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                          const SizedBox(width: 4),
                           if (isVisited)
                             Container(
                               padding: const EdgeInsets.symmetric(

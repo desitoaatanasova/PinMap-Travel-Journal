@@ -1,20 +1,49 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_journal_app/models/wishlist_item.dart';
 
 class WishlistService {
+  static const _storageKey = 'wishlist_items';
+  static List<WishlistItem> _items = [];
+  static bool _loaded = false;
+
+  static Future<void> loadItems() async {
+    if (_loaded) return;
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_storageKey);
+    if (jsonString != null) {
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      _items = jsonList.map((e) => WishlistItem.fromJson(e)).toList();
+    }
+    _loaded = true;
+  }
+
+  static Future<void> _saveItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(_items.map((e) => e.toJson()).toList());
+    await prefs.setString(_storageKey, jsonString);
+  }
+
   static List<WishlistItem> getAllItems() {
-    return _mockItems;
+    return List<WishlistItem>.from(_items);
   }
 
-  static void removeItem(String id) {
-    _mockItems.removeWhere((item) => item.id == id);
+  static Future<void> addItem(WishlistItem item) async {
+    if (_items.any((e) => e.id == item.id)) return;
+    _items.add(item);
+    await _saveItems();
   }
 
-  static void toggleVisited(String id) {
-    final index = _mockItems.indexWhere((item) => item.id == id);
+  static Future<void> removeItem(String id) async {
+    _items.removeWhere((item) => item.id == id);
+    await _saveItems();
+  }
+
+  static Future<void> toggleVisited(String id) async {
+    final index = _items.indexWhere((item) => item.id == id);
     if (index != -1) {
-      final item = _mockItems[index];
-      _mockItems[index] = WishlistItem(
+      final item = _items[index];
+      _items[index] = WishlistItem(
         id: item.id,
         name: item.name,
         country: item.country,
@@ -22,75 +51,24 @@ class WishlistService {
         imageUrl: item.imageUrl,
         description: item.description,
         isVisited: !item.isVisited,
+        type: item.type,
+        category: item.category,
+        latitude: item.latitude,
+        longitude: item.longitude,
       );
+      await _saveItems();
     }
   }
 
   static Map<String, List<WishlistItem>> getItemsByCountry() {
     final grouped = <String, List<WishlistItem>>{};
-    for (final item in _mockItems) {
+    for (final item in _items) {
       grouped.putIfAbsent(item.country, () => []).add(item);
     }
     return grouped;
   }
 
-  static final List<WishlistItem> _mockItems = [
-    WishlistItem(
-      id: 'paris-eiffel',
-      name: 'Eiffel Tower',
-      country: 'France',
-      city: 'Paris',
-      imageUrl: 'https://picsum.photos/seed/eiffel/400/300',
-      description: 'Iconic iron lattice tower on the Champ de Mars',
-    ),
-    WishlistItem(
-      id: 'paris-louvre',
-      name: 'Louvre Museum',
-      country: 'France',
-      city: 'Paris',
-      imageUrl: 'https://picsum.photos/seed/louvre/400/300',
-      description: 'World\'s largest art museum',
-    ),
-    WishlistItem(
-      id: 'tokyo-shibuya',
-      name: 'Shibuya Crossing',
-      country: 'Japan',
-      city: 'Tokyo',
-      imageUrl: 'https://picsum.photos/seed/shibuya/400/300',
-      description: 'Busiest pedestrian crossing in the world',
-    ),
-    WishlistItem(
-      id: 'tokyo-sensoji',
-      name: 'Senso-ji Temple',
-      country: 'Japan',
-      city: 'Tokyo',
-      imageUrl: 'https://picsum.photos/seed/sensoji/400/300',
-      description: 'Tokyo\'s oldest temple',
-    ),
-    WishlistItem(
-      id: 'rome-colosseum',
-      name: 'Colosseum',
-      country: 'Italy',
-      city: 'Rome',
-      imageUrl: 'https://picsum.photos/seed/colosseum/400/300',
-      description: 'Ancient amphitheatre, icon of Rome',
-      isVisited: true,
-    ),
-    WishlistItem(
-      id: 'nyc-liberty',
-      name: 'Statue of Liberty',
-      country: 'USA',
-      city: 'New York',
-      imageUrl: 'https://picsum.photos/seed/liberty/400/300',
-      description: 'Iconic symbol of freedom',
-    ),
-    WishlistItem(
-      id: 'sydney-opera',
-      name: 'Sydney Opera House',
-      country: 'Australia',
-      city: 'Sydney',
-      imageUrl: 'https://picsum.photos/seed/opera/400/300',
-      description: 'Multi-venue performing arts center',
-    ),
-  ];
+  static bool isInWishlist(String id) {
+    return _items.any((item) => item.id == id);
+  }
 }
