@@ -7,7 +7,7 @@ import 'package:travel_journal_app/screens/home_screen.dart';
 import 'package:travel_journal_app/screens/trips_screen.dart';
 import 'package:travel_journal_app/screens/new_trip_screen.dart';
 import 'package:travel_journal_app/screens/trip_plan_screen.dart';
-import 'package:travel_journal_app/screens/journal_screen.dart';
+import 'package:travel_journal_app/screens/journal_overview_screen.dart';
 import 'package:travel_journal_app/screens/journal_editor_screen.dart';
 import 'package:travel_journal_app/screens/wishlist_screen.dart';
 import 'package:travel_journal_app/screens/profile_screen.dart';
@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = const [
     HomeScreen(),
     TripsScreen(),
-    JournalScreen(),
+    JournalOverviewPage(),
     WishListScreen(),
     ProfileScreen(),
   ];

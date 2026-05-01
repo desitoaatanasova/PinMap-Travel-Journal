@@ -6,8 +6,9 @@ import 'package:travel_journal_app/theme/app_theme.dart';
 
 class JournalEditorScreen extends StatefulWidget {
   final String? chapterId;
+  final String? countryName;
 
-  const JournalEditorScreen({super.key, this.chapterId});
+  const JournalEditorScreen({super.key, this.chapterId, this.countryName});
 
   @override
   State<JournalEditorScreen> createState() => _JournalEditorScreenState();
@@ -33,6 +34,16 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     _textController = TextEditingController();
     if (widget.chapterId != null) {
       _chapter = JournalService.getChapterById(widget.chapterId!);
+    } else if (widget.countryName != null) {
+      _chapter = JournalChapter(
+        id: '${widget.countryName!.toLowerCase()}-${DateTime.now().millisecondsSinceEpoch}',
+        title: widget.countryName!,
+        country: widget.countryName!,
+        date: DateTime.now(),
+        previewText: '',
+        entries: [],
+        accentColor: AppTheme.primary,
+      );
     }
   }
 
