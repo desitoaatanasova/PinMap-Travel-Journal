@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/trip.dart';
-import 'package:travel_journal_app/services/trip_service.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/services/trip_service.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class TripPlanScreen extends StatelessWidget {
   final String tripId;

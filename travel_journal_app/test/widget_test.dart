@@ -5,14 +5,14 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:travel_journal_app/main.dart';
+import 'package:pinmap_travel_journal/main.dart';
 
 void main() {
-  testWidgets('App builds and displays Travel Journal', (WidgetTester tester) async {
+  testWidgets('App builds and displays PinMap: Travel journal', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const TravelJournalApp());
 
     // Verify that the app title is displayed.
-    expect(find.text('Travel Journal'), findsWidgets);
+    expect(find.text('PinMap: Travel journal'), findsWidgets);
   });
 }

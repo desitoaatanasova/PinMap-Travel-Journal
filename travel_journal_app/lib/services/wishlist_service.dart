@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travel_journal_app/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 
 class WishlistService {
   static const _storageKey = 'wishlist_items';

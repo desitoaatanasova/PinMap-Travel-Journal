@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = travel_journal_app
+PRODUCT_NAME = pinmap_travel_journal
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.traveljournal.travelJournalApp
+PRODUCT_BUNDLE_IDENTIFIER = com.pinmap.traveljournal
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.traveljournal. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.pinmap. All rights reserved.

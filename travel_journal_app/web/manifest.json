@@ -1,11 +1,11 @@
 {
-    "name": "travel_journal_app",
-    "short_name": "travel_journal_app",
+    "name": "PinMap: Travel journal",
+    "short_name": "PinMap",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "PinMap: Travel journal",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

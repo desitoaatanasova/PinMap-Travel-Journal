@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: AppTheme.space8),
                   // App name
                   Text(
-                    'RinMap',
+                    'PinMap',
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: AppTheme.space2),
                   Text(
-                    'Travel Journal',
+                    'Travel journal',
                     style: GoogleFonts.dmSans(
                       fontSize: 18,
                       color: AppTheme.warmGray,

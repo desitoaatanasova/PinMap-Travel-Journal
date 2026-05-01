@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/user_profile.dart';
-import 'package:travel_journal_app/services/profile_service.dart';
-import 'package:travel_journal_app/screens/settings_screen.dart';
-import 'package:travel_journal_app/widgets/section_header.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/user_profile.dart';
+import 'package:pinmap_travel_journal/services/profile_service.dart';
+import 'package:pinmap_travel_journal/screens/settings_screen.dart';
+import 'package:pinmap_travel_journal/widgets/section_header.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

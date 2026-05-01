@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class PremiumCard extends StatelessWidget {
   final Widget child;

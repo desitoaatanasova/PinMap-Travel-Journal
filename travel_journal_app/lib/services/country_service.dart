@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart';
-import 'package:travel_journal_app/models/country.dart';
+import 'package:pinmap_travel_journal/models/country.dart';
 
 class CountryService {
   static List<Country> getAllCountries() {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/models/user_profile.dart';
+import 'package:pinmap_travel_journal/models/user_profile.dart';
 
 class ProfileService {
   static UserProfile getProfile() {

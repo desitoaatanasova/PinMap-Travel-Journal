@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/models/journal.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
 
 class JournalService {
   static List<JournalChapter> getAllChapters() {

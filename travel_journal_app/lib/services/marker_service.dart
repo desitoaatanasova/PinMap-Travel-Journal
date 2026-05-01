@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
-import 'package:travel_journal_app/models/map_marker.dart';
-import 'package:travel_journal_app/models/country.dart';
-import 'package:travel_journal_app/services/country_service.dart';
+import 'package:pinmap_travel_journal/models/map_marker.dart';
+import 'package:pinmap_travel_journal/models/country.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
 
 class MarkerService {
   // Convert Country to MapMarker

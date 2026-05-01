@@ -1,4 +1,4 @@
-import 'package:travel_journal_app/models/location.dart';
+import 'package:pinmap_travel_journal/models/location.dart';
 
 class LocationSearchService {
   static const List<Location> _locations = [

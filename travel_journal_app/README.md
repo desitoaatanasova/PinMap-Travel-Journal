@@ -1,6 +1,6 @@
-# travel_journal_app
+# pinmap_travel_journal
 
-A new Flutter project.
+PinMap: Travel journal
 
 ## Getting Started
 

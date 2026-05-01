@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/place.dart';
-import 'package:travel_journal_app/models/wishlist_item.dart';
-import 'package:travel_journal_app/services/marker_service.dart';
-import 'package:travel_journal_app/services/wishlist_service.dart';
-import 'package:travel_journal_app/widgets/section_header.dart';
-import 'package:travel_journal_app/widgets/custom_marker.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/services/marker_service.dart';
+import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/widgets/section_header.dart';
+import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class PlaceDetailsPage extends StatefulWidget {
   final Place place;

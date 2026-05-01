@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/place.dart';
-import 'package:travel_journal_app/models/wishlist_item.dart';
-import 'package:travel_journal_app/services/place_service.dart';
-import 'package:travel_journal_app/services/wishlist_service.dart';
-import 'package:travel_journal_app/screens/place_details_page.dart';
-import 'package:travel_journal_app/widgets/section_header.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/services/place_service.dart';
+import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/screens/place_details_page.dart';
+import 'package:pinmap_travel_journal/widgets/section_header.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class CategoryPage extends StatefulWidget {
   final String categoryName;

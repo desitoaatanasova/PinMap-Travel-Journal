@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/models/country_theme.dart';
+import 'package:pinmap_travel_journal/models/country_theme.dart';
 
 class CountryThemeService {
   static CountryTheme getThemeForCountry(String countryName) {

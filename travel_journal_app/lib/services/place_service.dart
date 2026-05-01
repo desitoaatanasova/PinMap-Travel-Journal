@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/models/place.dart';
+import 'package:pinmap_travel_journal/models/place.dart';
 
 class PlaceService {
   static List<Place> getPlacesForCategory(String category, String city) {

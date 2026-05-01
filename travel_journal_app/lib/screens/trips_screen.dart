@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/trip.dart';
-import 'package:travel_journal_app/services/trip_service.dart';
-import 'package:travel_journal_app/screens/new_trip_screen.dart';
-import 'package:travel_journal_app/screens/trip_plan_screen.dart';
-import 'package:travel_journal_app/widgets/premium_card.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/services/trip_service.dart';
+import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
+import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
+import 'package:pinmap_travel_journal/widgets/premium_card.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class TripsScreen extends StatelessWidget {
   const TripsScreen({super.key});

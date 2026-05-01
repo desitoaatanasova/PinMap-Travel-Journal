@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/country.dart';
-import 'package:travel_journal_app/models/country_theme.dart';
-import 'package:travel_journal_app/models/map_marker.dart';
-import 'package:travel_journal_app/models/wishlist_item.dart';
-import 'package:travel_journal_app/services/country_theme_service.dart';
-import 'package:travel_journal_app/services/wishlist_service.dart';
-import 'package:travel_journal_app/screens/city_page.dart';
-import 'package:travel_journal_app/widgets/custom_marker.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/country.dart';
+import 'package:pinmap_travel_journal/models/country_theme.dart';
+import 'package:pinmap_travel_journal/models/map_marker.dart';
+import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/services/country_theme_service.dart';
+import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/screens/city_page.dart';
+import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class CountryPage extends StatefulWidget {
   final Country country;

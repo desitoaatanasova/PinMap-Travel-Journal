@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/models/country.dart';
-import 'package:travel_journal_app/models/location.dart';
-import 'package:travel_journal_app/models/map_marker.dart';
-import 'package:travel_journal_app/services/country_service.dart';
-import 'package:travel_journal_app/services/location_search_service.dart';
-import 'package:travel_journal_app/screens/country_page.dart';
-import 'package:travel_journal_app/widgets/travel_progress_bar.dart';
-import 'package:travel_journal_app/widgets/custom_marker.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/models/country.dart';
+import 'package:pinmap_travel_journal/models/location.dart';
+import 'package:pinmap_travel_journal/models/map_marker.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/location_search_service.dart';
+import 'package:pinmap_travel_journal/screens/country_page.dart';
+import 'package:pinmap_travel_journal/widgets/travel_progress_bar.dart';
+import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

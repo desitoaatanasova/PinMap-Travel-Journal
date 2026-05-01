@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_journal_app/screens/splash_screen.dart';
-import 'package:travel_journal_app/screens/login_screen.dart';
-import 'package:travel_journal_app/screens/register_screen.dart';
-import 'package:travel_journal_app/screens/home_screen.dart';
-import 'package:travel_journal_app/screens/trips_screen.dart';
-import 'package:travel_journal_app/screens/new_trip_screen.dart';
-import 'package:travel_journal_app/screens/trip_plan_screen.dart';
-import 'package:travel_journal_app/screens/journal_overview_screen.dart';
-import 'package:travel_journal_app/screens/journal_editor_screen.dart';
-import 'package:travel_journal_app/screens/wishlist_screen.dart';
-import 'package:travel_journal_app/screens/profile_screen.dart';
-import 'package:travel_journal_app/services/wishlist_service.dart';
-import 'package:travel_journal_app/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/screens/splash_screen.dart';
+import 'package:pinmap_travel_journal/screens/login_screen.dart';
+import 'package:pinmap_travel_journal/screens/register_screen.dart';
+import 'package:pinmap_travel_journal/screens/home_screen.dart';
+import 'package:pinmap_travel_journal/screens/trips_screen.dart';
+import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
+import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
+import 'package:pinmap_travel_journal/screens/journal_overview_screen.dart';
+import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
+import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
+import 'package:pinmap_travel_journal/screens/profile_screen.dart';
+import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class TravelJournalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'RinMap - Travel Journal',
+      title: 'PinMap: Travel journal',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,

@@ -1,4 +1,4 @@
-package com.traveljournal.travel_journal_app
+package com.pinmap.traveljournal
 
 import io.flutter.embedding.android.FlutterActivity
 

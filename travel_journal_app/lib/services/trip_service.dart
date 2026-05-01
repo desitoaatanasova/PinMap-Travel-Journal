@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_journal_app/models/trip.dart';
+import 'package:pinmap_travel_journal/models/trip.dart';
 
 class TripService {
   static List<Trip> getAllTrips() {

@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:travel_journal_app/models/map_marker.dart';
+import 'package:pinmap_travel_journal/models/map_marker.dart';
 
 class CustomMarker extends StatelessWidget {
   final MapMarker marker;
