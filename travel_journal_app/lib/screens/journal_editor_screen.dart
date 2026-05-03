@@ -4,6 +4,36 @@ import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
+class CanvasElement {
+  final String id;
+  final String type;
+  double x;
+  double y;
+  String? text;
+  TextStyle? textStyle;
+  String? imageUrl;
+  double? width;
+  double? height;
+  String? emoji;
+  double? stickerSize;
+  String? ticketInfo;
+
+  CanvasElement({
+    required this.id,
+    required this.type,
+    this.x = 0,
+    this.y = 0,
+    this.text,
+    this.textStyle,
+    this.imageUrl,
+    this.width,
+    this.height,
+    this.emoji,
+    this.stickerSize,
+    this.ticketInfo,
+  });
+}
+
 class JournalEditorScreen extends StatefulWidget {
   final String? chapterId;
   final String? countryName;
@@ -22,11 +52,15 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   bool _isUnderline = false;
   Color _textColor = Colors.black87;
   String _currentFont = 'DM Sans';
+  double _fontSize = 14;
+  List<CanvasElement> _canvasElements = [];
+  String? _selectedElementId;
   final List<String> _availableFonts = const [
     'DM Sans',
     'Playfair Display',
     'Dancing Script',
   ];
+  final List<double> _availableFontSizes = const [10, 12, 14, 16, 18, 20, 24, 28, 32];
 
   @override
   void initState() {
@@ -99,35 +133,62 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         color: AppTheme.card,
         boxShadow: AppTheme.shadowSm,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildToolbarButton(
-            icon: Icons.format_bold,
-            isActive: _isBold,
-            onTap: () => setState(() => _isBold = !_isBold),
-          ),
-          _buildToolbarButton(
-            icon: Icons.format_italic,
-            isActive: _isItalic,
-            onTap: () => setState(() => _isItalic = !_isItalic),
-          ),
-          _buildToolbarButton(
-            icon: Icons.format_underline,
-            isActive: _isUnderline,
-            onTap: () => setState(() => _isUnderline = !_isUnderline),
-          ),
-          _buildToolbarButton(
-            icon: Icons.color_lens,
-            isActive: false,
-            onTap: _showColorPicker,
-          ),
-          _buildToolbarButton(
-            icon: Icons.font_download,
-            isActive: false,
-            onTap: _showFontPicker,
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildToolbarButton(
+              icon: Icons.format_bold,
+              isActive: _isBold,
+              onTap: () => setState(() => _isBold = !_isBold),
+            ),
+            _buildToolbarButton(
+              icon: Icons.format_italic,
+              isActive: _isItalic,
+              onTap: () => setState(() => _isItalic = !_isItalic),
+            ),
+            _buildToolbarButton(
+              icon: Icons.format_underline,
+              isActive: _isUnderline,
+              onTap: () => setState(() => _isUnderline = !_isUnderline),
+            ),
+            _buildToolbarButton(
+              icon: Icons.color_lens,
+              isActive: false,
+              onTap: _showColorPicker,
+            ),
+            _buildToolbarButton(
+              icon: Icons.font_download,
+              isActive: false,
+              onTap: _showFontPicker,
+            ),
+            const SizedBox(width: AppTheme.space2),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.warmGray.withValues(alpha: 0.3)),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              ),
+              child: DropdownButton<double>(
+                value: _fontSize,
+                underline: const SizedBox(),
+                isDense: true,
+                items: _availableFontSizes.map((size) {
+                  return DropdownMenuItem<double>(
+                    value: size,
+                    child: Text(
+                      '${size.toInt()}',
+                      style: GoogleFonts.dmSans(fontSize: 12),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) setState(() => _fontSize = value);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -279,182 +340,202 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   }
 
   Widget _buildScrapbookCanvas() {
-    final entries = _chapter?.entries ?? [];
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.space4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (_chapter != null) ...[
-            Container(
-              padding: const EdgeInsets.all(AppTheme.space4),
-              decoration: BoxDecoration(
-                color: _chapter!.accentColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(
-                  color: _chapter!.accentColor.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _chapter!.title,
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.darkBrown,
+    return GestureDetector(
+      onTap: () => setState(() => _selectedElementId = null),
+      child: Container(
+        color: const Color(0xFFFFFEF6),
+        child: Stack(
+          children: [
+            if (_chapter != null)
+              Positioned(
+                left: 16,
+                top: 16,
+                child: Container(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  decoration: BoxDecoration(
+                    color: _chapter!.accentColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                    border: Border.all(
+                      color: _chapter!.accentColor.withValues(alpha: 0.3),
                     ),
                   ),
-                  const SizedBox(height: AppTheme.space1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _chapter!.title,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.darkBrown,
+                        ),
+                      ),
+                      const SizedBox(height: AppTheme.space1),
+                      Text(
+                        '${_chapter!.city ?? ''}, ${_chapter!.country}',
+                        style: GoogleFonts.dancingScript(
+                          fontSize: 18,
+                          color: AppTheme.warmGray,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ..._canvasElements.map((element) => _buildCanvasElement(element)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCanvasElement(CanvasElement element) {
+    return Positioned(
+      left: element.x,
+      top: element.y,
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedElementId = element.id),
+        onPanUpdate: (details) {
+          setState(() {
+            element.x += details.delta.dx;
+            element.y += details.delta.dy;
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: _selectedElementId == element.id
+                ? Border.all(color: AppTheme.primary, width: 2)
+                : null,
+          ),
+          child: _buildElementContent(element),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildElementContent(CanvasElement element) {
+    switch (element.type) {
+      case 'text':
+        return Container(
+          padding: const EdgeInsets.all(8),
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Text(
+            element.text ?? 'New text block',
+            style: element.textStyle ??
+                _getFontStyle(_currentFont, fontSize: _fontSize),
+          ),
+        );
+      case 'image':
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Image.network(
+            element.imageUrl ?? 'https://picsum.photos/200/200?random=${element.id}',
+            width: element.width ?? 200,
+            height: element.height ?? 200,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stack) => Container(
+              width: element.width ?? 200,
+              height: element.height ?? 200,
+              color: AppTheme.lightGray,
+              child: const Icon(Icons.image, size: 50, color: Colors.grey),
+            ),
+          ),
+        );
+      case 'sticker':
+        return Text(
+          element.emoji ?? '😊',
+          style: TextStyle(fontSize: element.stickerSize ?? 40),
+        );
+      case 'ticket':
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            boxShadow: AppTheme.shadowMd,
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.confirmation_number, color: AppTheme.primary, size: 20),
+                  const SizedBox(width: 8),
                   Text(
-                    '${_chapter!.city ?? ''}, ${_chapter!.country}',
-                    style: GoogleFonts.dancingScript(
-                      fontSize: 18,
-                      color: AppTheme.warmGray,
+                    'Ticket',
+                    style: GoogleFonts.dmSans(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-          ],
-          ...entries.map((entry) => _buildEntryCard(entry)),
-          const SizedBox(height: AppTheme.space4),
-          _buildNewEntryField(),
-          const SizedBox(height: AppTheme.space12),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEntryCard(JournalEntry entry) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppTheme.space4),
-      padding: const EdgeInsets.all(AppTheme.space4),
-      decoration: BoxDecoration(
-        color: AppTheme.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        boxShadow: AppTheme.shadowMd,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (entry.imageUrls.isNotEmpty) ...[
-            SizedBox(
-              height: 200,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: entry.imageUrls.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(width: AppTheme.space2),
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    child: Image.network(
-                      entry.imageUrls[index],
-                      height: 200,
-                      width: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Container(
-                        height: 200,
-                        width: 200,
-                        color: AppTheme.lightGray,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: AppTheme.space3),
-          ],
-          Text(
-            entry.content,
-            style: GoogleFonts.dmSans(
-              fontSize: 14,
-              height: 1.6,
-              color: AppTheme.darkBrown,
-            ),
-          ),
-          if (entry.stickers.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.space3),
-            Wrap(
-              spacing: AppTheme.space2,
-              children: entry.stickers.map((sticker) {
-                return Text(
-                  sticker.emoji,
-                  style: TextStyle(fontSize: sticker.size),
-                );
-              }).toList(),
-            ),
-          ],
-          const SizedBox(height: AppTheme.space2),
-          Text(
-            '${entry.createdAt.month}/${entry.createdAt.day} ${entry.createdAt.hour}:${entry.createdAt.minute.toString().padLeft(2, '0')}',
-            style: GoogleFonts.dmSans(
-              fontSize: 11,
-              color: AppTheme.warmGray,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNewEntryField() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.space4),
-      decoration: BoxDecoration(
-        color: AppTheme.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        boxShadow: AppTheme.shadowSm,
-        border: Border.all(
-          color: AppTheme.primary.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: _textController,
-            maxLines: 6,
-            style: _getFontStyle(_currentFont),
-            decoration: InputDecoration(
-              hintText: 'Write your story...',
-              hintStyle: GoogleFonts.dmSans(
-                color: AppTheme.warmGray,
-              ),
-              border: InputBorder.none,
-            ),
-          ),
-          const SizedBox(height: AppTheme.space3),
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.add_photo_alternate, size: 20),
-                color: AppTheme.warmGray,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Image upload coming soon!',
-                        style: GoogleFonts.dmSans(),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.emoji_emotions_outlined, size: 20),
-                color: AppTheme.warmGray,
-                onPressed: _showStickerPicker,
+              const SizedBox(height: 8),
+              Text(
+                element.ticketInfo ?? 'Flight: NYC → PAR\nDate: 2026-05-15\nSeat: 14A',
+                style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
               ),
             ],
           ),
-        ],
-      ),
-    );
+        );
+      default:
+        return const SizedBox();
+    }
+  }
+
+  void _addTextBlock() {
+    final textStyle = _getFontStyle(_currentFont, fontSize: _fontSize);
+    setState(() {
+      _canvasElements.add(CanvasElement(
+        id: 'text_${DateTime.now().millisecondsSinceEpoch}',
+        type: 'text',
+        x: 50 + _canvasElements.length * 20,
+        y: 100 + _canvasElements.length * 30,
+        text: 'New text block',
+        textStyle: textStyle,
+      ));
+    });
+  }
+
+  void _addImage() {
+    setState(() {
+      _canvasElements.add(CanvasElement(
+        id: 'image_${DateTime.now().millisecondsSinceEpoch}',
+        type: 'image',
+        x: 50 + _canvasElements.length * 20,
+        y: 100 + _canvasElements.length * 30,
+        width: 200,
+        height: 200,
+        imageUrl: 'https://picsum.photos/200/200?random=${DateTime.now().millisecondsSinceEpoch}',
+      ));
+    });
+  }
+
+  void _addTicket() {
+    setState(() {
+      _canvasElements.add(CanvasElement(
+        id: 'ticket_${DateTime.now().millisecondsSinceEpoch}',
+        type: 'ticket',
+        x: 50 + _canvasElements.length * 20,
+        y: 100 + _canvasElements.length * 30,
+        ticketInfo: 'Flight: NYC → ${_chapter?.country ?? "PAR"}\nDate: 2026-05-15\nSeat: 14A',
+      ));
+    });
+  }
+
+  void _addStickerToCanvas(String emoji) {
+    setState(() {
+      _canvasElements.add(CanvasElement(
+        id: 'sticker_${DateTime.now().millisecondsSinceEpoch}',
+        type: 'sticker',
+        x: 50 + _canvasElements.length * 20,
+        y: 100 + _canvasElements.length * 30,
+        emoji: emoji,
+        stickerSize: 40,
+      ));
+    });
   }
 
   void _showStickerPicker() {
@@ -489,7 +570,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               children: stickers.map((sticker) {
                 return GestureDetector(
                   onTap: () {
-                    _textController.text += ' ${sticker.emoji}';
+                    _addStickerToCanvas(sticker.emoji);
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -551,41 +632,21 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
           _buildToolButton(
             icon: Icons.text_fields,
             label: 'Add text',
-            onTap: () {
-              // Focus on text field
-            },
+            onTap: _addTextBlock,
           ),
           _buildToolButton(
             icon: Icons.add_photo_alternate,
             label: 'Pictures',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Image upload coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                ),
-              );
-            },
+            onTap: _addImage,
           ),
           _buildToolButton(
             icon: Icons.camera_alt_outlined,
-            label: 'Scan',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Scan feature coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                ),
-              );
-            },
+            label: 'Scan tickets',
+            onTap: _addTicket,
           ),
           _buildToolButton(
             icon: Icons.emoji_emotions_outlined,
-            label: 'Stickers',
+            label: 'Add elements',
             onTap: _showStickerPicker,
           ),
         ],

@@ -9,6 +9,8 @@ class UserProfile {
   final int citiesExplored;
   final int tripsPlanned;
   final int journalsCreated;
+  final int followersCount;
+  final int followingCount;
   final List<String> travelPhotos;
 
   const UserProfile({
@@ -20,6 +22,8 @@ class UserProfile {
     this.citiesExplored = 0,
     this.tripsPlanned = 0,
     this.journalsCreated = 0,
+    this.followersCount = 0,
+    this.followingCount = 0,
     this.travelPhotos = const [],
   });
 }

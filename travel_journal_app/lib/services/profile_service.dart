@@ -14,6 +14,8 @@ class ProfileService {
     citiesExplored: 28,
     tripsPlanned: 5,
     journalsCreated: 8,
+    followersCount: 248,
+    followingCount: 156,
     travelPhotos: [
       'https://picsum.photos/seed/profile1/200/200',
       'https://picsum.photos/seed/profile2/200/200',

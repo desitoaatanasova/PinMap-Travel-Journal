@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/screens/trips_screen.dart';
+import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _offlineModeEnabled = false;
-  bool _privacyModeEnabled = false;
+  bool _isProfilePrivate = false;
   String _selectedLanguage = 'English';
   final List<String> _languages = const [
     'English',
@@ -46,6 +48,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _buildSectionHeader('Account'),
+            const SizedBox(height: AppTheme.space2),
+            _buildSettingsRow(
+              icon: Icons.luggage_outlined,
+              title: 'My Trips',
+              subtitle: 'View and manage your trips',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TripsScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildSettingsRow(
+              icon: Icons.bookmark_border_outlined,
+              title: 'My Wish List',
+              subtitle: 'Places you want to visit',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WishListScreen(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: AppTheme.space6),
             _buildSectionHeader('Preferences'),
             const SizedBox(height: AppTheme.space2),
             _buildToggleRow(
@@ -61,8 +92,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             _buildToggleRow(
               icon: Icons.cloud_off_outlined,
-              title: 'Offline Mode',
-              subtitle: 'Access saved content without internet',
+              title: 'Available Offline',
+              subtitle: _offlineModeEnabled
+                  ? '3 trips, 12 photos saved'
+                  : 'No content saved offline',
               value: _offlineModeEnabled,
               onChanged: (value) {
                 setState(() {
@@ -72,12 +105,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             _buildToggleRow(
               icon: Icons.lock_outlined,
-              title: 'Privacy Mode',
-              subtitle: 'Hide your travel activity from others',
-              value: _privacyModeEnabled,
+              title: 'Profile Status',
+              subtitle: _isProfilePrivate
+                  ? 'Private - Only followers can see your activity'
+                  : 'Public - Anyone can see your activity',
+              value: _isProfilePrivate,
               onChanged: (value) {
                 setState(() {
-                  _privacyModeEnabled = value;
+                  _isProfilePrivate = value;
                 });
               },
             ),
@@ -118,8 +153,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader('Account'),
+            _buildSectionHeader('Danger Zone'),
             const SizedBox(height: AppTheme.space2),
+            _buildDeleteAccountButton(context),
+            const SizedBox(height: AppTheme.space6),
             _buildLogoutButton(context),
             const SizedBox(height: AppTheme.space12),
           ],
@@ -343,6 +380,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Widget _buildDeleteAccountButton(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.card,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        boxShadow: AppTheme.shadowSm,
+      ),
+      child: ListTile(
+        leading: const Icon(Icons.delete_forever, color: Colors.red),
+        title: Text(
+          'Delete Account',
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.red,
+          ),
+        ),
+        subtitle: Text(
+          'Permanently delete your account and all data',
+          style: GoogleFonts.dmSans(
+            fontSize: 12,
+            color: AppTheme.warmGray,
+          ),
+        ),
+        onTap: () => _confirmDeleteAccount(context),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+      ),
+    );
+  }
+
   void _confirmLogout(BuildContext context) {
     showDialog(
       context: context,
@@ -381,6 +452,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             child: Text(
               'Logout',
+              style: GoogleFonts.dmSans(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDeleteAccount(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Delete Account?',
+          style: GoogleFonts.playfairDisplay(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'This action cannot be undone. All your data will be permanently deleted.',
+          style: GoogleFonts.dmSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Delete account coming soon!',
+                    style: GoogleFonts.dmSans(),
+                  ),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(
+              'Delete',
               style: GoogleFonts.dmSans(),
             ),
           ),

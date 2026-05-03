@@ -184,8 +184,8 @@ class ProfileScreen extends StatelessWidget {
         children: [
           _buildStat('$profile.countriesVisited', 'Countries', Icons.public),
           _buildStat('$profile.citiesExplored', 'Cities', Icons.location_city),
-          _buildStat('$profile.tripsPlanned', 'Trips', Icons.luggage),
-          _buildStat('$profile.journalsCreated', 'Journals', Icons.book),
+          _buildStat('$profile.followersCount', 'Followers', Icons.people),
+          _buildStat('$profile.followingCount', 'Following', Icons.person_add),
         ],
       ),
     );
