@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
@@ -227,11 +228,11 @@ class JournalScreen extends StatelessWidget {
                 topRight: Radius.circular(AppTheme.radiusLg),
               ),
               child: chapter.coverImageUrl != null
-                  ? Image.network(
-                      chapter.coverImageUrl!,
+                  ? CachedNetworkImage(
+                      imageUrl: chapter.coverImageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) =>
-                          _buildCoverFallback(chapter),
+                      placeholder: (context, url) => _buildCoverFallback(chapter),
+                      errorWidget: (context, url, error) => _buildCoverFallback(chapter),
                     )
                   : _buildCoverFallback(chapter),
             ),

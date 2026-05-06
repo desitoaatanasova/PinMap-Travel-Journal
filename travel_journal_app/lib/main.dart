@@ -12,11 +12,22 @@ import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/screens/profile_screen.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/services/trip_service.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/journal_service.dart';
+import 'package:pinmap_travel_journal/services/visited_places_service.dart';
+import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
+import 'package:pinmap_travel_journal/widgets/offline_banner.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await WishlistService.loadItems();
+  await TripService.loadTrips();
+  await CountryService.loadVisitedState();
+  await JournalService.loadDrafts();
+  await VisitedPlacesService.loadVisitedPlaces();
+  await SyncQueueService.loadQueue();
   runApp(const TravelJournalApp());
 }
 
@@ -71,7 +82,12 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: AppTheme.bg,
       extendBody: true,
-      body: _screens[_selectedIndex],
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(child: _screens[_selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.fromLTRB(
             AppTheme.space4, 0, AppTheme.space4, AppTheme.space4),

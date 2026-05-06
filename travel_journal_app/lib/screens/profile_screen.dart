@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/screens/settings_screen.dart';
@@ -28,10 +29,14 @@ class ProfileScreen extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   if (profile.travelPhotos.isNotEmpty)
-                    Image.network(
-                      profile.travelPhotos[0],
+                    CachedNetworkImage(
+                      imageUrl: profile.travelPhotos[0],
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Container(
+                      placeholder: (context, url) => Container(
+                        color: AppTheme.primary,
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Container(
                         color: AppTheme.primary,
                       ),
                     ),
@@ -218,10 +223,14 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildPhotoThumbnail(String url) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-      child: Image.network(
-        url,
+      child: CachedNetworkImage(
+        imageUrl: url,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stack) => Container(
+        placeholder: (context, url) => Container(
+          color: AppTheme.lightGray,
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+        errorWidget: (context, url, error) => Container(
           color: AppTheme.lightGray,
         ),
       ),

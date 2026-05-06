@@ -10,10 +10,10 @@ class Country {
   final String flag;
   final String imageUrl;
   final double rating;
-  final bool isVisited;
+  bool isVisited;
   final Map<String, String>? cityImageUrls;
 
-  const Country({
+  Country({
     required this.name,
     required this.description,
     required this.latitude,

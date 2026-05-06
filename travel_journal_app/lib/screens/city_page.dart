@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/city_category.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/screens/category_page.dart';
@@ -161,10 +162,14 @@ class _CityPageState extends State<CityPage> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              'https://source.unsplash.com/800x400/?${widget.cityName},city',
+            CachedNetworkImage(
+              imageUrl: 'https://source.unsplash.com/800x400/?${widget.cityName},city',
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stack) => Container(
+              placeholder: (context, url) => Container(
+                color: AppTheme.darkBrown,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+              errorWidget: (context, url, error) => Container(
                 color: AppTheme.darkBrown,
               ),
             ),

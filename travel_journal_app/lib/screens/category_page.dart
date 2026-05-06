@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/place_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/services/visited_places_service.dart';
 import 'package:pinmap_travel_journal/screens/place_details_page.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -25,16 +27,9 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  final Set<String> _visitedPlaces = {};
-
-  void _toggleVisited(String placeName) {
-    setState(() {
-      if (_visitedPlaces.contains(placeName)) {
-        _visitedPlaces.remove(placeName);
-      } else {
-        _visitedPlaces.add(placeName);
-      }
-    });
+  void _toggleVisited(String placeName) async {
+    await VisitedPlacesService.toggleVisited(placeName);
+    setState(() {});
   }
 
   @override
@@ -82,7 +77,7 @@ class _CategoryPageState extends State<CategoryPage> {
               itemCount: places.length,
               itemBuilder: (context, index) {
                 final place = places[index];
-                final isVisited = _visitedPlaces.contains(place.name);
+                final isVisited = VisitedPlacesService.isVisited(place.name);
                 return _buildPlaceCard(context, place, isVisited);
               },
             ),
@@ -283,12 +278,13 @@ class _CategoryPageState extends State<CategoryPage> {
     if (place.imageUrls.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        child: Image.network(
-          place.imageUrls[0],
+        child: CachedNetworkImage(
+          imageUrl: place.imageUrls[0],
           width: 80,
           height: 80,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stack) => _buildPlaceholder(place),
+          placeholder: (context, url) => _buildPlaceholder(place),
+          errorWidget: (context, url, error) => _buildPlaceholder(place),
         ),
       );
     }

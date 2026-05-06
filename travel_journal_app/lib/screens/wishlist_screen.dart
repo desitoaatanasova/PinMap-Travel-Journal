@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
@@ -188,11 +189,11 @@ class _WishListScreenState extends State<WishListScreen> {
                 topRight: Radius.circular(AppTheme.radiusLg),
               ),
               child: item.imageUrl != null
-                  ? Image.network(
-                      item.imageUrl!,
+                  ? CachedNetworkImage(
+                      imageUrl: item.imageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) =>
-                          _buildImageFallback(item),
+                      placeholder: (context, url) => _buildImageFallback(item),
+                      errorWidget: (context, url, error) => _buildImageFallback(item),
                     )
                   : _buildImageFallback(item),
             ),
@@ -303,13 +304,13 @@ class _WishListScreenState extends State<WishListScreen> {
               bottomLeft: Radius.circular(AppTheme.radiusLg),
             ),
             child: item.imageUrl != null
-                ? Image.network(
-                    item.imageUrl!,
+                ? CachedNetworkImage(
+                    imageUrl: item.imageUrl!,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stack) =>
-                        _buildListImageFallback(item),
+                    placeholder: (context, url) => _buildListImageFallback(item),
+                    errorWidget: (context, url, error) => _buildListImageFallback(item),
                   )
                 : _buildListImageFallback(item),
           ),

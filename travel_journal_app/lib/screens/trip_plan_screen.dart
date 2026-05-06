@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -85,11 +86,11 @@ class TripPlanScreen extends StatelessWidget {
       iconTheme: const IconThemeData(color: Colors.white),
       flexibleSpace: FlexibleSpaceBar(
         background: trip.heroImageUrl != null
-            ? Image.network(
-                trip.heroImageUrl!,
+            ? CachedNetworkImage(
+                imageUrl: trip.heroImageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stack) =>
-                    _buildHeroFallback(trip.destination),
+                placeholder: (context, url) => _buildHeroFallback(trip.destination),
+                errorWidget: (context, url, error) => _buildHeroFallback(trip.destination),
               )
             : _buildHeroFallback(trip.destination),
         titlePadding: const EdgeInsets.only(

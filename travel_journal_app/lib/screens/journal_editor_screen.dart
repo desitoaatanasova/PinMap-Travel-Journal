@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
 
 class CanvasElement {
   final String id;
@@ -98,20 +100,25 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         backgroundColor: const Color(0xFFFFFEF6),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save_outlined),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Chapter saved!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-          ),
+              IconButton(
+                icon: const Icon(Icons.save_outlined),
+                onPressed: () async {
+                  if (_chapter != null) {
+                    await JournalService.saveDraft(_chapter!);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Draft saved!',
+                            style: GoogleFonts.dmSans(),
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
         ],
       ),
       body: Column(
@@ -428,12 +435,18 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       case 'image':
         return ClipRRect(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: Image.network(
-            element.imageUrl ?? 'https://picsum.photos/200/200?random=${element.id}',
+          child: CachedNetworkImage(
+            imageUrl: element.imageUrl ?? 'https://picsum.photos/200/200?random=${element.id}',
             width: element.width ?? 200,
             height: element.height ?? 200,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stack) => Container(
+            placeholder: (context, url) => Container(
+              width: element.width ?? 200,
+              height: element.height ?? 200,
+              color: AppTheme.lightGray,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+            errorWidget: (context, url, error) => Container(
               width: element.width ?? 200,
               height: element.height ?? 200,
               color: AppTheme.lightGray,

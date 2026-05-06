@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/services/visited_places_service.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -36,6 +38,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   void initState() {
     super.initState();
     _isInWishlist = WishlistService.isInWishlist(widget.place.name);
+    _isVisited = VisitedPlacesService.isVisited(widget.place.name);
   }
 
   Future<void> _toggleWishlist() async {
@@ -172,30 +175,20 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                child: Image.network(
-                  url,
+                child: CachedNetworkImage(
+                  imageUrl: url,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: place.placeholderColor.withValues(alpha: 0.3),
-                      child: Icon(
-                        place.placeholderIcon,
-                        size: 80,
-                        color: place.placeholderColor,
-                      ),
-                    );
-                  },
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: place.placeholderColor.withValues(alpha: 0.3),
+                    child: Icon(
+                      place.placeholderIcon,
+                      size: 80,
+                      color: place.placeholderColor,
+                    ),
+                  ),
                 ),
               ),
             );
@@ -342,20 +335,23 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
 
   Widget _buildVisitedButton(Color categoryColor) {
     return ElevatedButton.icon(
-      onPressed: () {
+      onPressed: () async {
+        await VisitedPlacesService.toggleVisited(widget.place.name);
         setState(() {
-          _isVisited = !_isVisited;
+          _isVisited = VisitedPlacesService.isVisited(widget.place.name);
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isVisited ? 'Marked as visited!' : 'Removed visited status',
-              style: GoogleFonts.dmSans(),
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                _isVisited ? 'Marked as visited!' : 'Removed visited status',
+                style: GoogleFonts.dmSans(),
+              ),
+              backgroundColor: _isVisited ? Colors.green : categoryColor,
+              duration: const Duration(seconds: 2),
             ),
-            backgroundColor: _isVisited ? Colors.green : categoryColor,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+          );
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: _isVisited ? Colors.green : categoryColor,

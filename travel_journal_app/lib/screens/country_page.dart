@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/country_theme.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
@@ -69,10 +70,14 @@ class _CountryPageState extends State<CountryPage> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              widget.country.imageUrl,
+            CachedNetworkImage(
+              imageUrl: widget.country.imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stack) => Container(
+              placeholder: (context, url) => Container(
+                color: theme.primaryColor,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+              errorWidget: (context, url, error) => Container(
                 color: theme.primaryColor,
               ),
             ),
@@ -274,10 +279,14 @@ class _CountryPageState extends State<CountryPage> {
                   topRight: Radius.circular(AppTheme.radiusMd - 1),
                 ),
                 child: imageUrl != null
-                    ? Image.network(
-                        imageUrl,
+                    ? CachedNetworkImage(
+                        imageUrl: imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => Container(
+                        placeholder: (context, url) => Container(
+                          color: theme.primaryColor.withValues(alpha: 0.1),
+                          child: const Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Container(
                           color: theme.primaryColor.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.location_city,
@@ -286,10 +295,14 @@ class _CountryPageState extends State<CountryPage> {
                           ),
                         ),
                       )
-                    : Image.network(
-                        'https://source.unsplash.com/200x150/?${city.name},city',
+                    : CachedNetworkImage(
+                        imageUrl: 'https://source.unsplash.com/200x150/?${city.name},city',
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => Container(
+                        placeholder: (context, url) => Container(
+                          color: theme.primaryColor.withValues(alpha: 0.1),
+                          child: const Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Container(
                           color: theme.primaryColor.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.location_city,

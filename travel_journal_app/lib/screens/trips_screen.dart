@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
@@ -131,12 +132,12 @@ class TripsScreen extends StatelessWidget {
               topRight: Radius.circular(AppTheme.radiusLg),
             ),
             child: trip.heroImageUrl != null
-                ? Image.network(
-                    trip.heroImageUrl!,
+                ? CachedNetworkImage(
+                    imageUrl: trip.heroImageUrl!,
                     height: 160,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stack) =>
-                        _buildHeroPlaceholder(trip.destination),
+                    placeholder: (context, url) => _buildHeroPlaceholder(trip.destination),
+                    errorWidget: (context, url, error) => _buildHeroPlaceholder(trip.destination),
                   )
                 : _buildHeroPlaceholder(trip.destination),
           ),
