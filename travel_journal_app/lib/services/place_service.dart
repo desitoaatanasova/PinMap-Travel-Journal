@@ -1,271 +1,89 @@
-import 'package:flutter/material.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
 
 class PlaceService {
-  static List<Place> getPlacesForCategory(String category, String city) {
-    final places = _mockData[category] ?? [];
-    return places.map((p) => Place(
-      name: p['name'] as String,
-      subtitle: p['subtitle'] as String,
-      description: p['description'] as String,
-      placeholderIcon: p['icon'] as IconData,
-      placeholderColor: p['color'] as Color,
-      imageUrls: List<String>.from(p['imageUrls'] ?? []),
-      latitude: p['latitude'] as double?,
-      longitude: p['longitude'] as double?,
-    )).toList();
+  static final Map<String, List<Place>> _cityCache = {};
+
+  static Future<List<Place>> getPlacesForCategory(String categoryName, String cityName) async {
+    if (!_cityCache.containsKey(cityName)) {
+      await _loadPlacesForCity(cityName);
+    }
+    final cityPlaces = _cityCache[cityName] ?? [];
+    return cityPlaces.where((p) => p.categoryName == categoryName).toList();
   }
 
-  static final Map<String, List<Map<String, dynamic>>> _mockData = {
-    'Historical sights': [
-      {
-        'name': 'Old Castle',
-        'subtitle': 'Medieval fortress from 12th century',
-        'description': 'A magnificent medieval castle that has stood the test of time. Explore the ancient halls, climb the tower for panoramic views, and discover the rich history within these walls.',
-        'icon': Icons.account_balance,
-        'color': Colors.brown,
-        'imageUrls': [
-          'https://picsum.photos/seed/castle1/400/300',
-          'https://picsum.photos/seed/castle2/400/300',
-          'https://picsum.photos/seed/castle3/400/300',
-        ],
-        'latitude': 48.8566,
-        'longitude': 2.3522,
-      },
-      {
-        'name': 'Ancient Ruins',
-        'subtitle': 'Roman settlement remains',
-        'description': 'Walk through the preserved ruins of an ancient Roman settlement. See the remains of temples, houses, and public buildings that tell the story of life centuries ago.',
-        'icon': Icons.architecture,
-        'color': Colors.brown.shade700,
-        'imageUrls': [
-          'https://picsum.photos/seed/ruins1/400/300',
-          'https://picsum.photos/seed/ruins2/400/300',
-        ],
-        'latitude': 48.8606,
-        'longitude': 2.3376,
-      },
-      {
-        'name': 'Historic Square',
-        'subtitle': 'Main city square since 1400s',
-        'description': 'The heart of the city for over 600 years. Surrounded by historic buildings, cafes, and monuments. Street performers and markets often animate this vibrant space.',
-        'icon': Icons.location_city,
-        'color': Colors.brown.shade500,
-        'imageUrls': [
-          'https://picsum.photos/seed/square1/400/300',
-          'https://picsum.photos/seed/square2/400/300',
-        ],
-        'latitude': 48.8600,
-        'longitude': 2.3364,
-      },
-      {
-        'name': 'Medieval Wall',
-        'subtitle': 'City fortifications from 1300s',
-        'description': 'Walk along the remarkably preserved medieval city walls. The 2-mile path offers stunning views of the city and surrounding landscape while showcasing historical defense architecture.',
-        'icon': Icons.domain,
-        'color': Colors.brown.shade600,
-        'latitude': 48.8630,
-        'longitude': 2.3450,
-      },
-      {
-        'name': 'Royal Palace',
-        'subtitle': 'Former royal residence',
-        'description': 'Once home to kings and queens, this palace showcases centuries of royal history. Visit the throne room, royal chambers, and expansive gardens that demonstrate past grandeur.',
-        'icon': Icons.castle,
-        'color': Colors.brown.shade800,
-        'latitude': 48.8650,
-        'longitude': 2.3300,
-      },
+  static Future<void> _loadPlacesForCity(String cityName) async {
+    try {
+      final countries = CountryService.getAllCountries();
+      int? cityId;
+      outer:
+      for (final country in countries) {
+        for (final city in country.cityPins) {
+          if (city.name == cityName) {
+            cityId = city.cityId;
+            break outer;
+          }
+        }
+      }
+
+      if (cityId == null) {
+        _cityCache[cityName] = [];
+        return;
+      }
+
+      final data = await ApiClient.get('/places?city_id=$cityId');
+      _cityCache[cityName] = (data as List).map((json) => Place.fromJson({
+        ...json,
+        'category_name': json['category_name'] as String?,
+      })).toList();
+    } catch (e) {
+      _cityCache[cityName] = [];
+    }
+  }
+
+  // Fallback mock data when API is unavailable
+  static List<Place> getMockPlacesForCategory(String category) {
+    return _mockData[category] ?? [];
+  }
+
+  static final Map<String, List<Place>> _mockData = {
+    'Historical Sights': [
+      Place(placeId: 1, name: 'Old Castle', categoryName: 'Historical Sights', shortDescription: 'Medieval fortress from 12th century', fullDescription: 'A magnificent medieval castle that has stood the test of time.', address: '10 Rue du Château, 75001 Paris', latitude: 48.8566, longitude: 2.3522, website: 'https://example.com/old-castle', openingHours: '9:00 AM - 6:00 PM', imageCover: 'https://picsum.photos/seed/castle1/800/400'),
+      Place(placeId: 2, name: 'Ancient Ruins', categoryName: 'Historical Sights', shortDescription: 'Roman settlement remains', fullDescription: 'Walk through the preserved ruins of an ancient Roman settlement.', address: '25 Avenue des Ruines, 75002 Paris', latitude: 48.8606, longitude: 2.3376, website: 'https://example.com/ancient-ruins', openingHours: '8:30 AM - 7:00 PM', imageCover: 'https://picsum.photos/seed/ruins1/800/400'),
+      Place(placeId: 3, name: 'Historic Square', categoryName: 'Historical Sights', shortDescription: 'Main city square since 1400s', address: '1 Place Centrale, 75001 Paris', latitude: 48.8600, longitude: 2.3364, imageCover: 'https://picsum.photos/seed/square1/800/400'),
+      Place(placeId: 4, name: 'Medieval Wall', categoryName: 'Historical Sights', shortDescription: 'City fortifications from 1300s', address: '15 Boulevard des Remparts, 75003 Paris', latitude: 48.8630, longitude: 2.3450, imageCover: 'https://picsum.photos/seed/ruins2/800/400'),
+      Place(placeId: 5, name: 'Royal Palace', categoryName: 'Historical Sights', shortDescription: 'Former royal residence', address: '50 Rue Royale, 75004 Paris', latitude: 48.8650, longitude: 2.3300, imageCover: 'https://picsum.photos/seed/castle2/800/400'),
     ],
-    'For the art lovers': [
-      {
-        'name': 'Modern Art Museum',
-        'subtitle': 'Contemporary art collection',
-        'description': 'A stunning collection of modern and contemporary art from local and international artists. The museum features rotating exhibitions, interactive installations, and a rooftop sculpture garden.',
-        'icon': Icons.palette,
-        'color': Colors.purple,
-        'latitude': 48.8610,
-        'longitude': 2.3410,
-      },
-      {
-        'name': 'Street Art Alley',
-        'subtitle': 'Urban art gallery outdoors',
-        'description': 'An ever-changing outdoor gallery featuring murals and graffiti by local and international street artists. Each visit offers something new as artists continually add fresh works.',
-        'icon': Icons.brush,
-        'color': Colors.purple.shade400,
-        'latitude': 48.8620,
-        'longitude': 2.3450,
-      },
-      {
-        'name': 'Sculpture Park',
-        'subtitle': 'Open-air sculpture exhibition',
-        'description': 'Wander through beautifully landscaped gardens featuring over 50 sculptures from various periods and styles. The park blends art with nature for a unique cultural experience.',
-        'icon': Icons.architecture,
-        'color': Colors.purple.shade600,
-        'latitude': 48.8630,
-        'longitude': 2.3480,
-      },
-      {
-        'name': 'Gallery District',
-        'subtitle': 'Multiple art galleries in one area',
-        'description': 'A vibrant neighborhood filled with independent art galleries, studios, and workshops. Meet local artists, watch live demonstrations, and purchase unique pieces directly from creators.',
-        'icon': Icons.museum,
-        'color': Colors.purple.shade300,
-        'latitude': 48.8640,
-        'longitude': 2.3500,
-      },
+    'For the Art Lovers': [
+      Place(placeId: 6, name: 'Modern Art Museum', categoryName: 'For the Art Lovers', shortDescription: 'Contemporary art collection', address: '100 Boulevard des Arts, 75005 Paris', latitude: 48.8610, longitude: 2.3410, openingHours: '10:00 AM - 8:00 PM', imageCover: 'https://picsum.photos/seed/museum1/800/400'),
+      Place(placeId: 7, name: 'Street Art Alley', categoryName: 'For the Art Lovers', shortDescription: 'Urban art gallery outdoors', address: '42 Rue des Artistes, 75006 Paris', latitude: 48.8620, longitude: 2.3450, imageCover: 'https://picsum.photos/seed/streetart/800/400'),
+      Place(placeId: 8, name: 'Sculpture Park', categoryName: 'For the Art Lovers', shortDescription: 'Open-air sculpture exhibition', address: '5 Jardin des Sculptures, 75007 Paris', latitude: 48.8630, longitude: 2.3480, imageCover: 'https://picsum.photos/seed/sculpture/800/400'),
+      Place(placeId: 9, name: 'Gallery District', categoryName: 'For the Art Lovers', shortDescription: 'Multiple art galleries in one area', address: 'Rue des Galeries, 75008 Paris', latitude: 48.8640, longitude: 2.3500, imageCover: 'https://picsum.photos/seed/gallery/800/400'),
     ],
     'Atmosphere & experience': [
-      {
-        'name': 'Sunset Viewpoint',
-        'subtitle': 'Best sunset spot in the city',
-        'description': 'A breathtaking viewpoint offering panoramic sunset views over the city and beyond. Arrive early to secure a spot and enjoy the changing colors as day turns to night.',
-        'icon': Icons.sunny,
-        'color': Colors.orange,
-        'latitude': 48.8650,
-        'longitude': 2.3550,
-      },
-      {
-        'name': 'Jazz Club',
-        'subtitle': 'Live jazz every weekend',
-        'description': 'An intimate venue featuring live jazz performances in a cozy atmosphere. Enjoy craft cocktails and authentic cuisine while listening to talented local and touring musicians.',
-        'icon': Icons.music_note,
-        'color': Colors.orange.shade700,
-        'latitude': 48.8660,
-        'longitude': 2.3400,
-      },
-      {
-        'name': 'Rooftop Bar',
-        'subtitle': 'Cocktails with a view',
-        'description': 'Sip expertly crafted cocktails while enjoying 360-degree city views. The elegant rooftop setting is perfect for evening relaxation and socializing with both locals and travelers.',
-        'icon': Icons.local_bar,
-        'color': Colors.orange.shade600,
-        'latitude': 48.8670,
-        'longitude': 2.3420,
-      },
-      {
-        'name': 'Night Market',
-        'subtitle': 'Street food and local crafts',
-        'description': 'A bustling evening market offering diverse street food, handmade crafts, and live entertainment. Experience the local night culture while sampling delicacies from various vendors.',
-        'icon': Icons.nightlife,
-        'color': Colors.orange.shade800,
-        'latitude': 48.8680,
-        'longitude': 2.3440,
-      },
+      Place(placeId: 10, name: 'Sunset Viewpoint', categoryName: 'Atmosphere & experience', shortDescription: 'Best sunset spot in the city', address: 'Colline du Belvédère, 75009 Paris', latitude: 48.8650, longitude: 2.3550, imageCover: 'https://picsum.photos/seed/sunset/800/400'),
+      Place(placeId: 11, name: 'Jazz Club', categoryName: 'Atmosphere & experience', shortDescription: 'Live jazz every weekend', address: '22 Rue du Jazz, 75010 Paris', latitude: 48.8660, longitude: 2.3400, openingHours: '8:00 PM - 2:00 AM', imageCover: 'https://picsum.photos/seed/jazz/800/400'),
+      Place(placeId: 12, name: 'Rooftop Bar', categoryName: 'Atmosphere & experience', shortDescription: 'Cocktails with a view', address: 'Rooftop Hôtel Panorama, 75011 Paris', latitude: 48.8670, longitude: 2.3420, openingHours: '5:00 PM - 1:00 AM', imageCover: 'https://picsum.photos/seed/rooftop/800/400'),
+      Place(placeId: 13, name: 'Night Market', categoryName: 'Atmosphere & experience', shortDescription: 'Street food and local crafts', address: 'Place du Marché Nocturne, 75012 Paris', latitude: 48.8680, longitude: 2.3440, openingHours: '6:00 PM - 11:00 PM', imageCover: 'https://picsum.photos/seed/nightmarket/800/400'),
     ],
-    'Hidden gems': [
-      {
-        'name': 'Secret Garden',
-        'subtitle': 'Hidden oasis in the city center',
-        'description': 'A little-known peaceful garden tucked away behind an unassuming door. Enjoy lush greenery, hidden fountains, and rare plant species in this urban sanctuary.',
-        'icon': Icons.local_florist,
-        'color': Colors.teal,
-        'latitude': 48.8690,
-        'longitude': 2.3460,
-      },
-      {
-        'name': 'Local Bakery',
-        'subtitle': 'Best pastries since 1950',
-        'description': 'A family-run bakery that has been perfecting their recipes for generations. Their secret croissant recipe and award-winning pastries attract locals who line up each morning.',
-        'icon': Icons.bakery_dining,
-        'color': Colors.teal.shade600,
-        'latitude': 48.8700,
-        'longitude': 2.3480,
-      },
-      {
-        'name': 'Hidden Courtyard',
-        'subtitle': 'Ancient courtyard with cafe',
-        'description': 'Discover this tucked-away courtyard featuring a charming café, historic architecture, and a tranquil atmosphere. Locals gather here to escape the tourist crowds.',
-        'icon': Icons.cottage,
-        'color': Colors.teal.shade400,
-        'latitude': 48.8710,
-        'longitude': 2.3500,
-      },
-      {
-        'name': 'Unknown Bookshop',
-        'subtitle': 'Rare books and quiet reading',
-        'description': 'A treasure trove for book lovers, this shop houses rare editions, local authors, and comfortable reading nooks. The knowledgeable owner offers personalized recommendations.',
-        'icon': Icons.menu_book,
-        'color': Colors.teal.shade700,
-        'latitude': 48.8720,
-        'longitude': 2.3520,
-      },
+    'Hidden Gems': [
+      Place(placeId: 14, name: 'Secret Garden', categoryName: 'Hidden Gems', shortDescription: 'Hidden oasis in the city center', address: '12 Passage Secret, 75013 Paris', latitude: 48.8690, longitude: 2.3460, openingHours: '9:00 AM - 6:00 PM', imageCover: 'https://picsum.photos/seed/garden/800/400'),
+      Place(placeId: 15, name: 'Local Bakery', categoryName: 'Hidden Gems', shortDescription: 'Best pastries since 1950', address: '8 Rue des Gourmands, 75014 Paris', latitude: 48.8700, longitude: 2.3480, openingHours: '6:00 AM - 8:00 PM', imageCover: 'https://picsum.photos/seed/bakery/800/400'),
+      Place(placeId: 16, name: 'Hidden Courtyard', categoryName: 'Hidden Gems', shortDescription: 'Ancient courtyard with cafe', address: '3 Cour Intérieure, 75015 Paris', latitude: 48.8710, longitude: 2.3500, imageCover: 'https://picsum.photos/seed/courtyard/800/400'),
+      Place(placeId: 17, name: 'Unknown Bookshop', categoryName: 'Hidden Gems', shortDescription: 'Rare books and quiet reading', address: '55 Rue des Livres, 75016 Paris', latitude: 48.8720, longitude: 2.3520, openingHours: '10:00 AM - 8:00 PM', imageCover: 'https://picsum.photos/seed/bookshop/800/400'),
     ],
     'Close by': [
-      {
-        'name': 'Neighboring Town',
-        'subtitle': 'Charming town 30 minutes away',
-        'description': 'A picturesque town just a short journey away. Explore its cobblestone streets, visit the local market, and enjoy authentic regional cuisine in family-run restaurants.',
-        'icon': Icons.location_city,
-        'color': Colors.green,
-        'latitude': 48.8800,
-        'longitude': 2.3600,
-      },
-      {
-        'name': 'Nearby Village',
-        'subtitle': 'Traditional village life',
-        'description': 'Experience authentic rural traditions in this well-preserved village. Watch craftspeople at work, taste farm-to-table cuisine, and enjoy the slower pace of country life.',
-        'icon': Icons.foundation,
-        'color': Colors.green.shade700,
-        'latitude': 48.8900,
-        'longitude': 2.3700,
-      },
-      {
-        'name': 'Adjacent Park',
-        'subtitle': 'Large nature reserve nearby',
-        'description': 'A vast natural park offering hiking trails, wildlife spotting, and picnic areas. The diverse ecosystems include forests, meadows, and a crystal-clear lake perfect for swimming.',
-        'icon': Icons.park,
-        'color': Colors.green.shade600,
-        'latitude': 48.9000,
-        'longitude': 2.3800,
-      },
-      {
-        'name': 'Close Beach',
-        'subtitle': 'Beautiful beach 20 minutes away',
-        'description': 'Escape to this pristine beach with golden sand and clear waters. Enjoy swimming, water sports, beachside dining, and spectacular sunset views over the ocean.',
-        'icon': Icons.beach_access,
-        'color': Colors.green.shade800,
-        'latitude': 48.9100,
-        'longitude': 2.3900,
-      },
+      Place(placeId: 18, name: 'Neighboring Town', categoryName: 'Close by', shortDescription: 'Charming town 30 minutes away', address: 'Centre-Ville, 78000 Versailles', latitude: 48.8800, longitude: 2.3600, imageCover: 'https://picsum.photos/seed/town/800/400'),
+      Place(placeId: 19, name: 'Nearby Village', categoryName: 'Close by', shortDescription: 'Traditional village life', address: 'Le Village, 78500 Triel-sur-Seine', latitude: 48.8900, longitude: 2.3700, imageCover: 'https://picsum.photos/seed/village/800/400'),
+      Place(placeId: 20, name: 'Adjacent Park', categoryName: 'Close by', shortDescription: 'Large nature reserve nearby', address: 'Parc Naturel Régional, 78120 Paris', latitude: 48.9000, longitude: 2.3800, imageCover: 'https://picsum.photos/seed/park/800/400'),
+      Place(placeId: 21, name: 'Close Beach', categoryName: 'Close by', shortDescription: 'Beautiful beach 20 minutes away', address: 'Plage des Sables, 78230 Le Pecq', latitude: 48.9100, longitude: 2.3900, imageCover: 'https://picsum.photos/seed/beach/800/400'),
     ],
     'My places': [
-      {
-        'name': 'Favorite Restaurant',
-        'subtitle': 'Best local cuisine in town',
-        'description': 'Your go-to spot for authentic local dishes made with fresh, seasonal ingredients. The warm atmosphere and attentive service keep you coming back again and again.',
-        'icon': Icons.restaurant,
-        'color': Colors.red,
-        'latitude': 48.8620,
-        'longitude': 2.3380,
-      },
-      {
-        'name': 'My Hotel',
-        'subtitle': 'Comfortable stay in city center',
-        'description': 'Your home away from home offering modern amenities, comfortable rooms, and an ideal location for exploring. The friendly staff ensures every stay is memorable.',
-        'icon': Icons.hotel,
-        'color': Colors.red.shade700,
-        'latitude': 48.8630,
-        'longitude': 2.3390,
-      },
-      {
-        'name': 'Regular Café',
-        'subtitle': 'Morning coffee ritual spot',
-        'description': 'Start your day at this cozy café known for excellent coffee, freshly baked pastries, and a relaxed atmosphere. The baristas know your order by heart.',
-        'icon': Icons.local_cafe,
-        'color': Colors.red.shade600,
-        'latitude': 48.8640,
-        'longitude': 2.3400,
-      },
-      {
-        'name': 'Gym I Visit',
-        'subtitle': 'My daily workout place',
-        'description': 'Stay fit at this well-equipped fitness center featuring modern machines, group classes, and personal trainers. The motivating environment helps you maintain your exercise routine.',
-        'icon': Icons.fitness_center,
-        'color': Colors.red.shade800,
-        'latitude': 48.8650,
-        'longitude': 2.3410,
-      },
+      Place(placeId: 22, name: 'Favorite Restaurant', categoryName: 'My places', shortDescription: 'Best local cuisine in town', address: '30 Rue des Saveurs, 75017 Paris', latitude: 48.8620, longitude: 2.3380, openingHours: '12:00 PM - 10:00 PM', imageCover: 'https://picsum.photos/seed/restaurant/800/400'),
+      Place(placeId: 23, name: 'My Hotel', categoryName: 'My places', shortDescription: 'Comfortable stay in city center', address: '15 Rue de l\'Hôtel, 75018 Paris', latitude: 48.8630, longitude: 2.3390, imageCover: 'https://picsum.photos/seed/hotel/800/400'),
+      Place(placeId: 24, name: 'Regular Cafe', categoryName: 'My places', shortDescription: 'Morning coffee ritual spot', address: '7 Rue du Café, 75019 Paris', latitude: 48.8640, longitude: 2.3400, openingHours: '7:00 AM - 7:00 PM', imageCover: 'https://picsum.photos/seed/cafe/800/400'),
+      Place(placeId: 25, name: 'Gym I Visit', categoryName: 'My places', shortDescription: 'My daily workout place', address: '20 Rue du Sport, 75020 Paris', latitude: 48.8650, longitude: 2.3410, openingHours: '6:00 AM - 10:00 PM', imageCover: 'https://picsum.photos/seed/gym/800/400'),
     ],
   };
 }

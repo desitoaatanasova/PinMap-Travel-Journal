@@ -14,7 +14,8 @@ class NewTripScreen extends StatefulWidget {
 }
 
 class _NewTripScreenState extends State<NewTripScreen> {
-  String? _selectedCountry;
+  int? _selectedCountryId;
+  String? _selectedCountryName;
   int _numberOfDays = 3;
   DateTime? _startDate;
   DateTime? _endDate;
@@ -142,111 +143,54 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   bool get _canGenerate {
-    return _selectedCountry != null && _startDate != null && _endDate != null;
+    return _selectedCountryId != null && _startDate != null && _endDate != null;
   }
 
   void _generateTripPlan() {
-    final countryName = _selectedCountry!.split(' ').last;
     final trip = Trip(
-      id: '${countryName.toLowerCase()}-${DateTime.now().millisecondsSinceEpoch}',
-      destination: _selectedCountry!,
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(Duration(days: _numberOfDays - 1)),
-      durationDays: _numberOfDays,
-      isSolo: _isSolo,
+      tripId: DateTime.now().millisecondsSinceEpoch,
+      title: _selectedCountryName!,
+      countryId: _selectedCountryId!,
+      startDate: _startDate!,
+      endDate: _endDate!,
       tripType: _vacationType,
-      budget: '',
-      itinerary: _buildMockItinerary(countryName),
+      travelStyle: _isSolo ? 'Solo' : 'Group',
+      itinerary: _buildMockItinerary(_selectedCountryName!),
     );
     TripService.addTrip(trip);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TripPlanScreen(tripId: trip.id, trip: trip),
+        builder: (context) => TripPlanScreen(
+            tripId: trip.tripId.toString(), trip: trip),
       ),
     );
   }
 
   List<TripDay> _buildMockItinerary(String countryName) {
-    final activitiesByType = {
-      'Historical': [
-        TripActivity(
-            name: 'Historic Landmark Visit',
-            description: 'Explore ancient sites in $countryName',
-            time: '9:00 AM',
-            icon: Icons.account_balance),
-        TripActivity(
-            name: 'Museum Tour',
-            description: 'Discover local history',
-            time: '2:00 PM',
-            icon: Icons.museum),
-      ],
-      'Art': [
-        TripActivity(
-            name: 'Art Gallery Walk',
-            description: 'Visit top galleries in $countryName',
-            time: '10:00 AM',
-            icon: Icons.palette),
-        TripActivity(
-            name: 'Street Art Tour',
-            description: 'Discover local murals',
-            time: '3:00 PM',
-            icon: Icons.brush),
-      ],
-      'Hidden Gems': [
-        TripActivity(
-            name: 'Local Secret Spot',
-            description: 'Off-the-beaten-path location',
-            time: '9:30 AM',
-            icon: Icons.star),
-        TripActivity(
-            name: 'Hidden Cafe',
-            description: 'Cozy local favorite',
-            time: '2:30 PM',
-            icon: Icons.local_cafe),
-      ],
-      'Mixed': [
-        TripActivity(
-            name: 'Morning Sightseeing',
-            description: 'Top attractions in $countryName',
-            time: '9:00 AM',
-            icon: Icons.visibility),
-        TripActivity(
-            name: 'Afternoon Exploration',
-            description: 'Discover hidden corners',
-            time: '2:00 PM',
-            icon: Icons.explore),
-      ],
-    };
-
-    final dayActivities =
-        activitiesByType[_vacationType] ?? activitiesByType['Mixed']!;
-
     return List.generate(_numberOfDays, (index) {
       return TripDay(
         dayNumber: index + 1,
         morning: [
           TripActivity(
-            name: 'Day ${index + 1} Morning',
-            description: dayActivities[0].description,
-            time: dayActivities[0].time,
-            icon: dayActivities[0].icon,
+            placeName: 'Day ${index + 1} Morning Sightseeing',
+            timeSlot: '9:00 AM',
+            notes: 'Explore top attractions in $countryName',
           ),
         ],
         afternoon: [
           TripActivity(
-            name: 'Day ${index + 1} Afternoon',
-            description: dayActivities[1].description,
-            time: dayActivities[1].time,
-            icon: dayActivities[1].icon,
+            placeName: 'Day ${index + 1} Afternoon Exploration',
+            timeSlot: '2:00 PM',
+            notes: 'Discover hidden corners of $countryName',
           ),
         ],
         evening: [
           TripActivity(
-            name: 'Day ${index + 1} Evening',
-            description: 'Dinner and relaxation in $countryName',
-            time: '7:00 PM',
-            icon: Icons.nightlight),
+            placeName: 'Day ${index + 1} Evening',
+            timeSlot: '7:00 PM',
+            notes: 'Dinner and relaxation in $countryName',
+          ),
         ],
       );
     });
@@ -255,8 +199,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
   @override
   Widget build(BuildContext context) {
     final countries = CountryService.getAllCountries();
-    final countryNames =
-        countries.map((c) => '${c.flag} ${c.name}').toList();
 
     return Scaffold(
       backgroundColor: AppTheme.bg,
@@ -280,21 +222,24 @@ class _NewTripScreenState extends State<NewTripScreen> {
           children: [
             _buildSectionTitle('Destination'),
             const SizedBox(height: AppTheme.space2),
-            DropdownButtonFormField<String>(
-              value: _selectedCountry,
+            DropdownButtonFormField<int>(
+              value: _selectedCountryId,
               decoration: const InputDecoration(
                 hintText: 'Choose a country',
                 prefixIcon: Icon(Icons.public),
               ),
-              items: countryNames.map((name) {
+              items: countries.map((c) {
                 return DropdownMenuItem(
-                  value: name,
-                  child: Text(name),
+                  value: c.countryId,
+                  child: Text(c.name),
                 );
               }).toList(),
               onChanged: (value) {
                 setState(() {
-                  _selectedCountry = value;
+                  _selectedCountryId = value;
+                  _selectedCountryName = countries
+                      .firstWhere((c) => c.countryId == value)
+                      .name;
                 });
               },
             ),
@@ -411,12 +356,12 @@ class _NewTripScreenState extends State<NewTripScreen> {
               segments: const [
                 ButtonSegment<bool>(
                   value: true,
-                  label: Text('Solo 👤'),
+                  label: Text('Solo'),
                   icon: Icon(Icons.person),
                 ),
                 ButtonSegment<bool>(
                   value: false,
-                  label: Text('Group 👥'),
+                  label: Text('Group'),
                   icon: Icon(Icons.group),
                 ),
               ],

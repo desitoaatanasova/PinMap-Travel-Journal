@@ -1,53 +1,115 @@
-import 'package:flutter/material.dart';
-
-class JournalChapter {
-  final String id;
+class Journal {
+  final int journalId;
   final String title;
-  final String country;
-  final String? city;
-  final DateTime date;
-  final String? coverImageUrl;
-  final String previewText;
-  final List<JournalEntry> entries;
-  final Color accentColor;
+  final int countryId;
+  final String? coverImage;
+  final List<JournalPage> pages;
 
-  const JournalChapter({
-    required this.id,
+  const Journal({
+    required this.journalId,
     required this.title,
-    required this.country,
-    this.city,
-    required this.date,
-    this.coverImageUrl,
-    required this.previewText,
-    this.entries = const [],
-    this.accentColor = Colors.brown,
+    required this.countryId,
+    this.coverImage,
+    this.pages = const [],
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': journalId,
+      'title': title,
+      'countryId': countryId,
+      'coverImage': coverImage,
+      'pages': pages.map((p) => p.toJson()).toList(),
+    };
+  }
+
+  factory Journal.fromJson(Map<String, dynamic> json) {
+    return Journal(
+      journalId: json['journal_id'] ?? int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      title: json['title'] ?? '',
+      countryId: json['country_id'] ?? 0,
+      coverImage: json['cover_image'] ?? json['coverImage'],
+      pages: (json['pages'] as List?)
+              ?.map((p) => JournalPage.fromJson(p))
+              .toList() ??
+          [],
+    );
+  }
 }
 
-class JournalEntry {
-  final String id;
-  final String content;
-  final DateTime createdAt;
-  final List<String> imageUrls;
-  final List<JournalSticker> stickers;
+class JournalPage {
+  final int pageId;
+  final int pageNumber;
+  final String? backgroundColor;
+  final List<JournalElement> elements;
 
-  const JournalEntry({
-    required this.id,
-    required this.content,
-    required this.createdAt,
-    this.imageUrls = const [],
-    this.stickers = const [],
+  const JournalPage({
+    required this.pageId,
+    required this.pageNumber,
+    this.backgroundColor,
+    this.elements = const [],
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'pageNumber': pageNumber,
+      'backgroundColor': backgroundColor,
+      'elements': elements.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  factory JournalPage.fromJson(Map<String, dynamic> json) {
+    return JournalPage(
+      pageId: json['page_id'] ?? 0,
+      pageNumber: json['page_number'] ?? 0,
+      backgroundColor: json['background_color'],
+      elements: (json['elements'] as List?)
+              ?.map((e) => JournalElement.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
 }
 
-class JournalSticker {
-  final String emoji;
-  final String name;
-  final double size;
+class JournalElement {
+  final int elementId;
+  final String elementType;
+  final String? content;
+  final int xPosition;
+  final int yPosition;
+  final int width;
+  final int height;
 
-  const JournalSticker({
-    required this.emoji,
-    required this.name,
-    this.size = 40,
+  const JournalElement({
+    required this.elementId,
+    required this.elementType,
+    this.content,
+    this.xPosition = 0,
+    this.yPosition = 0,
+    this.width = 200,
+    this.height = 100,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'elementType': elementType,
+      'content': content,
+      'xPosition': xPosition,
+      'yPosition': yPosition,
+      'width': width,
+      'height': height,
+    };
+  }
+
+  factory JournalElement.fromJson(Map<String, dynamic> json) {
+    return JournalElement(
+      elementId: json['element_id'] ?? 0,
+      elementType: json['element_type'] ?? 'text',
+      content: json['content'],
+      xPosition: json['x_position'] ?? 0,
+      yPosition: json['y_position'] ?? 0,
+      width: json['width'] ?? 200,
+      height: json['height'] ?? 100,
+    );
+  }
 }

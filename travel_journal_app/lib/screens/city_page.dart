@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/city_category.dart';
-import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/screens/category_page.dart';
-import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
@@ -23,82 +21,43 @@ class CityPage extends StatefulWidget {
 }
 
 class _CityPageState extends State<CityPage> {
-  bool _isInWishlist = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _isInWishlist =
-        WishlistService.isInWishlist('${widget.countryName}-${widget.cityName}');
-  }
-
-  Future<void> _toggleWishlist() async {
-    final id = '${widget.countryName}-${widget.cityName}';
-    if (_isInWishlist) {
-      await WishlistService.removeItem(id);
-    } else {
-      await WishlistService.addItem(WishlistItem(
-        id: id,
-        name: widget.cityName,
-        country: widget.countryName,
-        city: widget.cityName,
-        type: 'city',
-      ));
-    }
-    setState(() {
-      _isInWishlist = !_isInWishlist;
-    });
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _isInWishlist
-                ? '${widget.cityName} added to wishlist'
-                : '${widget.cityName} removed from wishlist',
-            style: GoogleFonts.dmSans(),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
-  }
 
   final List<CityCategory> _categories = const [
     CityCategory(
-      name: 'Historical sights',
+      name: 'Historical Sights',
       icon: Icons.account_balance,
       color: Color(0xFF8B4513),
-      pinColor: Color(0xFF8B4513),
+      markerColor: Color(0xFF8B4513),
     ),
     CityCategory(
-      name: 'For the art lovers',
+      name: 'For the Art Lovers',
       icon: Icons.palette,
       color: Color(0xFF008080),
-      pinColor: Color(0xFF008080),
+      markerColor: Color(0xFF008080),
     ),
     CityCategory(
       name: 'Atmosphere & experience',
       icon: Icons.visibility,
       color: Color(0xFFDAA520),
-      pinColor: Color(0xFFDAA520),
+      markerColor: Color(0xFFDAA520),
     ),
     CityCategory(
-      name: 'Hidden gems',
+      name: 'Hidden Gems',
       icon: Icons.star,
       color: Color(0xFF8A2BE2),
-      pinColor: Color(0xFF8A2BE2),
+      markerColor: Color(0xFF8A2BE2),
     ),
     CityCategory(
       name: 'Close by',
       icon: Icons.explore,
       color: Color(0xFF228B22),
-      pinColor: Color(0xFF228B22),
+      markerColor: Color(0xFF228B22),
     ),
     CityCategory(
       name: 'My places',
       icon: Icons.favorite,
       color: Color(0xFFDC143C),
-      pinColor: Color(0xFFDC143C),
+      markerColor: Color(0xFFDC143C),
     ),
   ];
 
@@ -149,15 +108,6 @@ class _CityPageState extends State<CityPage> {
       pinned: true,
       backgroundColor: AppTheme.darkBrown,
       iconTheme: const IconThemeData(color: Colors.white),
-      actions: [
-        IconButton(
-          icon: Icon(
-            _isInWishlist ? Icons.favorite : Icons.favorite_border,
-            color: _isInWishlist ? Colors.redAccent : Colors.white,
-          ),
-          onPressed: _toggleWishlist,
-        ),
-      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,

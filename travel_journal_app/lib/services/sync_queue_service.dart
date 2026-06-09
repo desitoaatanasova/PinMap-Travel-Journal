@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pinmap_travel_journal/services/connectivity_service.dart';
 
 enum SyncActionType { addWishlist, removeWishlist, toggleVisited, addTrip, deleteTrip, saveDraft }
 
@@ -28,7 +28,6 @@ class SyncQueueService {
   static const String _storageKey = 'sync_queue';
   static final List<SyncAction> _queue = [];
   static bool _loaded = false;
-  static final ConnectivityService _connectivity = ConnectivityService();
 
   static Future<void> loadQueue() async {
     if (_loaded) return;
@@ -55,12 +54,6 @@ class SyncQueueService {
   static Future<void> enqueue(SyncAction action) async {
     _queue.add(action);
     await _saveQueue();
-    _tryProcessQueue();
-  }
-
-  static Future<void> _tryProcessQueue() async {
-    final isOnline = await _connectivity.isCurrentlyOnline;
-    if (!isOnline || _queue.isEmpty) return;
     await processQueue();
   }
 
@@ -84,12 +77,17 @@ class SyncQueueService {
   static Future<void> _processAction(SyncAction action) async {
     switch (action.type) {
       case SyncActionType.addWishlist:
+        await ApiClient.post('/wishlist', body: action.data);
       case SyncActionType.removeWishlist:
+        await ApiClient.delete('/wishlist/${action.data['id']}');
       case SyncActionType.toggleVisited:
+        await ApiClient.post('/visited/places/toggle', body: action.data);
       case SyncActionType.addTrip:
+        await ApiClient.post('/trips', body: action.data);
       case SyncActionType.deleteTrip:
+        await ApiClient.delete('/trips/${action.data['id']}');
       case SyncActionType.saveDraft:
-        break;
+        await ApiClient.post('/journal/save', body: action.data);
     }
   }
 

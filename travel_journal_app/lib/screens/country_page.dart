@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/country_theme.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
-import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/country_theme_service.dart';
-import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/screens/city_page.dart';
 import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -24,7 +23,6 @@ class CountryPage extends StatefulWidget {
 class _CountryPageState extends State<CountryPage> {
   final MapController _mapController = MapController();
   int _rating = 0;
-  bool _isInWishList = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +69,7 @@ class _CountryPageState extends State<CountryPage> {
           fit: StackFit.expand,
           children: [
             CachedNetworkImage(
-              imageUrl: widget.country.imageUrl,
+              imageUrl: widget.country.flagImage ?? '',
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 color: theme.primaryColor,
@@ -101,9 +99,18 @@ class _CountryPageState extends State<CountryPage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    widget.country.flag,
-                    style: const TextStyle(fontSize: 40),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: widget.country.flagImage != null
+                        ? CachedNetworkImage(
+                            imageUrl: widget.country.flagImage!,
+                            width: 40,
+                            height: 28,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.flag, size: 28, color: Colors.white70),
+                          )
+                        : const Icon(Icons.flag, size: 28, color: Colors.white70),
                   ),
                   const SizedBox(width: AppTheme.space3),
                   Expanded(
@@ -144,32 +151,6 @@ class _CountryPageState extends State<CountryPage> {
             icon: Icon(Icons.star, color: theme.accentColor, size: 20),
             label: Text(
               _rating > 0 ? 'Rated $_rating/5' : 'Rate',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: AppTheme.space4),
-        Expanded(
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: theme.primaryColor,
-              side: BorderSide(color: theme.primaryColor, width: 2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
-            ),
-            onPressed: _toggleWishList,
-            icon: Icon(
-              _isInWishList ? Icons.favorite : Icons.favorite_border,
-              color: _isInWishList ? theme.accentColor : theme.primaryColor,
-              size: 20,
-            ),
-            label: Text(
-              _isInWishList ? 'In Wish List' : 'Add to Wish List',
               style: GoogleFonts.dmSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -236,8 +217,7 @@ class _CountryPageState extends State<CountryPage> {
                 const SizedBox(width: AppTheme.space3),
             itemBuilder: (context, index) {
               final city = widget.country.cityPins[index];
-              final cityImage = widget.country.getCityImageUrl(city.name);
-              return _buildCityCard(city, cityImage, theme);
+              return _buildCityCard(city, theme);
             },
           ),
         ),
@@ -245,7 +225,7 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  Widget _buildCityCard(CityPin city, String? imageUrl, CountryTheme theme) {
+  Widget _buildCityCard(CityPin city, CountryTheme theme) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -278,24 +258,7 @@ class _CountryPageState extends State<CountryPage> {
                   topLeft: Radius.circular(AppTheme.radiusMd - 1),
                   topRight: Radius.circular(AppTheme.radiusMd - 1),
                 ),
-                child: imageUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: theme.primaryColor.withValues(alpha: 0.1),
-                          child: const Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: theme.primaryColor.withValues(alpha: 0.1),
-                          child: Icon(
-                            Icons.location_city,
-                            color: theme.primaryColor,
-                            size: 28,
-                          ),
-                        ),
-                      )
-                    : CachedNetworkImage(
+                child: CachedNetworkImage(
                         imageUrl: 'https://source.unsplash.com/200x150/?${city.name},city',
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
@@ -361,7 +324,9 @@ class _CountryPageState extends State<CountryPage> {
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: widget.country.latLng,
+                initialCenter: widget.country.cityPins.isNotEmpty
+                    ? widget.country.cityPins.first.latLng
+                    : const LatLng(48.8566, 2.3522),
                 initialZoom: 5.0,
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.none,
@@ -440,44 +405,6 @@ class _CountryPageState extends State<CountryPage> {
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _isInWishList = WishlistService.isInWishlist(widget.country.name);
-  }
-
-  Future<void> _toggleWishList() async {
-    final theme = CountryThemeService.getThemeForCountry(widget.country.name);
-    if (_isInWishList) {
-      await WishlistService.removeItem(widget.country.name);
-    } else {
-      await WishlistService.addItem(WishlistItem(
-        id: widget.country.name,
-        name: widget.country.name,
-        country: widget.country.name,
-        imageUrl: widget.country.imageUrl,
-        type: 'country',
-      ));
-    }
-    setState(() {
-      _isInWishList = !_isInWishList;
-    });
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: theme.primaryColor,
-          content: Text(
-            _isInWishList
-                ? '${widget.country.name} added to wish list'
-                : '${widget.country.name} removed from wish list',
-            style: GoogleFonts.dmSans(color: theme.backgroundColor),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
   }
 
   @override

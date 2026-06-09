@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -17,7 +16,7 @@ class TripPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trip = this.trip ?? TripService.getTripById(tripId);
+    final trip = this.trip ?? TripService.getTripById(int.tryParse(tripId) ?? 0);
 
     if (trip == null) {
       return Scaffold(
@@ -85,14 +84,16 @@ class TripPlanScreen extends StatelessWidget {
       backgroundColor: AppTheme.primary,
       iconTheme: const IconThemeData(color: Colors.white),
       flexibleSpace: FlexibleSpaceBar(
-        background: trip.heroImageUrl != null
-            ? CachedNetworkImage(
-                imageUrl: trip.heroImageUrl!,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => _buildHeroFallback(trip.destination),
-                errorWidget: (context, url, error) => _buildHeroFallback(trip.destination),
-              )
-            : _buildHeroFallback(trip.destination),
+        background: Container(
+          color: AppTheme.primary.withValues(alpha: 0.1),
+          child: Center(
+            child: Icon(
+              Icons.luggage,
+              size: 48,
+              color: AppTheme.primary.withValues(alpha: 0.3),
+            ),
+          ),
+        ),
         titlePadding: const EdgeInsets.only(
             left: AppTheme.space4, bottom: AppTheme.space4),
       ),
@@ -101,7 +102,7 @@ class TripPlanScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            trip.destination,
+            trip.title,
             style: GoogleFonts.playfairDisplay(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -118,19 +119,6 @@ class TripPlanScreen extends StatelessWidget {
         ],
       ),
       titleSpacing: AppTheme.space4,
-    );
-  }
-
-  Widget _buildHeroFallback(String destination) {
-    return Container(
-      color: AppTheme.primary.withValues(alpha: 0.1),
-      child: Center(
-        child: Icon(
-          Icons.luggage,
-          size: 48,
-          color: AppTheme.primary.withValues(alpha: 0.3),
-        ),
-      ),
     );
   }
 
@@ -193,7 +181,7 @@ class TripPlanScreen extends StatelessWidget {
         const SizedBox(width: AppTheme.space2),
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () => _confirmDelete(context, trip.id),
+            onPressed: () => _confirmDelete(context, trip.tripId),
             icon: const Icon(Icons.delete, size: 18),
             label: const Text('Delete'),
             style: OutlinedButton.styleFrom(
@@ -284,37 +272,35 @@ class TripPlanScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            activity.icon,
+            Icons.place,
             size: 16,
             color: AppTheme.warmGray,
           ),
           const SizedBox(width: AppTheme.space2),
-          if (activity.time != null) ...[
-            Text(
-              activity.time!,
-              style: GoogleFonts.dmSans(
-                fontSize: 12,
-                color: AppTheme.warmGray,
-              ),
+          Text(
+            activity.timeSlot,
+            style: GoogleFonts.dmSans(
+              fontSize: 12,
+              color: AppTheme.warmGray,
             ),
-            const SizedBox(width: AppTheme.space2),
-          ],
+          ),
+          const SizedBox(width: AppTheme.space2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  activity.name,
+                  activity.placeName ?? 'Activity',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: AppTheme.darkBrown,
                   ),
                 ),
-                if (activity.description.isNotEmpty) ...[
+                if (activity.notes.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
-                    activity.description,
+                    activity.notes,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
                       color: AppTheme.warmGray,
@@ -329,7 +315,7 @@ class TripPlanScreen extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, String tripId) {
+  void _confirmDelete(BuildContext context, int tripId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

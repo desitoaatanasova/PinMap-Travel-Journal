@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
-import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class CanvasElement {
   final String id;
@@ -48,14 +48,14 @@ class JournalEditorScreen extends StatefulWidget {
 
 class _JournalEditorScreenState extends State<JournalEditorScreen> {
   late TextEditingController _textController;
-  JournalChapter? _chapter;
+  Journal? _journal;
   bool _isBold = false;
   bool _isItalic = false;
   bool _isUnderline = false;
   Color _textColor = Colors.black87;
   String _currentFont = 'DM Sans';
   double _fontSize = 14;
-  List<CanvasElement> _canvasElements = [];
+  final List<CanvasElement> _canvasElements = [];
   String? _selectedElementId;
   final List<String> _availableFonts = const [
     'DM Sans',
@@ -69,16 +69,14 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     super.initState();
     _textController = TextEditingController();
     if (widget.chapterId != null) {
-      _chapter = JournalService.getChapterById(widget.chapterId!);
+      final id = int.tryParse(widget.chapterId!) ?? 0;
+      _journal = JournalService.getJournalById(id);
     } else if (widget.countryName != null) {
-      _chapter = JournalChapter(
-        id: '${widget.countryName!.toLowerCase()}-${DateTime.now().millisecondsSinceEpoch}',
+      final countryId = CountryService.countryIdByName(widget.countryName!);
+      _journal = Journal(
+        journalId: DateTime.now().millisecondsSinceEpoch,
         title: widget.countryName!,
-        country: widget.countryName!,
-        date: DateTime.now(),
-        previewText: '',
-        entries: [],
-        accentColor: AppTheme.primary,
+        countryId: countryId,
       );
     }
   }
@@ -90,7 +88,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          _chapter?.title ?? 'New Chapter',
+          _journal?.title ?? 'New Journal',
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -103,8 +101,8 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               IconButton(
                 icon: const Icon(Icons.save_outlined),
                 onPressed: () async {
-                  if (_chapter != null) {
-                    await JournalService.saveDraft(_chapter!);
+                  if (_journal != null) {
+                    await JournalService.saveJournal(_journal!);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -353,36 +351,28 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         color: const Color(0xFFFFFEF6),
         child: Stack(
           children: [
-            if (_chapter != null)
+            if (_journal != null)
               Positioned(
                 left: 16,
                 top: 16,
                 child: Container(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   decoration: BoxDecoration(
-                    color: _chapter!.accentColor.withValues(alpha: 0.1),
+                    color: AppTheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     border: Border.all(
-                      color: _chapter!.accentColor.withValues(alpha: 0.3),
+                      color: AppTheme.primary.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _chapter!.title,
+                        _journal!.title,
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: AppTheme.darkBrown,
-                        ),
-                      ),
-                      const SizedBox(height: AppTheme.space1),
-                      Text(
-                        '${_chapter!.city ?? ''}, ${_chapter!.country}',
-                        style: GoogleFonts.dancingScript(
-                          fontSize: 18,
-                          color: AppTheme.warmGray,
                         ),
                       ),
                     ],
@@ -533,7 +523,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         type: 'ticket',
         x: 50 + _canvasElements.length * 20,
         y: 100 + _canvasElements.length * 30,
-        ticketInfo: 'Flight: NYC → ${_chapter?.country ?? "PAR"}\nDate: 2026-05-15\nSeat: 14A',
+        ticketInfo: 'Flight: NYC → PAR\nDate: 2026-05-15\nSeat: 14A',
       ));
     });
   }
@@ -553,14 +543,14 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
 
   void _showStickerPicker() {
     final stickers = [
-      JournalSticker(emoji: '✈️', name: 'Airplane'),
-      JournalSticker(emoji: '🎫', name: 'Ticket'),
-      JournalSticker(emoji: '📸', name: 'Camera'),
-      JournalSticker(emoji: '🎨', name: 'Art'),
-      JournalSticker(emoji: '☕', name: 'Coffee'),
-      JournalSticker(emoji: '🏛️', name: 'Building'),
-      JournalSticker(emoji: '🎭', name: 'Theater'),
-      JournalSticker(emoji: '🍷', name: 'Wine'),
+      {'emoji': '✈️', 'name': 'Airplane'},
+      {'emoji': '🎫', 'name': 'Ticket'},
+      {'emoji': '📸', 'name': 'Camera'},
+      {'emoji': '🎨', 'name': 'Art'},
+      {'emoji': '☕', 'name': 'Coffee'},
+      {'emoji': '🏛️', 'name': 'Building'},
+      {'emoji': '🎭', 'name': 'Theater'},
+      {'emoji': '🍷', 'name': 'Wine'},
     ];
     showModalBottomSheet(
       context: context,
@@ -583,7 +573,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               children: stickers.map((sticker) {
                 return GestureDetector(
                   onTap: () {
-                    _addStickerToCanvas(sticker.emoji);
+                    _addStickerToCanvas(sticker['emoji'] as String);
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -596,11 +586,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                     child: Column(
                       children: [
                         Text(
-                          sticker.emoji,
+                          sticker['emoji'] as String,
                           style: const TextStyle(fontSize: 32),
                         ),
                         Text(
-                          sticker.name,
+                          sticker['name'] as String,
                           style: GoogleFonts.dmSans(fontSize: 11),
                         ),
                       ],

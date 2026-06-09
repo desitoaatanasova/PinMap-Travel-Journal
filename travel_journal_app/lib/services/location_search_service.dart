@@ -30,14 +30,11 @@ class LocationSearchService {
   ];
 
   static List<Location> searchLocations(String query) {
-    if (query.isEmpty) {
-      return [];
-    }
-    
+    if (query.isEmpty) return [];
     final lowerQuery = query.toLowerCase();
     return _locations.where((location) {
       return location.name.toLowerCase().contains(lowerQuery) ||
-             location.country.toLowerCase().contains(lowerQuery);
+          location.country.toLowerCase().contains(lowerQuery);
     }).toList();
   }
 }

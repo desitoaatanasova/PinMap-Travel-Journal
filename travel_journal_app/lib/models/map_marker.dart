@@ -72,7 +72,7 @@ class MapMarker {
       case MarkerCategory.hiddenGems:
         return 'Hidden';
       case MarkerCategory.closeBy:
-        return 'Close By';
+        return 'Close by';
       case MarkerCategory.myPlaces:
         return 'My Place';
     }

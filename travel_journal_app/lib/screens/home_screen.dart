@@ -38,19 +38,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Marker> get _mapMarkers {
-    return _countries.map((country) {
-      final isVisited = country.isVisited;
+    return _countries.where((c) => c.cityPins.isNotEmpty).map((country) {
+      final pos = country.cityPins.first.latLng;
       return Marker(
-        point: country.latLng,
+        point: pos,
         width: 44,
         height: 52,
         child: CustomMarker(
           marker: MapMarker(
             id: country.name,
-            position: country.latLng,
+            position: pos,
             title: country.name,
             category: MarkerCategory.hiddenGems,
-            isVisited: isVisited,
           ),
           size: 36,
         ),
@@ -227,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Text(
-                            '${_countries.where((c) => c.isVisited).length} visited',
+                            '${_countries.length} countries',
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               color: AppTheme.warmGray,
@@ -334,20 +333,17 @@ class _CountryListCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Flag
-            Container(
-              width: 52,
-              height: 52,
-              margin: const EdgeInsets.all(AppTheme.space3),
-              decoration: BoxDecoration(
-                color: AppTheme.lightGray.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                country.flag,
-                style: const TextStyle(fontSize: 28),
-              ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+              child: country.flagImage != null
+                  ? CachedNetworkImage(
+                      imageUrl: country.flagImage!,
+                      width: 52,
+                      height: 52,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => _buildFlagPlaceholder(country),
+                    )
+                  : _buildFlagPlaceholder(country),
             ),
             Expanded(
               child: Column(
@@ -361,81 +357,68 @@ class _CountryListCard extends StatelessWidget {
                       color: AppTheme.darkBrown,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        size: 14,
-                        color: country.isVisited
-                            ? AppTheme.primary
-                            : AppTheme.warmGray,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        country.rating.toStringAsFixed(1),
-                        style: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.darkBrown,
-                        ),
-                      ),
-                      if (country.isVisited) ...[
-                        const SizedBox(width: AppTheme.space2),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primary.withValues(alpha: 0.1),
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.radiusFull),
-                          ),
-                          child: Text(
-                            'Visited',
-                            style: GoogleFonts.dmSans(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
+                  Text(
+                    country.continent,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      color: AppTheme.warmGray,
+                    ),
                   ),
                 ],
               ),
             ),
-            // Small preview image
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(AppTheme.radiusMd),
                 bottomRight: Radius.circular(AppTheme.radiusMd),
               ),
-              child: CachedNetworkImage(
-                imageUrl: country.imageUrl,
-                width: 72,
-                height: 72,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  width: 72,
-                  height: 72,
-                  color: AppTheme.lightGray.withValues(alpha: 0.3),
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  width: 72,
-                  height: 72,
-                  color: AppTheme.lightGray.withValues(alpha: 0.3),
-                  child: Icon(
-                    Icons.public,
-                    color: AppTheme.warmGray,
-                    size: 24,
-                  ),
-                ),
-              ),
+              child: country.flagImage != null
+                  ? CachedNetworkImage(
+                      imageUrl: country.flagImage!,
+                      width: 72,
+                      height: 72,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => _buildCardImagePlaceholder(),
+                      errorWidget: (context, url, error) =>
+                          _buildCardImagePlaceholder(),
+                    )
+                  : _buildCardImagePlaceholder(),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFlagPlaceholder(Country country) {
+    return Container(
+      width: 52,
+      height: 52,
+      decoration: const BoxDecoration(
+        color: Color(0xFFE8DCD1),
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        country.name.isNotEmpty ? country.name[0].toUpperCase() : '?',
+        style: GoogleFonts.playfairDisplay(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF8B7355),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardImagePlaceholder() {
+    return Container(
+      width: 72,
+      height: 72,
+      color: AppTheme.lightGray.withValues(alpha: 0.3),
+      child: Icon(
+        Icons.public,
+        color: AppTheme.warmGray,
+        size: 24,
       ),
     );
   }

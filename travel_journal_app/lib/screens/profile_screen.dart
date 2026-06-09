@@ -7,17 +7,37 @@ import 'package:pinmap_travel_journal/screens/settings_screen.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  UserProfile? _profile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final p = await ProfileService.getProfile();
+    if (mounted) setState(() => _profile = p);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final profile = ProfileService.getProfile();
+    final profile = _profile;
 
     return Scaffold(
       backgroundColor: AppTheme.bg,
       extendBody: true,
-      body: CustomScrollView(
+      body: profile == null
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 250,
@@ -87,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                               ],
                               const SizedBox(height: 4),
                               Text(
-                                'Member since ${_monthName(profile.memberSince.month)} ${profile.memberSince.year}',
+                                'Travel enthusiast',
                                 style: GoogleFonts.dmSans(
                                   fontSize: 11,
                                   color: AppTheme.warmOffWhite
@@ -157,10 +177,10 @@ class ProfileScreen extends StatelessWidget {
       child: CircleAvatar(
         radius: 36,
         backgroundColor: AppTheme.card,
-        backgroundImage: profile.avatarUrl != null
-            ? NetworkImage(profile.avatarUrl!)
+        backgroundImage: profile.profilePicture != null
+            ? NetworkImage(profile.profilePicture!)
             : null,
-        child: profile.avatarUrl == null
+        child: profile.profilePicture == null
             ? Text(
                 profile.username.isNotEmpty
                     ? profile.username[0].toUpperCase()
@@ -187,10 +207,10 @@ class ProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat('$profile.countriesVisited', 'Countries', Icons.public),
-          _buildStat('$profile.citiesExplored', 'Cities', Icons.location_city),
-          _buildStat('$profile.followersCount', 'Followers', Icons.people),
-          _buildStat('$profile.followingCount', 'Following', Icons.person_add),
+          _buildStat('${profile.placesVisited}', 'Places', Icons.public),
+          _buildStat('${profile.tripsPlanned}', 'Trips', Icons.luggage),
+          _buildStat('${profile.followersCount}', 'Followers', Icons.people),
+          _buildStat('${profile.followingCount}', 'Following', Icons.person_add),
         ],
       ),
     );
@@ -282,11 +302,4 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  String _monthName(int month) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return months[month - 1];
-  }
 }

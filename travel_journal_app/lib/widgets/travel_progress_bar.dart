@@ -9,9 +9,8 @@ class TravelProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final countries = CountryService.getAllCountries();
-    final visited = countries.where((c) => c.isVisited).length;
     final total = countries.length;
-    final progress = total > 0 ? visited / total : 0.0;
+    final progress = 0.0;
 
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -40,7 +39,7 @@ class TravelProgressBar extends StatelessWidget {
                 ),
               ),
               Text(
-                '$visited / $total',
+                '$total countries',
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,

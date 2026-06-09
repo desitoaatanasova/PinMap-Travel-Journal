@@ -4,7 +4,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
-import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/visited_places_service.dart';
@@ -37,27 +36,20 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _isInWishlist = WishlistService.isInWishlist(widget.place.name);
-    _isVisited = VisitedPlacesService.isVisited(widget.place.name);
+    _isInWishlist = WishlistService.isInWishlist(widget.place.placeId);
+    _isVisited = VisitedPlacesService.isVisited(widget.place.placeId);
   }
 
   Future<void> _toggleWishlist() async {
     if (_isInWishlist) {
-      await WishlistService.removeItem(widget.place.name);
+      final item = WishlistService.getAllItems()
+          .where((i) => i.placeId == widget.place.placeId)
+          .firstOrNull;
+      if (item != null) {
+        await WishlistService.removeItem(item.wishlistId);
+      }
     } else {
-      await WishlistService.addItem(WishlistItem(
-        id: widget.place.name,
-        name: widget.place.name,
-        country: widget.countryName,
-        city: widget.cityName,
-        imageUrl: widget.place.imageUrls.isNotEmpty
-            ? widget.place.imageUrls.first
-            : null,
-        category: widget.categoryName,
-        type: 'place',
-        latitude: widget.place.latitude,
-        longitude: widget.place.longitude,
-      ));
+      await WishlistService.addItem(widget.place.placeId);
     }
     setState(() {
       _isInWishlist = !_isInWishlist;
@@ -84,10 +76,29 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     return const LatLng(48.8566, 2.3522);
   }
 
+  Color _getCategoryColor() {
+    switch (widget.categoryName) {
+      case 'Historical Sights':
+        return const Color(0xFF8B4513);
+      case 'For the Art Lovers':
+        return const Color(0xFF008080);
+      case 'Atmosphere & experience':
+        return const Color(0xFFDAA520);
+      case 'Hidden Gems':
+        return const Color(0xFF8A2BE2);
+      case 'Close by':
+        return const Color(0xFF228B22);
+      case 'My places':
+        return const Color(0xFFDC143C);
+      default:
+        return AppTheme.primary;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
-    final categoryColor = place.placeholderColor;
+    final categoryColor = _getCategoryColor();
 
     return Scaffold(
       backgroundColor: AppTheme.bg,
@@ -130,22 +141,40 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildPhotoCarousel(place),
+            _buildPhotoCarousel(place, categoryColor),
             const SizedBox(height: AppTheme.space4),
             _buildCategoryBadge(context, categoryColor, widget.categoryName),
             const SizedBox(height: AppTheme.space4),
             _buildPlaceNameAndLocation(place),
             const SizedBox(height: AppTheme.space6),
-            if (place.description.isNotEmpty) ...[
+            if (place.shortDescription != null || place.fullDescription != null) ...[
               const SectionHeader(title: 'About this place'),
               const SizedBox(height: AppTheme.space3),
               Text(
-                place.description,
+                place.fullDescription ?? place.shortDescription ?? '',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       height: 1.6,
                     ),
               ),
               const SizedBox(height: AppTheme.space6),
+            ],
+            if (place.address != null) ...[
+              Row(
+                children: [
+                  const Icon(Icons.location_on, size: 16, color: Color(0xFF8B7355)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      place.address!,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        color: AppTheme.darkBrown,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.space4),
             ],
             const SectionHeader(title: 'Location'),
             const SizedBox(height: AppTheme.space3),
@@ -158,15 +187,19 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     );
   }
 
-  Widget _buildPhotoCarousel(Place place) {
-    if (place.imageUrls.isNotEmpty) {
+  Widget _buildPhotoCarousel(Place place, Color categoryColor) {
+    final photos = [
+      if (place.imageCover != null) place.imageCover!,
+      ...place.photos.map((p) => p.imageUrl),
+    ];
+    if (photos.isNotEmpty) {
       return SizedBox(
         height: 280,
         child: PageView.builder(
-          itemCount: place.imageUrls.length,
+          itemCount: photos.length,
           controller: PageController(viewportFraction: 0.9),
           itemBuilder: (context, index) {
-            final url = place.imageUrls[index];
+            final url = photos[index];
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: AppTheme.space1),
               decoration: BoxDecoration(
@@ -182,11 +215,11 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                     child: CircularProgressIndicator(),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: place.placeholderColor.withValues(alpha: 0.3),
+                    color: categoryColor.withValues(alpha: 0.3),
                     child: Icon(
-                      place.placeholderIcon,
+                      Icons.place,
                       size: 80,
-                      color: place.placeholderColor,
+                      color: categoryColor,
                     ),
                   ),
                 ),
@@ -199,13 +232,13 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     return Container(
       height: 280,
       decoration: BoxDecoration(
-        color: place.placeholderColor.withValues(alpha: 0.3),
+        color: categoryColor.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Icon(
-        place.placeholderIcon,
+        Icons.place,
         size: 80,
-        color: place.placeholderColor,
+        color: categoryColor,
       ),
     );
   }
@@ -336,9 +369,9 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   Widget _buildVisitedButton(Color categoryColor) {
     return ElevatedButton.icon(
       onPressed: () async {
-        await VisitedPlacesService.toggleVisited(widget.place.name);
+        await VisitedPlacesService.toggleVisited(widget.place.placeId);
         setState(() {
-          _isVisited = VisitedPlacesService.isVisited(widget.place.name);
+          _isVisited = VisitedPlacesService.isVisited(widget.place.placeId);
         });
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

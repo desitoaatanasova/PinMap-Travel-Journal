@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/widgets/empty_state.dart';
@@ -11,14 +12,21 @@ import 'package:pinmap_travel_journal/theme/app_theme.dart';
 class JournalScreen extends StatelessWidget {
   const JournalScreen({super.key});
 
+  String _countryName(int countryId) {
+    final country = CountryService.getAllCountries()
+        .where((c) => c.countryId == countryId)
+        .firstOrNull;
+    return country?.name ?? 'Unknown';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final chapters = JournalService.getAllChapters();
+    final journals = JournalService.getAllJournals();
 
-    // Group chapters by country
-    final grouped = <String, List<JournalChapter>>{};
-    for (final chapter in chapters) {
-      grouped.putIfAbsent(chapter.country, () => []).add(chapter);
+    final grouped = <String, List<Journal>>{};
+    for (final journal in journals) {
+      final name = _countryName(journal.countryId);
+      grouped.putIfAbsent(name, () => []).add(journal);
     }
 
     return Scaffold(
@@ -47,10 +55,10 @@ class JournalScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(AppTheme.space4),
-              child: _buildNewChapterCard(context),
+              child: _buildNewJournalCard(context),
             ),
           ),
-          if (chapters.isEmpty)
+          if (journals.isEmpty)
             SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.book_outlined,
@@ -69,7 +77,7 @@ class JournalScreen extends StatelessWidget {
           else
             ...grouped.entries.map((entry) {
               final country = entry.key;
-              final countryChapters = entry.value;
+              final countryJournals = entry.value;
               return SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,10 +118,10 @@ class JournalScreen extends StatelessWidget {
                           mainAxisSpacing: AppTheme.space4,
                           childAspectRatio: 0.75,
                         ),
-                        itemCount: countryChapters.length,
+                        itemCount: countryJournals.length,
                         itemBuilder: (context, index) {
-                          final chapter = countryChapters[index];
-                          return _buildChapterCard(context, chapter);
+                          final journal = countryJournals[index];
+                          return _buildJournalCard(context, journal);
                         },
                       ),
                     ),
@@ -130,7 +138,7 @@ class JournalScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNewChapterCard(BuildContext context) {
+  Widget _buildNewJournalCard(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -180,7 +188,7 @@ class JournalScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'New Chapter',
+                        'New Journal',
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -206,7 +214,7 @@ class JournalScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChapterCard(BuildContext context, JournalChapter chapter) {
+  Widget _buildJournalCard(BuildContext context, Journal journal) {
     return PremiumCard(
       padding: EdgeInsets.zero,
       onTap: () {
@@ -214,7 +222,7 @@ class JournalScreen extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                JournalEditorScreen(chapterId: chapter.id),
+                JournalEditorScreen(chapterId: journal.journalId.toString()),
           ),
         );
       },
@@ -227,14 +235,15 @@ class JournalScreen extends StatelessWidget {
                 topLeft: Radius.circular(AppTheme.radiusLg),
                 topRight: Radius.circular(AppTheme.radiusLg),
               ),
-              child: chapter.coverImageUrl != null
+              child: journal.coverImage != null
                   ? CachedNetworkImage(
-                      imageUrl: chapter.coverImageUrl!,
+                      imageUrl: journal.coverImage!,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => _buildCoverFallback(chapter),
-                      errorWidget: (context, url, error) => _buildCoverFallback(chapter),
+                      placeholder: (context, url) => _buildCoverFallback(),
+                      errorWidget: (context, url, error) =>
+                          _buildCoverFallback(),
                     )
-                  : _buildCoverFallback(chapter),
+                  : _buildCoverFallback(),
             ),
           ),
           Padding(
@@ -243,7 +252,7 @@ class JournalScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  chapter.title,
+                  journal.title,
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -252,50 +261,21 @@ class JournalScreen extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      size: 12,
-                      color: AppTheme.warmGray,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${_monthName(chapter.date.month)} ${chapter.date.day}',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        color: AppTheme.warmGray,
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: AppTheme.space1),
-                Text(
-                  chapter.previewText,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    color: AppTheme.warmGray,
-                    height: 1.4,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppTheme.space2),
                 Row(
                   children: [
                     Icon(
                       Icons.article_outlined,
                       size: 14,
-                      color: chapter.accentColor,
+                      color: AppTheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${chapter.entries.length} entries',
+                      '${journal.pages.length} pages',
                       style: GoogleFonts.dmSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: chapter.accentColor,
+                        color: AppTheme.primary,
                       ),
                     ),
                   ],
@@ -308,24 +288,16 @@ class JournalScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCoverFallback(JournalChapter chapter) {
+  Widget _buildCoverFallback() {
     return Container(
-      color: chapter.accentColor.withValues(alpha: 0.15),
+      color: AppTheme.primary.withValues(alpha: 0.15),
       child: Center(
         child: Icon(
           Icons.book,
           size: 48,
-          color: chapter.accentColor.withValues(alpha: 0.5),
+          color: AppTheme.primary.withValues(alpha: 0.5),
         ),
       ),
     );
-  }
-
-  String _monthName(int month) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return months[month - 1];
   }
 }

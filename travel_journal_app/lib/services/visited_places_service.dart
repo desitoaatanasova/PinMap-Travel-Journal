@@ -1,46 +1,42 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
 
 class VisitedPlacesService {
-  static const String _storageKey = 'visited_places';
-  static Set<String> _visitedPlaces = {};
+  static Set<int> _visitedPlaceIds = {};
   static bool _loaded = false;
 
   static Future<void> loadVisitedPlaces() async {
     if (_loaded) return;
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_storageKey);
-    if (jsonString != null) {
-      try {
-        final List<dynamic> decoded = jsonDecode(jsonString);
-        _visitedPlaces = decoded.map((e) => e as String).toSet();
-      } catch (e) {
-        _visitedPlaces = {};
+    try {
+      final data = await ApiClient.get('/visited/places');
+      _visitedPlaceIds = (data as List).map((e) => e['place_id'] as int).toSet();
+      _loaded = true;
+    } catch (e) {
+      _loaded = true;
+    }
+  }
+
+  static bool isVisited(int placeId) {
+    return _visitedPlaceIds.contains(placeId);
+  }
+
+  static Future<void> toggleVisited(int placeId, {String? visitDate, String? notes}) async {
+    try {
+      final data = await ApiClient.post('/visited/places/toggle', body: {
+        'placeId': placeId,
+        'visitDate': visitDate,
+        'notes': notes,
+      });
+      if (data['visited'] as bool) {
+        _visitedPlaceIds.add(placeId);
+      } else {
+        _visitedPlaceIds.remove(placeId);
+      }
+    } catch (_) {
+      if (_visitedPlaceIds.contains(placeId)) {
+        _visitedPlaceIds.remove(placeId);
+      } else {
+        _visitedPlaceIds.add(placeId);
       }
     }
-    _loaded = true;
-  }
-
-  static Future<void> _saveVisitedPlaces() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = jsonEncode(_visitedPlaces.toList());
-    await prefs.setString(_storageKey, jsonString);
-  }
-
-  static bool isVisited(String placeName) {
-    return _visitedPlaces.contains(placeName);
-  }
-
-  static Future<void> toggleVisited(String placeName) async {
-    if (_visitedPlaces.contains(placeName)) {
-      _visitedPlaces.remove(placeName);
-    } else {
-      _visitedPlaces.add(placeName);
-    }
-    await _saveVisitedPlaces();
-  }
-
-  static Set<String> getAllVisited() {
-    return Set.from(_visitedPlaces);
   }
 }

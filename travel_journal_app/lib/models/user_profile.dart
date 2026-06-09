@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-
 class UserProfile {
   final String username;
-  final String? avatarUrl;
+  final String? firstName;
+  final String? lastName;
   final String? bio;
-  final DateTime memberSince;
-  final int countriesVisited;
-  final int citiesExplored;
+  final String? profilePicture;
+  final String profileStatus;
+  final int placesVisited;
+  final int ratingsGiven;
   final int tripsPlanned;
   final int journalsCreated;
   final int followersCount;
@@ -15,15 +15,19 @@ class UserProfile {
 
   const UserProfile({
     required this.username,
-    this.avatarUrl,
+    this.firstName,
+    this.lastName,
     this.bio,
-    required this.memberSince,
-    this.countriesVisited = 0,
-    this.citiesExplored = 0,
+    this.profilePicture,
+    this.profileStatus = 'public',
+    this.placesVisited = 0,
+    this.ratingsGiven = 0,
     this.tripsPlanned = 0,
     this.journalsCreated = 0,
     this.followersCount = 0,
     this.followingCount = 0,
     this.travelPhotos = const [],
   });
+
+  String get displayName => '${firstName ?? username} ${lastName ?? ''}'.trim();
 }

@@ -24,8 +24,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await WishlistService.loadItems();
   await TripService.loadTrips();
-  await CountryService.loadVisitedState();
-  await JournalService.loadDrafts();
+  await CountryService.loadCountries();
+  await JournalService.loadJournals();
   await VisitedPlacesService.loadVisitedPlaces();
   await SyncQueueService.loadQueue();
   runApp(const TravelJournalApp());

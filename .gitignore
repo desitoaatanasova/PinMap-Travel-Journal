@@ -13,4 +13,4 @@ package.json
 .idea/
 
 # Ignore PinMap directory (if not part of travel_journal_app)
-PinMap/
+/PinMap/

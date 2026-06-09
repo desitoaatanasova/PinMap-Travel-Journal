@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
@@ -12,9 +13,7 @@ class JournalOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visitedCountries = CountryService.getAllCountries()
-        .where((c) => c.isVisited)
-        .toList();
+    final allCountries = CountryService.getAllCountries();
 
     return Scaffold(
       backgroundColor: AppTheme.bg,
@@ -86,11 +85,11 @@ class JournalOverviewPage extends StatelessWidget {
           const SliverToBoxAdapter(
             child: SizedBox(height: AppTheme.space4),
           ),
-          if (visitedCountries.isEmpty)
+          if (allCountries.isEmpty)
             SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.book_outlined,
-                message: 'No visited countries yet',
+                message: 'No countries loaded yet',
                 buttonText: 'Explore Map',
                 onButtonPressed: () {
                   // Navigate to home/map tab
@@ -103,10 +102,10 @@ class JournalOverviewPage extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final country = visitedCountries[index];
+                    final country = allCountries[index];
                     return _buildCountryCard(context, country);
                   },
-                  childCount: visitedCountries.length,
+                  childCount: allCountries.length,
                 ),
               ),
             ),
@@ -145,12 +144,19 @@ class JournalOverviewPage extends StatelessWidget {
                   bottomLeft: Radius.circular(AppTheme.radiusLg),
                 ),
               ),
-              child: Center(
-                child: Text(
-                  country.flag,
-                  style: const TextStyle(fontSize: 36),
-                ),
-              ),
+              child: country.flagImage != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: country.flagImage!,
+                        width: 40,
+                        height: 28,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.flag, size: 24, color: Color(0xFF8B7355)),
+                      ),
+                    )
+                  : const Icon(Icons.flag, size: 24, color: Color(0xFF8B7355)),
             ),
             Expanded(
               child: Padding(

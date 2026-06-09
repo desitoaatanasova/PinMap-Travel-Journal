@@ -4,28 +4,26 @@ import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 
 class MarkerService {
-  // Convert Country to MapMarker
   static MapMarker fromCountry(Country country) {
+    final lat = country.cityPins.isNotEmpty ? country.cityPins.first.latitude : 0.0;
+    final lng = country.cityPins.isNotEmpty ? country.cityPins.first.longitude : 0.0;
     return MapMarker(
       id: country.name,
-      position: country.latLng,
+      position: LatLng(lat, lng),
       title: country.name,
-      category: MarkerCategory.hiddenGems, // Default, can be customized
-      isVisited: country.isVisited,
+      category: MarkerCategory.hiddenGems,
     );
   }
 
-  // Convert CityPin to MapMarker
   static MapMarker fromCityPin(CityPin city, String countryName) {
     return MapMarker(
       id: city.name,
       position: city.latLng,
       title: city.name,
-      category: _getCategoryForCity(city.name),
+      category: MarkerCategory.hiddenGems,
     );
   }
 
-  // Get category for a place based on category name
   static MapMarker buildPlaceMarker({
     required String id,
     required LatLng position,
@@ -40,22 +38,15 @@ class MarkerService {
     );
   }
 
-  // Determine category based on city name (simple logic)
-  static MarkerCategory _getCategoryForCity(String cityName) {
-    // This can be expanded with more logic
-    return MarkerCategory.hiddenGems;
-  }
-
-  // Determine category based on place category name
   static MarkerCategory _getCategoryForPlace(String categoryName) {
     switch (categoryName) {
-      case 'Historical sights':
+      case 'Historical Sights':
         return MarkerCategory.historical;
-      case 'For the art lovers':
+      case 'For the Art Lovers':
         return MarkerCategory.art;
       case 'Atmosphere & experience':
         return MarkerCategory.atmosphere;
-      case 'Hidden gems':
+      case 'Hidden Gems':
         return MarkerCategory.hiddenGems;
       case 'Close by':
         return MarkerCategory.closeBy;
@@ -66,7 +57,6 @@ class MarkerService {
     }
   }
 
-  // Build markers for all countries
   static List<MapMarker> buildCountryMarkers() {
     final countries = CountryService.getAllCountries();
     return countries.map((country) => fromCountry(country)).toList();

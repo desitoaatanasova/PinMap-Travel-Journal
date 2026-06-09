@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -145,17 +146,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           final name = _nameController.text;
                           final email = _emailController.text;
                           final password = _passwordController.text;
                           if (name.isNotEmpty &&
                               email.contains('@') &&
                               password.isNotEmpty) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/home',
-                              (route) => false,
-                            );
+                            final success = await AuthService.register(
+                                name, email, password);
+                            if (success && mounted) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/home',
+                                (route) => false,
+                              );
+                            } else if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Registration failed')),
+                              );
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'register_screen.dart';
 
@@ -109,14 +110,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           final email = _emailController.text;
                           final password = _passwordController.text;
-                          if (email.contains('@') && password.isNotEmpty) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/home',
-                              (route) => false,
-                            );
+                          if (email.isNotEmpty && password.isNotEmpty) {
+                            final success = await AuthService.login(email, password);
+                            if (success && mounted) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/home',
+                                (route) => false,
+                              );
+                            } else if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Invalid credentials')),
+                              );
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
