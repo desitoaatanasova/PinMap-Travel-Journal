@@ -38,8 +38,16 @@ class Place {
       shortDescription: json['short_description'],
       fullDescription: json['full_description'],
       address: json['address'],
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
+      latitude: json['latitude'] != null
+          ? (json['latitude'] is String
+              ? double.parse(json['latitude'])
+              : (json['latitude'] as num)).toDouble()
+          : null,
+      longitude: json['longitude'] != null
+          ? (json['longitude'] is String
+              ? double.parse(json['longitude'])
+              : (json['longitude'] as num)).toDouble()
+          : null,
       website: json['website'],
       openingHours: json['opening_hours'],
       imageCover: json['image_cover'],

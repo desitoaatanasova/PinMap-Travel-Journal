@@ -60,8 +60,12 @@ class CityPin {
       cityId: json['city_id'] ?? 0,
       name: json['name'] ?? '',
       description: json['description'],
-      latitude: (json['latitude'] as num).toDouble(),
-      longitude: (json['longitude'] as num).toDouble(),
+      latitude: (json['latitude'] is String
+          ? double.parse(json['latitude'])
+          : (json['latitude'] as num)).toDouble(),
+      longitude: (json['longitude'] is String
+          ? double.parse(json['longitude'])
+          : (json['longitude'] as num)).toDouble(),
     );
   }
 }
