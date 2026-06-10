@@ -12,7 +12,7 @@ class TripService {
       _trips = (data as List).map((json) => Trip.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
-      _loaded = true;
+      _loaded = false;
     }
   }
 

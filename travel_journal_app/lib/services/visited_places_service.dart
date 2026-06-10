@@ -11,7 +11,7 @@ class VisitedPlacesService {
       _visitedPlaceIds = (data as List).map((e) => e['place_id'] as int).toSet();
       _loaded = true;
     } catch (e) {
-      _loaded = true;
+      _loaded = false;
     }
   }
 

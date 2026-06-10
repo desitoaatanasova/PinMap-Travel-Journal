@@ -19,8 +19,13 @@ class CountryService {
       }
       _loaded = true;
     } catch (e) {
-      _loaded = true;
+      _loaded = false;
     }
+  }
+
+  static Future<void> reloadCountries() async {
+    _loaded = false;
+    await loadCountries();
   }
 
   static List<Country> getAllCountries() {

@@ -12,7 +12,7 @@ class WishlistService {
       _items = (data as List).map((json) => WishlistItem.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
-      _loaded = true;
+      _loaded = false;
     }
   }
 

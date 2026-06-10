@@ -12,7 +12,7 @@ class JournalService {
       _journals = (data as List).map((json) => Journal.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
-      _loaded = true;
+      _loaded = false;
     }
   }
 

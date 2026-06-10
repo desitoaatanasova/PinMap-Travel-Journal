@@ -34,7 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _countries = CountryService.getAllCountries();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await CountryService.reloadCountries();
+    if (mounted) {
+      setState(() {
+        _countries = CountryService.getAllCountries();
+      });
+    }
   }
 
   List<Marker> get _mapMarkers {
