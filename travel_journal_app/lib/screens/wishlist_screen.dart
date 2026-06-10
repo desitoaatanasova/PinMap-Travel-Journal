@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/screens/country_page.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
@@ -93,7 +96,7 @@ class _WishListScreenState extends State<WishListScreen> {
                     ),
                     const SizedBox(height: AppTheme.space2),
                     Text(
-                      'Tap the heart icon on places to save them',
+                      'Tap the heart icon on places or countries to save them',
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         color: AppTheme.warmGray,
@@ -152,7 +155,7 @@ class _WishListScreenState extends State<WishListScreen> {
   Widget _buildGridCard(BuildContext context, WishlistItem item) {
     return PremiumCard(
       padding: EdgeInsets.zero,
-      onTap: () {},
+      onTap: () => _openItem(context, item),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -162,9 +165,9 @@ class _WishListScreenState extends State<WishListScreen> {
                 topLeft: Radius.circular(AppTheme.radiusLg),
                 topRight: Radius.circular(AppTheme.radiusLg),
               ),
-              child: item.placeImage != null
+              child: item.image != null
                   ? CachedNetworkImage(
-                      imageUrl: item.placeImage!,
+                      imageUrl: item.image!,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => _buildImageFallback(item),
                       errorWidget: (context, url, error) =>
@@ -182,7 +185,7 @@ class _WishListScreenState extends State<WishListScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        item.placeName,
+                        item.name,
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -194,7 +197,19 @@ class _WishListScreenState extends State<WishListScreen> {
                     ),
                   ],
                 ),
-                if (item.categoryName != null) ...[
+                if (item.type == 'country') ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'Country',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ] else if (item.categoryName != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     item.categoryName!,
@@ -235,7 +250,7 @@ class _WishListScreenState extends State<WishListScreen> {
   Widget _buildListCard(BuildContext context, WishlistItem item) {
     return PremiumCard(
       padding: EdgeInsets.zero,
-      onTap: () {},
+      onTap: () => _openItem(context, item),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -244,9 +259,9 @@ class _WishListScreenState extends State<WishListScreen> {
               topLeft: Radius.circular(AppTheme.radiusLg),
               bottomLeft: Radius.circular(AppTheme.radiusLg),
             ),
-            child: item.placeImage != null
+            child: item.image != null
                 ? CachedNetworkImage(
-                    imageUrl: item.placeImage!,
+                    imageUrl: item.image!,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -267,7 +282,7 @@ class _WishListScreenState extends State<WishListScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          item.placeName,
+                          item.name,
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -279,7 +294,19 @@ class _WishListScreenState extends State<WishListScreen> {
                       ),
                     ],
                   ),
-                  if (item.categoryName != null) ...[
+                  if (item.type == 'country') ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'Country',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.red,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ] else if (item.categoryName != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       item.categoryName!,
@@ -315,13 +342,29 @@ class _WishListScreenState extends State<WishListScreen> {
     );
   }
 
+  void _openItem(BuildContext context, WishlistItem item) {
+    if (item.type == 'country' && item.countryId != null) {
+      final country = CountryService.getAllCountries()
+          .where((c) => c.countryId == item.countryId)
+          .firstOrNull;
+      if (country != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CountryPage(country: country),
+          ),
+        );
+      }
+    }
+  }
+
   Widget _buildImageFallback(WishlistItem item) {
     return Container(
       color: AppTheme.primary.withValues(alpha: 0.1),
       child: Center(
         child: Text(
-          item.placeName.isNotEmpty
-              ? item.placeName[0].toUpperCase()
+          item.name.isNotEmpty
+              ? item.name[0].toUpperCase()
               : '?',
           style: GoogleFonts.playfairDisplay(
             fontSize: 32,
@@ -340,8 +383,8 @@ class _WishListScreenState extends State<WishListScreen> {
       color: AppTheme.primary.withValues(alpha: 0.1),
       child: Center(
         child: Text(
-          item.placeName.isNotEmpty
-              ? item.placeName[0].toUpperCase()
+          item.name.isNotEmpty
+              ? item.name[0].toUpperCase()
               : '?',
           style: GoogleFonts.playfairDisplay(
             fontSize: 24,
@@ -365,7 +408,7 @@ class _WishListScreenState extends State<WishListScreen> {
           ),
         ),
         content: Text(
-          'Remove ${item.placeName} from your wishlist?',
+          'Remove ${item.name} from your wishlist?',
           style: GoogleFonts.dmSans(),
         ),
         actions: [
@@ -397,7 +440,7 @@ class _WishListScreenState extends State<WishListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${item.placeName} removed from wishlist',
+              '${item.name} removed from wishlist',
               style: GoogleFonts.dmSans(),
             ),
             duration: const Duration(seconds: 2),

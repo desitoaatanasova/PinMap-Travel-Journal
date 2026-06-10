@@ -7,6 +7,7 @@ import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/country_theme.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
 import 'package:pinmap_travel_journal/services/country_theme_service.dart';
+import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/screens/city_page.dart';
 import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -23,6 +24,24 @@ class CountryPage extends StatefulWidget {
 class _CountryPageState extends State<CountryPage> {
   final MapController _mapController = MapController();
   int _rating = 0;
+  bool _isWishlisted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshWishlistState();
+    });
+  }
+
+  Future<void> _refreshWishlistState() async {
+    await WishlistService.loadItems();
+    if (mounted) {
+      setState(() {
+        _isWishlisted = WishlistService.isCountryInWishlist(widget.country.countryId);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +170,53 @@ class _CountryPageState extends State<CountryPage> {
             icon: Icon(Icons.star, color: theme.accentColor, size: 20),
             label: Text(
               _rating > 0 ? 'Rated $_rating/5' : 'Rate',
+              style: GoogleFonts.dmSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppTheme.space3),
+        Expanded(
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isWishlisted ? Colors.red : theme.primaryColor,
+              foregroundColor: theme.backgroundColor,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
+            ),
+            onPressed: () async {
+              if (_isWishlisted) {
+                await WishlistService.removeCountry(widget.country.countryId);
+              } else {
+                await WishlistService.addCountry(widget.country.countryId);
+              }
+              await _refreshWishlistState();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      _isWishlisted
+                          ? '${widget.country.name} removed from wishlist'
+                          : '${widget.country.name} added to wishlist',
+                      style: GoogleFonts.dmSans(),
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            icon: Icon(
+              _isWishlisted ? Icons.favorite : Icons.favorite_border,
+              color: Colors.white,
+              size: 20,
+            ),
+            label: Text(
+              _isWishlisted ? 'Wishlisted' : 'Wishlist',
               style: GoogleFonts.dmSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

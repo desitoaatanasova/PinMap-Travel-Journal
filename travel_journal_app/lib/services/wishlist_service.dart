@@ -36,7 +36,7 @@ class WishlistService {
       final newItem = WishlistItem(
         wishlistId: data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0,
         placeId: placeId,
-        placeName: '',
+        name: '',
       );
       _items.add(newItem);
       await reloadItems();
@@ -52,5 +52,35 @@ class WishlistService {
 
   static bool isInWishlist(int placeId) {
     return _items.any((item) => item.placeId == placeId);
+  }
+
+  static Future<void> addCountry(int countryId) async {
+    if (_items.any((e) => e.countryId == countryId)) return;
+    try {
+      final data = await ApiClient.post('/wishlist', body: {
+        'countryId': countryId,
+      });
+      final newItem = WishlistItem(
+        wishlistId: data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0,
+        countryId: countryId,
+        name: '',
+        type: 'country',
+      );
+      _items.add(newItem);
+      await reloadItems();
+    } catch (_) {}
+  }
+
+  static Future<void> removeCountry(int countryId) async {
+    final item = _items.firstWhere(
+      (e) => e.countryId == countryId,
+      orElse: () => const WishlistItem(wishlistId: 0, name: ''),
+    );
+    if (item.wishlistId == 0) return;
+    await removeItem(item.wishlistId);
+  }
+
+  static bool isCountryInWishlist(int countryId) {
+    return _items.any((item) => item.countryId == countryId);
   }
 }
