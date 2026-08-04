@@ -99,7 +99,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         elevation: 0,
         actions: [
               IconButton(
-                icon: const Icon(Icons.save_outlined),
+                icon: const Icon(Icons.save),
                 onPressed: () async {
                   if (_journal != null) {
                     await JournalService.saveJournal(_journal!);

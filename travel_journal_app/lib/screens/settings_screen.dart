@@ -51,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSectionHeader('Account'),
             const SizedBox(height: AppTheme.space2),
             _buildSettingsRow(
-              icon: Icons.luggage_outlined,
+              icon: Icons.work_outline,
               title: 'My Trips',
               subtitle: 'View and manage your trips',
               onTap: () {

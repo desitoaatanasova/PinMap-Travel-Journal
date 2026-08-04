@@ -46,23 +46,31 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _retryLoad() {
+    setState(() {
+      _countries = [];
+    });
+    _loadData();
+  }
+
   List<Marker> get _mapMarkers {
-    return _countries.where((c) => c.cityPins.isNotEmpty).map((country) {
-      final pos = country.cityPins.first.latLng;
-      return Marker(
-        point: pos,
-        width: 44,
-        height: 52,
-        child: CustomMarker(
-          marker: MapMarker(
-            id: country.name,
-            position: pos,
-            title: country.name,
-            category: MarkerCategory.hiddenGems,
+    return _countries.expand((country) {
+      return country.cityPins.map((city) {
+        return Marker(
+          point: city.latLng,
+          width: 44,
+          height: 52,
+          child: CustomMarker(
+            marker: MapMarker(
+              id: city.name,
+              position: city.latLng,
+              title: city.name,
+              category: MarkerCategory.hiddenGems,
+            ),
+            size: 36,
           ),
-          size: 36,
-        ),
-      );
+        );
+      });
     }).toList();
   }
 
@@ -234,29 +242,90 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: AppTheme.darkBrown,
                             ),
                           ),
-                          Text(
-                            '${_countries.length} countries',
-                            style: GoogleFonts.dmSans(
-                              fontSize: 12,
-                              color: AppTheme.warmGray,
+                          if (CountryService.hasError)
+                            GestureDetector(
+                              onTap: _retryLoad,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.refresh,
+                                      size: 16, color: AppTheme.primary),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Retry',
+                                    style: GoogleFonts.dmSans(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else
+                            Text(
+                              '${_countries.length} countries',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: AppTheme.warmGray,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: AppTheme.space2),
-                    Expanded(
-                      child: ListView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.space4),
-                        itemCount: _countries.length,
-                        itemBuilder: (context, index) {
-                          final country = _countries[index];
-                          return _CountryListCard(country: country);
-                        },
+                    if (_countries.isEmpty && !CountryService.hasError)
+                      Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                      )
+                    else if (_countries.isEmpty && CountryService.hasError)
+                      Expanded(
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: _retryLoad,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.cloud_off,
+                                    size: 48, color: AppTheme.warmGray),
+                                const SizedBox(height: AppTheme.space2),
+                                Text(
+                                  'Could not load countries',
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 14,
+                                    color: AppTheme.warmGray,
+                                  ),
+                                ),
+                                const SizedBox(height: AppTheme.space2),
+                                Text(
+                                  'Tap to retry',
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.space4),
+                          itemCount: _countries.length,
+                          itemBuilder: (context, index) {
+                            final country = _countries[index];
+                            return _CountryListCard(country: country);
+                          },
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );

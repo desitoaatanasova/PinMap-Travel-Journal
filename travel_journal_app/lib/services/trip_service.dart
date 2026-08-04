@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 
@@ -12,6 +13,7 @@ class TripService {
       _trips = (data as List).map((json) => Trip.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
+      debugPrint('TripService.loadTrips error: $e');
       _loaded = false;
     }
   }
@@ -20,11 +22,9 @@ class TripService {
     try {
       final data = await ApiClient.get('/trips');
       _trips = (data as List).map((json) => Trip.fromJson(json)).toList();
-    } catch (_) {}
-  }
-
-  static List<Trip> getAllTrips() {
-    return _trips;
+    } catch (e) {
+      debugPrint('TripService.reloadTrips error: $e');
+    }
   }
 
   static Trip? getTripById(int id) {
@@ -35,17 +35,11 @@ class TripService {
     }
   }
 
-  static Future<void> deleteTrip(int id) async {
-    try {
-      await ApiClient.delete('/trips/$id');
-      _trips.removeWhere((trip) => trip.tripId == id);
-    } catch (_) {}
-  }
+  static List<Trip> getAllTrips() => _trips;
 
   static Future<void> addTrip(Trip trip) async {
     try {
-      final body = trip.toJson();
-      final data = await ApiClient.post('/trips', body: body);
+      final data = await ApiClient.post('/trips', body: trip.toJson());
       final newTrip = Trip(
         tripId: data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0,
         title: trip.title,
@@ -57,6 +51,17 @@ class TripService {
         itinerary: trip.itinerary,
       );
       _trips.add(newTrip);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('TripService.addTrip error: $e');
+    }
+  }
+
+  static Future<void> deleteTrip(int id) async {
+    try {
+      await ApiClient.delete('/trips/$id');
+      _trips.removeWhere((trip) => trip.tripId == id);
+    } catch (e) {
+      debugPrint('TripService.deleteTrip error: $e');
+    }
   }
 }

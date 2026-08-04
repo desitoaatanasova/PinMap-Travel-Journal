@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 
 class VisitedPlacesService {
@@ -11,6 +12,7 @@ class VisitedPlacesService {
       _visitedPlaceIds = (data as List).map((e) => e['place_id'] as int).toSet();
       _loaded = true;
     } catch (e) {
+      debugPrint('VisitedPlacesService.loadVisitedPlaces error: $e');
       _loaded = false;
     }
   }
@@ -31,7 +33,8 @@ class VisitedPlacesService {
       } else {
         _visitedPlaceIds.remove(placeId);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('VisitedPlacesService.toggleVisited error: $e');
       if (_visitedPlaceIds.contains(placeId)) {
         _visitedPlaceIds.remove(placeId);
       } else {

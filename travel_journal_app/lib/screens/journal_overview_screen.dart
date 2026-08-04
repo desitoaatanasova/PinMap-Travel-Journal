@@ -88,7 +88,7 @@ class JournalOverviewPage extends StatelessWidget {
           if (allCountries.isEmpty)
             SliverFillRemaining(
               child: EmptyState(
-                icon: Icons.book_outlined,
+                icon: Icons.menu_book_outlined,
                 message: 'No countries loaded yet',
                 buttonText: 'Explore Map',
                 onButtonPressed: () {

@@ -315,16 +315,16 @@ class _CategoryPageState extends State<CategoryPage> {
           width: 80,
           height: 80,
           fit: BoxFit.cover,
-          placeholder: (context, url) => _buildPlaceholder(categoryColor),
+          placeholder: (context, url) => _buildPlaceholder(categoryColor, place),
           errorWidget: (context, url, error) =>
-              _buildPlaceholder(categoryColor),
+              _buildPlaceholder(categoryColor, place),
         ),
       );
     }
-    return _buildPlaceholder(categoryColor);
+    return _buildPlaceholder(categoryColor, place);
   }
 
-  Widget _buildPlaceholder(Color categoryColor) {
+  Widget _buildPlaceholder(Color categoryColor, Place place) {
     return Container(
       width: 80,
       height: 80,
@@ -333,7 +333,7 @@ class _CategoryPageState extends State<CategoryPage> {
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
       child: Icon(
-        Icons.place,
+        Place.iconFromString(place.categoryIcon),
         color: categoryColor,
         size: 32,
       ),

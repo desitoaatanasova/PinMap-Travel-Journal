@@ -61,7 +61,7 @@ class JournalScreen extends StatelessWidget {
           if (journals.isEmpty)
             SliverFillRemaining(
               child: EmptyState(
-                icon: Icons.book_outlined,
+                icon: Icons.menu_book_outlined,
                 message: 'No journal entries yet',
                 buttonText: 'Start Writing',
                 onButtonPressed: () {

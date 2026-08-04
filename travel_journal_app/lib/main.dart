@@ -125,14 +125,14 @@ class _MainScreenState extends State<MainScreen> {
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(Icons.luggage_outlined,
+                icon: Icon(Icons.work_outline,
                     color: AppTheme.warmGray, size: 24),
                 selectedIcon:
                     Icon(Icons.luggage, color: AppTheme.primary, size: 24),
                 label: 'Trips',
               ),
               NavigationDestination(
-                icon: Icon(Icons.book_outlined,
+                icon: Icon(Icons.menu_book_outlined,
                     color: AppTheme.warmGray, size: 24),
                 selectedIcon:
                     Icon(Icons.book, color: AppTheme.primary, size: 24),

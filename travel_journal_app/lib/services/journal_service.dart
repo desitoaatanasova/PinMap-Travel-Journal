@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 
@@ -12,6 +13,7 @@ class JournalService {
       _journals = (data as List).map((json) => Journal.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
+      debugPrint('JournalService.loadJournals error: $e');
       _loaded = false;
     }
   }
@@ -20,11 +22,10 @@ class JournalService {
     try {
       final data = await ApiClient.get('/journal');
       _journals = (data as List).map((json) => Journal.fromJson(json)).toList();
-    } catch (_) {}
-  }
-
-  static List<Journal> getAllJournals() {
-    return _journals;
+    } catch (e) {
+      debugPrint('JournalService.reloadJournals error: $e');
+    }
+    // reloadJournals is void
   }
 
   static Journal? getJournalById(int id) {
@@ -62,6 +63,10 @@ class JournalService {
     try {
       await ApiClient.delete('/journal/$id');
       _journals.removeWhere((j) => j.journalId == id);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('JournalService.deleteJournal error: $e');
+    }
   }
+
+  static List<Journal> getAllJournals() => _journals;
 }

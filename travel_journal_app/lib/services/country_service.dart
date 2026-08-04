@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
@@ -5,10 +6,15 @@ import 'package:pinmap_travel_journal/services/api_client.dart';
 class CountryService {
   static List<Country> _countries = [];
   static bool _loaded = false;
+  static String? _lastError;
+
+  static String? get lastError => _lastError;
+  static bool get hasError => _lastError != null;
 
   static Future<void> loadCountries() async {
     if (_loaded) return;
     try {
+      _lastError = null;
       final data = await ApiClient.get('/countries');
       _countries = (data as List).map((json) => Country.fromJson(json)).toList();
       for (var i = 0; i < _countries.length; i++) {
@@ -19,6 +25,8 @@ class CountryService {
       }
       _loaded = true;
     } catch (e) {
+      debugPrint('CountryService.loadCountries error: $e');
+      _lastError = e.toString();
       _loaded = false;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
@@ -38,6 +39,7 @@ class PlaceService {
         'category_name': json['category_name'] as String?,
       })).toList();
     } catch (e) {
+      debugPrint('PlaceService._loadPlacesForCity($cityName) error: $e');
       _cityCache[cityName] = [];
     }
   }

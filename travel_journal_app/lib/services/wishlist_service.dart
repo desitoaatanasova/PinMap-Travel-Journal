@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 
@@ -12,6 +13,7 @@ class WishlistService {
       _items = (data as List).map((json) => WishlistItem.fromJson(json)).toList();
       _loaded = true;
     } catch (e) {
+      debugPrint('WishlistService.loadItems error: $e');
       _loaded = false;
     }
   }
@@ -20,11 +22,10 @@ class WishlistService {
     try {
       final data = await ApiClient.get('/wishlist');
       _items = (data as List).map((json) => WishlistItem.fromJson(json)).toList();
-    } catch (_) {}
-  }
-
-  static List<WishlistItem> getAllItems() {
-    return List.from(_items);
+    } catch (e) {
+      debugPrint('WishlistService.reloadItems error: $e');
+    }
+    // reloadItems is void
   }
 
   static Future<void> addItem(int placeId) async {
@@ -40,14 +41,18 @@ class WishlistService {
       );
       _items.add(newItem);
       await reloadItems();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('WishlistService.addItem error: $e');
+    }
   }
 
   static Future<void> removeItem(int wishlistId) async {
     try {
       await ApiClient.delete('/wishlist/$wishlistId');
       _items.removeWhere((item) => item.wishlistId == wishlistId);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('WishlistService.removeItem error: $e');
+    }
   }
 
   static bool isInWishlist(int placeId) {
@@ -68,8 +73,16 @@ class WishlistService {
       );
       _items.add(newItem);
       await reloadItems();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('WishlistService.addCountry error: $e');
+    }
   }
+
+  static bool isCountryInWishlist(int countryId) {
+    return _items.any((item) => item.countryId == countryId);
+  }
+
+  static List<WishlistItem> getAllItems() => _items;
 
   static Future<void> removeCountry(int countryId) async {
     final item = _items.firstWhere(
@@ -78,9 +91,5 @@ class WishlistService {
     );
     if (item.wishlistId == 0) return;
     await removeItem(item.wishlistId);
-  }
-
-  static bool isCountryInWishlist(int countryId) {
-    return _items.any((item) => item.countryId == countryId);
   }
 }

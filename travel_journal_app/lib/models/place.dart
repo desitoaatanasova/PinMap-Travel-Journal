@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Place {
   final int placeId;
   final String name;
@@ -59,6 +61,34 @@ class Place {
               .toList() ??
           [],
     );
+  }
+
+  static IconData iconFromString(String? iconName) {
+    switch (iconName?.toLowerCase().replaceAll('_', '')) {
+      case 'landmark':
+      case 'accountbalance':
+        return Icons.account_balance;
+      case 'palette':
+        return Icons.palette;
+      case 'heart':
+        return Icons.favorite;
+      case 'star':
+        return Icons.star;
+      case 'mappin':
+      case 'explore':
+        return Icons.explore;
+      case 'visibility':
+      case 'remove redeye':
+        return Icons.visibility;
+      case 'favorite':
+        return Icons.favorite;
+      case 'place':
+        return Icons.place;
+      case 'castle':
+        return Icons.castle;
+      default:
+        return Icons.place;
+    }
   }
 }
 

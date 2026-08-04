@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 
@@ -19,24 +20,26 @@ class ProfileService {
     try {
       final data = await ApiClient.get('/profile');
       _profile = _parseProfile(data);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('ProfileService.reloadProfile error: $e');
+    }
   }
 
-  static UserProfile _parseProfile(Map<String, dynamic> json) {
+  static UserProfile _parseProfile(Map<String, dynamic> data) {
     return UserProfile(
-      username: json['username'] ?? '',
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      bio: json['bio'] ?? '',
-      profilePicture: json['profile_picture'],
-      profileStatus: json['profile_status'] ?? 'public',
-      placesVisited: json['placesVisited'] ?? 0,
-      ratingsGiven: json['ratingsGiven'] ?? 0,
-      tripsPlanned: json['tripsPlanned'] ?? 0,
-      journalsCreated: json['journalsCreated'] ?? 0,
-      followersCount: json['followersCount'] ?? 0,
-      followingCount: json['followingCount'] ?? 0,
-      travelPhotos: (json['travelPhotos'] as List?)?.cast<String>() ?? [],
+      username: data['username'] ?? '',
+      firstName: data['first_name'],
+      lastName: data['last_name'],
+      bio: data['bio'] ?? '',
+      profilePicture: data['profile_picture'],
+      profileStatus: data['profile_status'] ?? 'public',
+      placesVisited: data['placesVisited'] ?? 0,
+      ratingsGiven: data['ratingsGiven'] ?? 0,
+      tripsPlanned: data['tripsPlanned'] ?? 0,
+      journalsCreated: data['journalsCreated'] ?? 0,
+      followersCount: data['followersCount'] ?? 0,
+      followingCount: data['followingCount'] ?? 0,
+      travelPhotos: (data['travelPhotos'] as List?)?.cast<String>() ?? [],
     );
   }
 
