@@ -1,8 +1,17 @@
 import 'dart:convert';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/queue_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum SyncActionType { addWishlist, removeWishlist, toggleVisited, addTrip, deleteTrip, saveDraft }
+enum SyncActionType {
+  addWishlist,
+  removeWishlist,
+  toggleVisited,
+  addTrip,
+  deleteTrip,
+  saveDraft,
+  addTicketScan,
+}
 
 class SyncAction {
   final SyncActionType type;
@@ -88,7 +97,53 @@ class SyncQueueService {
         await ApiClient.delete('/trips/${action.data['id']}');
       case SyncActionType.saveDraft:
         await ApiClient.post('/journal/save', body: action.data);
+      case SyncActionType.addTicketScan:
+        await _processTicketScan(action.data);
     }
+  }
+
+  static Future<void> _processTicketScan(Map<String, dynamic> data) async {
+    final original = await readQueuedBytes(
+      path: data['localOriginalPath'] as String?,
+      base64: data['originalBase64'] as String?,
+    );
+    final processed = await readQueuedBytes(
+      path: data['localProcessedPath'] as String?,
+      base64: data['processedBase64'] as String?,
+    );
+    if (original == null && processed == null) {
+      throw StateError('Ticket images are no longer available to sync');
+    }
+    final files = <MultipartFileSpec>[
+      if (original != null)
+        MultipartFileSpec(
+          field: 'original',
+          bytes: original,
+          filename: 'original.png',
+          contentType: 'image/png',
+        ),
+      if (processed != null)
+        MultipartFileSpec(
+          field: 'processed',
+          bytes: processed,
+          filename: 'processed.png',
+          contentType: 'image/png',
+        ),
+    ];
+    await ApiClient.uploadMultipart('/tickets', fields: {
+      'journalId': data['journalId'].toString(),
+      'journalTitle': (data['journalTitle'] ?? '').toString(),
+      'countryId': data['countryId'].toString(),
+      'pageId': data['pageId'] == null ? '' : data['pageId'].toString(),
+      'backgroundRemoved': (data['backgroundRemoved'] ?? false).toString(),
+      'xPosition': data['xPosition'].toString(),
+      'yPosition': data['yPosition'].toString(),
+      'width': data['width'].toString(),
+      'height': data['height'].toString(),
+      'scale': (data['scale'] ?? 1).toString(),
+      'rotation': (data['rotation'] ?? 0).toString(),
+      'elementType': 'ticket',
+    }, files: files);
   }
 
   static int get pendingCount => _queue.length;

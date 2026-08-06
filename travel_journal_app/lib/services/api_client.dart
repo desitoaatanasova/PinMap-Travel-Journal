@@ -1,9 +1,26 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pinmap_travel_journal/services/api_config.dart';
+
+class MultipartFileSpec {
+  final String field;
+  final Uint8List bytes;
+  final String filename;
+  final String contentType;
+
+  MultipartFileSpec({
+    required this.field,
+    required this.bytes,
+    required this.filename,
+    this.contentType = 'application/octet-stream',
+  });
+}
 
 class ApiClient {
-  static const String baseUrl = 'http://localhost:3001/api';
+  static String get baseUrl => ApiConfig.apiBaseUrl;
   static const String _tokenKey = 'auth_token';
 
   static Future<String?> getToken() async {
@@ -74,6 +91,37 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),
     );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    }
+    throw ApiException(response.statusCode, response.body);
+  }
+
+  static Future<dynamic> uploadMultipart(
+    String path, {
+    required Map<String, String> fields,
+    required List<MultipartFileSpec> files,
+    bool auth = true,
+  }) async {
+    final request = http.MultipartRequest('POST', Uri.parse('$baseUrl$path'));
+    request.fields.addAll(fields);
+    for (final file in files) {
+      final parts = file.contentType.split('/');
+      request.files.add(http.MultipartFile.fromBytes(
+        file.field,
+        file.bytes,
+        filename: file.filename,
+        contentType: MediaType(parts.length == 2 ? parts[0] : 'application', parts.length == 2 ? parts[1] : 'octet-stream'),
+      ));
+    }
+    if (auth) {
+      final token = await getToken();
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+    }
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body);
     }

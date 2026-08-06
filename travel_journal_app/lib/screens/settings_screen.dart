@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/screens/trips_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
+import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -136,6 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+            _buildServerAddressRow(),
             _buildSettingsRow(
               icon: Icons.storage_outlined,
               title: 'Storage',
@@ -302,6 +304,120 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         contentPadding: const EdgeInsets.symmetric(
             horizontal: AppTheme.space4, vertical: AppTheme.space2),
+      ),
+    );
+  }
+
+  Widget _buildServerAddressRow() {
+    final override = ApiConfig.serverOverride;
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppTheme.space2),
+      decoration: BoxDecoration(
+        color: AppTheme.card,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        boxShadow: AppTheme.shadowSm,
+      ),
+      child: ListTile(
+        leading: Icon(Icons.dns_outlined, color: AppTheme.primary),
+        title: Text(
+          'Server address',
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.darkBrown,
+          ),
+        ),
+        subtitle: Text(
+          override.isEmpty
+              ? 'Default (${ApiConfig.baseUrl})'
+              : override,
+          style: GoogleFonts.dmSans(
+            fontSize: 12,
+            color: AppTheme.warmGray,
+          ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right,
+          color: AppTheme.warmGray,
+        ),
+        onTap: () => _showServerAddressDialog(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+      ),
+    );
+  }
+
+  void _showServerAddressDialog() {
+    final controller =
+        TextEditingController(text: ApiConfig.serverOverride);
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Server address',
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Where the backend runs. Examples:\n'
+              '• Home Wi-Fi:  http://192.168.1.50:3001\n'
+              '• Anywhere:    https://your-tunnel-url\n\n'
+              'Leave empty to use the default server.',
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                color: AppTheme.warmGray,
+              ),
+            ),
+            const SizedBox(height: AppTheme.space3),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              decoration: InputDecoration(
+                hintText: 'http://192.168.1.50:3001',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await ApiConfig.setOverride(controller.text);
+              if (mounted) {
+                Navigator.pop(dialogContext);
+                setState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Server address updated',
+                      style: GoogleFonts.dmSans(),
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: Text('Save', style: GoogleFonts.dmSans()),
+          ),
+        ],
       ),
     );
   }

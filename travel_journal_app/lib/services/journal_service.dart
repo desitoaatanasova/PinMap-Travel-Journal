@@ -36,27 +36,35 @@ class JournalService {
     }
   }
 
-  static Future<void> saveJournal(Journal journal) async {
-    try {
-      final body = journal.toJson();
-      final data = await ApiClient.post('/journal/save', body: body);
-      final serverId = data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0;
-      final index = _journals.indexWhere((j) => j.journalId == journal.journalId);
-      if (index >= 0) {
-        _journals[index] = journal;
-      } else {
-        final saved = Journal(
-          journalId: serverId,
-          title: journal.title,
-          countryId: journal.countryId,
-          coverImage: journal.coverImage,
-          pages: journal.pages,
-        );
-        _journals.add(saved);
-      }
-    } catch (e) {
-      rethrow;
+  /// Persists a journal server-side and updates the local cache with the
+  /// server id. Returns the server journal id (or the passed id on failure,
+  /// which is rethrown).
+  static Future<int> saveJournal(Journal journal) async {
+    final body = journal.toJson();
+    final data = await ApiClient.post('/journal/save', body: body);
+    final serverId = data['id'] is int
+        ? data['id'] as int
+        : int.tryParse(data['id'].toString()) ?? journal.journalId;
+    final index = _journals.indexWhere((j) => j.journalId == journal.journalId);
+    if (index >= 0) {
+      _journals[index] = Journal(
+        journalId: serverId,
+        title: journal.title,
+        countryId: journal.countryId,
+        coverImage: journal.coverImage,
+        pages: journal.pages,
+      );
+    } else {
+      final saved = Journal(
+        journalId: serverId,
+        title: journal.title,
+        countryId: journal.countryId,
+        coverImage: journal.coverImage,
+        pages: journal.pages,
+      );
+      _journals.add(saved);
     }
+    return serverId;
   }
 
   static Future<void> deleteJournal(int id) async {

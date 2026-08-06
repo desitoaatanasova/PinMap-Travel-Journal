@@ -104,8 +104,8 @@ router.post('/save', authenticateToken, async (req, res) => {
         if (page.elements) {
           for (const el of page.elements) {
             await conn.query(
-              'INSERT INTO journal_elements (page_id, element_type, content, x_position, y_position, width, height) VALUES (?, ?, ?, ?, ?, ?, ?)',
-              [pageId, el.elementType, el.content || null, el.xPosition || 0, el.yPosition || 0, el.width || 200, el.height || 100]
+              'INSERT INTO journal_elements (page_id, element_type, content, x_position, y_position, width, height, scale, rotation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+              [pageId, el.elementType, el.content || null, el.xPosition || 0, el.yPosition || 0, el.width || 200, el.height || 100, el.scale || 1, el.rotation || 0]
             );
           }
         }

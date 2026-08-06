@@ -79,6 +79,8 @@ class JournalElement {
   final int yPosition;
   final int width;
   final int height;
+  final double scale;
+  final double rotation;
 
   const JournalElement({
     required this.elementId,
@@ -88,6 +90,8 @@ class JournalElement {
     this.yPosition = 0,
     this.width = 200,
     this.height = 100,
+    this.scale = 1,
+    this.rotation = 0,
   });
 
   Map<String, dynamic> toJson() {
@@ -98,6 +102,8 @@ class JournalElement {
       'yPosition': yPosition,
       'width': width,
       'height': height,
+      'scale': scale,
+      'rotation': rotation,
     };
   }
 
@@ -110,6 +116,8 @@ class JournalElement {
       yPosition: json['y_position'] ?? 0,
       width: json['width'] ?? 200,
       height: json['height'] ?? 100,
+      scale: (json['scale'] as num?)?.toDouble() ?? 1,
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/screens/splash_screen.dart';
 import 'package:pinmap_travel_journal/screens/login_screen.dart';
@@ -11,23 +12,28 @@ import 'package:pinmap_travel_journal/screens/journal_overview_screen.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/screens/profile_screen.dart';
+import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/visited_places_service.dart';
 import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
+import 'package:pinmap_travel_journal/services/connectivity_service.dart';
 import 'package:pinmap_travel_journal/widgets/offline_banner.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ApiConfig.loadOverride();
   await WishlistService.loadItems();
   await TripService.loadTrips();
   await CountryService.loadCountries();
   await JournalService.loadJournals();
   await VisitedPlacesService.loadVisitedPlaces();
   await SyncQueueService.loadQueue();
+  // Best effort: flush any queued offline actions at startup.
+  SyncQueueService.processQueue();
   runApp(const TravelJournalApp());
 }
 
@@ -68,6 +74,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  final ConnectivityService _connectivity = ConnectivityService();
+  StreamSubscription<bool>? _onlineSub;
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -76,6 +84,22 @@ class _MainScreenState extends State<MainScreen> {
     WishListScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _onlineSub = _connectivity.isOnline.listen((online) {
+      if (online) {
+        SyncQueueService.processQueue();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _onlineSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

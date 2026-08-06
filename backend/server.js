@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const countryRoutes = require('./routes/countries');
@@ -9,12 +10,15 @@ const journalRoutes = require('./routes/journal');
 const wishlistRoutes = require('./routes/wishlist');
 const visitedRoutes = require('./routes/visited');
 const profileRoutes = require('./routes/profile');
+const ticketRoutes = require('./routes/ticketScans');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/countries', countryRoutes);
@@ -24,6 +28,7 @@ app.use('/api/journal', journalRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/visited', visitedRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

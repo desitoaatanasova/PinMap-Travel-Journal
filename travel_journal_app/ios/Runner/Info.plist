@@ -72,6 +72,10 @@
 	<string>This app needs access to your location to show your position on the map.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to your location to show your position on the map.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses the camera to scan travel tickets for your journal.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app accesses your photo library so you can import ticket images for your journal.</string>
 	<key>GOOGLE_MAPS_API_KEY</key>
 	<string>AIzaSyCkm8MeZroKsSMuTC4ks_FdJBhoFl5VRxc</string>
 </dict>

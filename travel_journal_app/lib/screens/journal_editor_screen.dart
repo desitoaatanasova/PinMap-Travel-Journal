@@ -1,9 +1,18 @@
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
+import 'package:pinmap_travel_journal/services/ticket_scan_service.dart';
+import 'package:pinmap_travel_journal/screens/manual_crop_screen.dart';
+import 'package:pinmap_travel_journal/screens/ticket_preview_screen.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class CanvasElement {
@@ -19,6 +28,10 @@ class CanvasElement {
   String? emoji;
   double? stickerSize;
   String? ticketInfo;
+  double? scale;
+  double? rotation;
+  int? ticketId;
+  Uint8List? localImageBytes;
 
   CanvasElement({
     required this.id,
@@ -33,6 +46,10 @@ class CanvasElement {
     this.emoji,
     this.stickerSize,
     this.ticketInfo,
+    this.scale,
+    this.rotation,
+    this.ticketId,
+    this.localImageBytes,
   });
 }
 
@@ -79,6 +96,110 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         countryId: countryId,
       );
     }
+    _loadElementsFromJournal();
+  }
+
+  void _loadElementsFromJournal() {
+    if (_journal == null) return;
+    for (final page in _journal!.pages) {
+      for (final el in page.elements) {
+        switch (el.elementType) {
+          case 'text':
+            _canvasElements.add(CanvasElement(
+              id: 'el_${el.elementId}',
+              type: 'text',
+              x: el.xPosition.toDouble(),
+              y: el.yPosition.toDouble(),
+              text: el.content,
+            ));
+          case 'sticker':
+            _canvasElements.add(CanvasElement(
+              id: 'el_${el.elementId}',
+              type: 'sticker',
+              x: el.xPosition.toDouble(),
+              y: el.yPosition.toDouble(),
+              emoji: el.content,
+              stickerSize: el.height.toDouble(),
+              scale: el.scale,
+              rotation: el.rotation,
+            ));
+          case 'ticket':
+          case 'image':
+            _canvasElements.add(CanvasElement(
+              id: 'el_${el.elementId}',
+              type: el.elementType,
+              x: el.xPosition.toDouble(),
+              y: el.yPosition.toDouble(),
+              width: el.width.toDouble(),
+              height: el.height.toDouble(),
+              imageUrl: el.content,
+              scale: el.scale,
+              rotation: el.rotation,
+            ));
+        }
+      }
+    }
+  }
+
+  /// Builds a [Journal] that persists the current canvas state.
+  Journal _buildJournalWithElements() {
+    final elements = _canvasElements.map((e) {
+      String? content;
+      switch (e.type) {
+        case 'text':
+          content = e.text;
+        case 'sticker':
+          content = e.emoji;
+        case 'ticket':
+        case 'image':
+          content = e.imageUrl;
+      }
+      return JournalElement(
+        elementId: 0,
+        elementType: e.type,
+        content: content,
+        xPosition: e.x.round(),
+        yPosition: e.y.round(),
+        width: (e.width ?? 200).round(),
+        height: (e.height ?? 130).round(),
+        scale: e.scale ?? 1,
+        rotation: e.rotation ?? 0,
+      );
+    }).toList();
+    final page = JournalPage(pageId: 0, pageNumber: 1, elements: elements);
+    return Journal(
+      journalId: _journal!.journalId,
+      title: _journal!.title,
+      countryId: _journal!.countryId,
+      coverImage: _journal!.coverImage,
+      pages: [page],
+    );
+  }
+
+  /// Saves the canvas to the server. When offline the journal draft is queued
+  /// and the local (client) id is returned so the ticket stays attached to it.
+  Future<int> _persistJournal() async {
+    final journal = _buildJournalWithElements();
+    try {
+      final serverId = await JournalService.saveJournal(journal);
+      if (_journal!.journalId != serverId) {
+        _journal = Journal(
+          journalId: serverId,
+          title: journal.title,
+          countryId: journal.countryId,
+          coverImage: journal.coverImage,
+          pages: journal.pages,
+        );
+      }
+      return serverId;
+    } catch (e) {
+      await SyncQueueService.enqueue(SyncAction(
+        type: SyncActionType.saveDraft,
+        data: journal.toJson(),
+        timestamp: DateTime.now(),
+      ));
+      return journal.journalId;
+    }
   }
 
   @override
@@ -102,17 +223,30 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 icon: const Icon(Icons.save),
                 onPressed: () async {
                   if (_journal != null) {
-                    await JournalService.saveJournal(_journal!);
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Draft saved!',
-                            style: GoogleFonts.dmSans(),
+                    try {
+                      await _persistJournal();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Draft saved!',
+                              style: GoogleFonts.dmSans(),
+                            ),
+                            duration: const Duration(seconds: 2),
                           ),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Could not save draft: $e',
+                              style: GoogleFonts.dmSans(),
+                            ),
+                          ),
+                        );
+                      }
                     }
                   }
                 },
@@ -125,6 +259,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
           Expanded(
             child: _buildScrapbookCanvas(),
           ),
+          _buildSelectionToolbar(),
           _buildBottomToolPanel(),
         ],
       ),
@@ -387,6 +522,14 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   }
 
   Widget _buildCanvasElement(CanvasElement element) {
+    final rotation = element.rotation ?? 0;
+    Widget content = _buildElementContent(element);
+    if (rotation != 0) {
+      content = Transform.rotate(
+        angle: rotation * pi / 180,
+        child: content,
+      );
+    }
     return Positioned(
       left: element.x,
       top: element.y,
@@ -404,13 +547,14 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ? Border.all(color: AppTheme.primary, width: 2)
                 : null,
           ),
-          child: _buildElementContent(element),
+          child: content,
         ),
       ),
     );
   }
 
   Widget _buildElementContent(CanvasElement element) {
+    final scale = element.scale ?? 1;
     switch (element.type) {
       case 'text':
         return Container(
@@ -423,69 +567,57 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
           ),
         );
       case 'image':
+      case 'ticket':
+        final w = (element.width ?? 200) * scale;
+        final h = (element.height ?? 130) * scale;
         return ClipRRect(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: CachedNetworkImage(
-            imageUrl: element.imageUrl ?? 'https://picsum.photos/200/200?random=${element.id}',
-            width: element.width ?? 200,
-            height: element.height ?? 200,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              width: element.width ?? 200,
-              height: element.height ?? 200,
-              color: AppTheme.lightGray,
-              child: const Center(child: CircularProgressIndicator()),
-            ),
-            errorWidget: (context, url, error) => Container(
-              width: element.width ?? 200,
-              height: element.height ?? 200,
-              color: AppTheme.lightGray,
-              child: const Icon(Icons.image, size: 50, color: Colors.grey),
-            ),
-          ),
+          child: _buildImageElement(element, w, h),
         );
       case 'sticker':
         return Text(
           element.emoji ?? '😊',
-          style: TextStyle(fontSize: element.stickerSize ?? 40),
-        );
-      case 'ticket':
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            boxShadow: AppTheme.shadowMd,
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.confirmation_number, color: AppTheme.primary, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Ticket',
-                    style: GoogleFonts.dmSans(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                element.ticketInfo ?? 'Flight: NYC → PAR\nDate: 2026-05-15\nSeat: 14A',
-                style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
-              ),
-            ],
-          ),
+          style: TextStyle(fontSize: (element.stickerSize ?? 40) * scale),
         );
       default:
         return const SizedBox();
     }
+  }
+
+  Widget _buildImageElement(CanvasElement element, double w, double h) {
+    if (element.localImageBytes != null) {
+      return Image.memory(
+        element.localImageBytes!,
+        width: w,
+        height: h,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stack) => _imageFallback(w, h),
+      );
+    }
+    return CachedNetworkImage(
+      imageUrl: element.imageUrl != null && element.imageUrl!.isNotEmpty
+          ? ApiConfig.assetUrl(element.imageUrl!)
+          : 'https://picsum.photos/200/130?random=${element.id}',
+      width: w,
+      height: h,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => Container(
+        width: w,
+        height: h,
+        color: AppTheme.lightGray,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+      errorWidget: (context, url, error) => _imageFallback(w, h),
+    );
+  }
+
+  Widget _imageFallback(double w, double h) {
+    return Container(
+      width: w,
+      height: h,
+      color: AppTheme.lightGray,
+      child: const Icon(Icons.image, size: 50, color: Colors.grey),
+    );
   }
 
   void _addTextBlock() {
@@ -516,14 +648,140 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     });
   }
 
-  void _addTicket() {
+  Future<void> _scanTicket() async {
+    try {
+      final captured = await TicketScanService.capture(context);
+      if (captured == null) return;
+      final originalBytes = captured.bytes;
+
+      final corners = await TicketScanService.detect(originalBytes);
+      Uint8List? cropped = corners != null
+          ? await TicketScanService.crop(originalBytes, corners)
+          : null;
+
+      if (cropped == null) {
+        if (!mounted) return;
+        final manual = await Navigator.of(context).push<ManualCropResult>(
+          MaterialPageRoute(
+            builder: (_) => ManualCropScreen(
+              imageBytes: originalBytes,
+              initialCorners: corners,
+            ),
+          ),
+        );
+        if (manual == null || manual.action == ManualCropAction.cancelled) return;
+        if (manual.action == ManualCropAction.retake) {
+          _scanTicket();
+          return;
+        }
+        cropped = manual.bytes;
+      }
+      if (cropped == null) return;
+
+      if (!mounted) return;
+      final preview = await Navigator.of(context).push<TicketPreviewResult>(
+        MaterialPageRoute(
+          builder: (_) => TicketPreviewScreen(
+            originalBytes: originalBytes,
+            croppedBytes: cropped!,
+            onSave: (processed, backgroundRemoved) => _saveTicket(
+              originalBytes,
+              processed,
+              backgroundRemoved,
+            ),
+          ),
+        ),
+      );
+      if (preview == null) return;
+      if (preview.action == TicketPreviewAction.retake) {
+        _scanTicket();
+        return;
+      }
+      if (preview.action == TicketPreviewAction.saved &&
+          preview.saveResult != null &&
+          preview.processedBytes != null) {
+        final result = preview.saveResult!;
+        _addTicketElement(result, preview.processedBytes!);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                result.queuedOffline
+                    ? 'Ticket saved on this device. Will sync when online.'
+                    : 'Ticket added to your journal!',
+                style: GoogleFonts.dmSans(),
+              ),
+            ),
+          );
+        }
+      }
+    } on TicketScanCancelledException {
+      return;
+    } on TicketScanException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message, style: GoogleFonts.dmSans())),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ticket scan failed: $e', style: GoogleFonts.dmSans()),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<TicketSaveResult> _saveTicket(
+    Uint8List originalBytes,
+    Uint8List processedBytes,
+    bool backgroundRemoved,
+  ) async {
+    final journalId = await _persistJournal();
+    final pageId = _journal!.pages.isNotEmpty ? _journal!.pages.first.pageId : null;
+    return TicketScanService.save(
+      journalId: journalId,
+      journalTitle: _journal!.title,
+      countryId: _journal!.countryId,
+      pageId: pageId,
+      originalBytes: originalBytes,
+      processedBytes: processedBytes,
+      backgroundRemoved: backgroundRemoved,
+      xPosition: 50 + _canvasElements.length * 16,
+      yPosition: 120 + _canvasElements.length * 24,
+      width: 200,
+      height: 130,
+      scale: 1,
+      rotation: 0,
+    );
+  }
+
+  void _addTicketElement(TicketSaveResult result, Uint8List processedBytes) {
+    final serverId = result.journalId;
+    if (serverId != null && _journal!.journalId != serverId) {
+      _journal = Journal(
+        journalId: serverId,
+        title: _journal!.title,
+        countryId: _journal!.countryId,
+        coverImage: _journal!.coverImage,
+        pages: _journal!.pages,
+      );
+    }
     setState(() {
       _canvasElements.add(CanvasElement(
         id: 'ticket_${DateTime.now().millisecondsSinceEpoch}',
         type: 'ticket',
-        x: 50 + _canvasElements.length * 20,
-        y: 100 + _canvasElements.length * 30,
-        ticketInfo: 'Flight: NYC → PAR\nDate: 2026-05-15\nSeat: 14A',
+        x: 50 + _canvasElements.length * 16,
+        y: 120 + _canvasElements.length * 24,
+        width: 200,
+        height: 130,
+        scale: 1,
+        rotation: 0,
+        imageUrl: result.imageUrl,
+        ticketId: result.ticketId,
+        localImageBytes: result.queuedOffline ? processedBytes : null,
       ));
     });
   }
@@ -605,6 +863,123 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     );
   }
 
+  Widget _buildSelectionToolbar() {
+    final element = _selectedElement;
+    if (element == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.space3, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppTheme.card,
+        boxShadow: AppTheme.shadowSm,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildSelectionAction(
+            icon: Icons.rotate_left,
+            tooltip: 'Rotate left',
+            onTap: () => setState(
+              () => element.rotation = ((element.rotation ?? 0) - 15) % 360,
+            ),
+          ),
+          _buildSelectionAction(
+            icon: Icons.rotate_right,
+            tooltip: 'Rotate right',
+            onTap: () => setState(
+              () => element.rotation = ((element.rotation ?? 0) + 15) % 360,
+            ),
+          ),
+          _buildSelectionAction(
+            icon: Icons.zoom_out,
+            tooltip: 'Make smaller',
+            onTap: () => setState(
+              () => element.scale =
+                  ((element.scale ?? 1) - 0.15).clamp(0.3, 3.0).toDouble(),
+            ),
+          ),
+          _buildSelectionAction(
+            icon: Icons.zoom_in,
+            tooltip: 'Make bigger',
+            onTap: () => setState(
+              () => element.scale =
+                  ((element.scale ?? 1) + 0.15).clamp(0.3, 3.0).toDouble(),
+            ),
+          ),
+          _buildSelectionAction(
+            icon: Icons.copy,
+            tooltip: 'Duplicate',
+            onTap: () => _duplicateElement(element),
+          ),
+          _buildSelectionAction(
+            icon: Icons.delete_outline,
+            tooltip: 'Delete',
+            color: Colors.red,
+            onTap: () => _deleteElement(element),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSelectionAction({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: IconButton(
+        icon: Icon(icon, size: 20, color: color ?? AppTheme.darkBrown),
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  CanvasElement? get _selectedElement {
+    for (final e in _canvasElements) {
+      if (e.id == _selectedElementId) return e;
+    }
+    return null;
+  }
+
+  void _duplicateElement(CanvasElement element) {
+    setState(() {
+      final copy = CanvasElement(
+        id: '${element.type}_${DateTime.now().millisecondsSinceEpoch}',
+        type: element.type,
+        x: element.x + 24,
+        y: element.y + 24,
+        text: element.text,
+        textStyle: element.textStyle,
+        imageUrl: element.imageUrl,
+        width: element.width,
+        height: element.height,
+        emoji: element.emoji,
+        stickerSize: element.stickerSize,
+        ticketInfo: element.ticketInfo,
+        scale: element.scale,
+        rotation: element.rotation,
+        ticketId: element.ticketId,
+        localImageBytes: element.localImageBytes,
+      );
+      _canvasElements.add(copy);
+      _selectedElementId = copy.id;
+    });
+  }
+
+  void _deleteElement(CanvasElement element) {
+    setState(() {
+      _canvasElements.removeWhere((e) => e.id == element.id);
+      _selectedElementId = null;
+    });
+    final ticketId = element.ticketId;
+    if (ticketId != null) {
+      // Best effort: remove the uploaded image server-side too.
+      ApiClient.delete('/tickets/$ticketId').catchError((_) {});
+    }
+  }
+
   Widget _buildBottomToolPanel() {
     return Container(
       padding: const EdgeInsets.all(AppTheme.space3),
@@ -645,7 +1020,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
           _buildToolButton(
             icon: Icons.camera_alt_outlined,
             label: 'Scan tickets',
-            onTap: _addTicket,
+            onTap: _scanTicket,
           ),
           _buildToolButton(
             icon: Icons.emoji_emotions_outlined,
