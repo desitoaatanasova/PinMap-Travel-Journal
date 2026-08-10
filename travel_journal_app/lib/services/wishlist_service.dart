@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 
 class WishlistService {
   static List<WishlistItem> _items = [];
@@ -25,7 +26,6 @@ class WishlistService {
     } catch (e) {
       debugPrint('WishlistService.reloadItems error: $e');
     }
-    // reloadItems is void
   }
 
   static Future<void> addItem(int placeId) async {
@@ -42,16 +42,35 @@ class WishlistService {
       _items.add(newItem);
       await reloadItems();
     } catch (e) {
-      debugPrint('WishlistService.addItem error: $e');
+      debugPrint('WishlistService.addItem offline: $e');
+      _items.add(WishlistItem(
+        wishlistId: -placeId,
+        placeId: placeId,
+        name: '',
+      ));
+      await SyncQueueService.enqueue(SyncAction(
+        type: SyncActionType.addWishlist,
+        data: {'placeId': placeId},
+        timestamp: DateTime.now(),
+      ));
     }
   }
 
   static Future<void> removeItem(int wishlistId) async {
+    _items.removeWhere((item) => item.wishlistId == wishlistId);
+    if (wishlistId <= 0) {
+      // Unsynced optimistic item — the server never saw the add.
+      return;
+    }
     try {
       await ApiClient.delete('/wishlist/$wishlistId');
-      _items.removeWhere((item) => item.wishlistId == wishlistId);
     } catch (e) {
-      debugPrint('WishlistService.removeItem error: $e');
+      debugPrint('WishlistService.removeItem offline: $e');
+      await SyncQueueService.enqueue(SyncAction(
+        type: SyncActionType.removeWishlist,
+        data: {'id': wishlistId},
+        timestamp: DateTime.now(),
+      ));
     }
   }
 
@@ -74,7 +93,18 @@ class WishlistService {
       _items.add(newItem);
       await reloadItems();
     } catch (e) {
-      debugPrint('WishlistService.addCountry error: $e');
+      debugPrint('WishlistService.addCountry offline: $e');
+      _items.add(WishlistItem(
+        wishlistId: -countryId,
+        countryId: countryId,
+        name: '',
+        type: 'country',
+      ));
+      await SyncQueueService.enqueue(SyncAction(
+        type: SyncActionType.addWishlist,
+        data: {'countryId': countryId},
+        timestamp: DateTime.now(),
+      ));
     }
   }
 
@@ -91,5 +121,10 @@ class WishlistService {
     );
     if (item.wishlistId == 0) return;
     await removeItem(item.wishlistId);
+  }
+
+  static void reset() {
+    _items = [];
+    _loaded = false;
   }
 }

@@ -69,6 +69,13 @@ async function resolvePage(conn, journalId, pageId) {
     );
     if (existing.length > 0) return existing[0].page_id;
   }
+  // Prefer reusing an existing page so we never create duplicate page 1s.
+  const [first] = await conn.query(
+    'SELECT page_id FROM journal_pages WHERE journal_id = ? ORDER BY page_number, page_id LIMIT 1',
+    [journalId]
+  );
+  if (first.length > 0) return first[0].page_id;
+
   const [r] = await conn.query(
     'INSERT INTO journal_pages (journal_id, page_number) VALUES (?, 1)',
     [journalId]
@@ -129,20 +136,59 @@ router.post('/', authenticateToken, upload.fields([{ name: 'original', maxCount:
 
     const elementType = req.body.elementType || 'ticket';
     const elementContent = processedUrl || originalUrl;
-    const [el] = await conn.query(
-      'INSERT INTO journal_elements (page_id, element_type, content, x_position, y_position, width, height, scale, rotation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        pageId,
-        elementType,
-        elementContent,
-        parseInt(req.body.xPosition, 10) || 0,
-        parseInt(req.body.yPosition, 10) || 0,
-        parseInt(req.body.width, 10) || 200,
-        parseInt(req.body.height, 10) || 100,
-        parseFloat(req.body.scale) || 1,
-        parseFloat(req.body.rotation) || 0,
-      ]
-    );
+    const elementKey = req.body.elementKey || null;
+
+    // Upsert the journal element by its stable client key so geometry edits to
+    // pending (offline) media are preserved when the upload finally lands.
+    let elementId = null;
+    if (elementKey) {
+      const [existingEl] = await conn.query(
+        'SELECT element_id FROM journal_elements WHERE page_id = ? AND element_key = ?',
+        [pageId, elementKey]
+      );
+      if (existingEl.length > 0) {
+        elementId = existingEl[0].element_id;
+        await conn.query(
+          `UPDATE journal_elements SET
+             element_type=?, image_url=?, x_position=?, y_position=?,
+             width=?, height=?, scale=?, rotation=?, z_index=?
+           WHERE element_id=?`,
+          [
+            elementType, elementContent,
+            parseInt(req.body.xPosition, 10) || 0,
+            parseInt(req.body.yPosition, 10) || 0,
+            parseInt(req.body.width, 10) || 200,
+            parseInt(req.body.height, 10) || 100,
+            parseFloat(req.body.scale) || 1,
+            parseFloat(req.body.rotation) || 0,
+            parseInt(req.body.zIndex, 10) || 0,
+            elementId,
+          ]
+        );
+      }
+    }
+    if (!elementId) {
+      const [el] = await conn.query(
+        `INSERT INTO journal_elements
+           (page_id, element_type, content, image_url, x_position, y_position, width, height, scale, rotation, z_index, element_key)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          pageId,
+          elementType,
+          null,
+          elementContent,
+          parseInt(req.body.xPosition, 10) || 0,
+          parseInt(req.body.yPosition, 10) || 0,
+          parseInt(req.body.width, 10) || 200,
+          parseInt(req.body.height, 10) || 100,
+          parseFloat(req.body.scale) || 1,
+          parseFloat(req.body.rotation) || 0,
+          parseInt(req.body.zIndex, 10) || 0,
+          elementKey,
+        ]
+      );
+      elementId = el.insertId;
+    }
 
     await conn.commit();
     res.status(201).json({

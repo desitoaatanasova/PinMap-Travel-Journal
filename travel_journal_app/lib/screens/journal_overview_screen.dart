@@ -3,13 +3,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/widgets/empty_state.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
-class JournalOverviewPage extends StatelessWidget {
+class JournalOverviewPage extends StatefulWidget {
   const JournalOverviewPage({super.key});
+
+  @override
+  State<JournalOverviewPage> createState() => _JournalOverviewPageState();
+}
+
+class _JournalOverviewPageState extends State<JournalOverviewPage> {
+  @override
+  void initState() {
+    super.initState();
+    VisitedService.reloadVisited().then((_) {
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +132,7 @@ class JournalOverviewPage extends StatelessWidget {
   }
 
   Widget _buildCountryCard(BuildContext context, Country country) {
+    final isVisited = VisitedService.isCountryVisited(country.countryId);
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
       child: PremiumCard(
@@ -181,23 +196,48 @@ class JournalOverviewPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppTheme.space1),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          size: 14,
-                          color: Colors.green,
+                    GestureDetector(
+                      onTap: () async {
+                        await VisitedService.toggleCountry(country.countryId);
+                        if (mounted) setState(() {});
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space2,
+                          vertical: 2,
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Visited',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green,
-                          ),
+                        decoration: BoxDecoration(
+                          color: isVisited
+                              ? Colors.green.withValues(alpha: 0.15)
+                              : AppTheme.primary.withValues(alpha: 0.08),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusFull),
                         ),
-                      ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isVisited
+                                  ? Icons.check_circle
+                                  : Icons.check_circle_outline,
+                              size: 14,
+                              color:
+                                  isVisited ? Colors.green : AppTheme.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              isVisited ? 'Visited' : 'Mark visited',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: isVisited
+                                    ? Colors.green
+                                    : AppTheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

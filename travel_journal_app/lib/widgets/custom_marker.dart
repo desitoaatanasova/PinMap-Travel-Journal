@@ -15,6 +15,9 @@ class CustomMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayColor =
+        marker.isVisited ? const Color(0xFF2E7D32) : marker.color;
+    final displayIcon = marker.isVisited ? Icons.check : marker.icon;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -22,7 +25,7 @@ class CustomMarker extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: marker.color,
+            color: displayColor,
             shape: BoxShape.circle,
             border: Border.all(
               color: Colors.white,
@@ -37,7 +40,7 @@ class CustomMarker extends StatelessWidget {
             ],
           ),
           child: Icon(
-            marker.icon,
+            displayIcon,
             color: Colors.white,
             size: size * 0.5,
           ),
@@ -48,7 +51,7 @@ class CustomMarker extends StatelessWidget {
           child: Container(
             width: 12,
             height: 8,
-            color: marker.color,
+            color: displayColor,
           ),
         ),
       ],

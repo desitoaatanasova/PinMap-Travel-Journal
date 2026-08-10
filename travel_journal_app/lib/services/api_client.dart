@@ -74,6 +74,18 @@ class ApiClient {
     throw ApiException(response.statusCode, response.body);
   }
 
+  static Future<dynamic> put(String path, {Map<String, dynamic>? body, bool auth = true}) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl$path'),
+      headers: await _headers(auth: auth),
+      body: body != null ? jsonEncode(body) : null,
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    }
+    throw ApiException(response.statusCode, response.body);
+  }
+
   static Future<dynamic> patch(String path, {Map<String, dynamic>? body, bool auth = true}) async {
     final response = await http.patch(
       Uri.parse('$baseUrl$path'),

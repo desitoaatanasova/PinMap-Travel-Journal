@@ -4,7 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/services/place_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
-import 'package:pinmap_travel_journal/services/visited_places_service.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/screens/place_details_page.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -36,7 +37,24 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   void _toggleVisited(int placeId) async {
-    await VisitedPlacesService.toggleVisited(placeId);
+    int? cityId;
+    int? countryId;
+    final future = _placesFuture;
+    if (future != null) {
+      final places = await future;
+      final place = places.where((p) => p.placeId == placeId).firstOrNull;
+      if (place != null) {
+        cityId = place.cityId != 0 ? place.cityId : null;
+        countryId = cityId != null
+            ? CountryService.countryIdForCity(cityId)
+            : null;
+      }
+    }
+    await VisitedService.togglePlace(
+      placeId,
+      cityId: cityId,
+      countryId: countryId,
+    );
     setState(() {});
   }
 
@@ -92,7 +110,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   itemBuilder: (context, index) {
                     final place = places[index];
                     final isVisited =
-                        VisitedPlacesService.isVisited(place.placeId);
+                        VisitedService.isPlaceVisited(place.placeId);
                     return _buildPlaceCard(
                         context, place, isVisited, categoryColor);
                   },

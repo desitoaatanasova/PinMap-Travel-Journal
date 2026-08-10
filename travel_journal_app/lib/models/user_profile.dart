@@ -1,4 +1,5 @@
 class UserProfile {
+  final int userId;
   final String username;
   final String? firstName;
   final String? lastName;
@@ -14,6 +15,7 @@ class UserProfile {
   final List<String> travelPhotos;
 
   const UserProfile({
+    this.userId = 0,
     required this.username,
     this.firstName,
     this.lastName,

@@ -63,4 +63,28 @@ class CountryService {
     final idx = _countries.indexWhere((c) => c.name == name);
     return idx >= 0 ? _countries[idx].countryId : 0;
   }
+
+  /// Returns the country id that a city belongs to, or 0 if unknown.
+  static int countryIdForCity(int cityId) {
+    for (final country in _countries) {
+      for (final city in country.cityPins) {
+        if (city.cityId == cityId) return country.countryId;
+      }
+    }
+    return 0;
+  }
+
+  static String? cityName(int cityId) {
+    for (final country in _countries) {
+      for (final city in country.cityPins) {
+        if (city.cityId == cityId) return city.name;
+      }
+    }
+    return null;
+  }
+
+  static void reset() {
+    _countries = [];
+    _loaded = false;
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Place {
   final int placeId;
+  final int cityId;
   final String name;
   final String? shortDescription;
   final String? fullDescription;
@@ -18,6 +19,7 @@ class Place {
 
   const Place({
     required this.placeId,
+    this.cityId = 0,
     required this.name,
     this.shortDescription,
     this.fullDescription,
@@ -36,6 +38,7 @@ class Place {
   factory Place.fromJson(Map<String, dynamic> json) {
     return Place(
       placeId: json['place_id'] ?? 0,
+      cityId: (json['city_id'] as num?)?.toInt() ?? 0,
       name: json['name'] ?? '',
       shortDescription: json['short_description'],
       fullDescription: json['full_description'],

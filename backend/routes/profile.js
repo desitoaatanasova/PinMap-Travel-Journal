@@ -4,6 +4,53 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.put('/', authenticateToken, async (req, res) => {
+  try {
+    const { firstName, lastName, bio, profilePicture, profileStatus } = req.body;
+    const sets = [];
+    const params = [];
+    if (typeof firstName === 'string') {
+      sets.push('first_name = ?');
+      params.push(firstName);
+    }
+    if (typeof lastName === 'string') {
+      sets.push('last_name = ?');
+      params.push(lastName);
+    }
+    if (typeof bio === 'string') {
+      sets.push('bio = ?');
+      params.push(bio);
+    }
+    if (typeof profilePicture === 'string') {
+      sets.push('profile_picture = ?');
+      params.push(profilePicture);
+    }
+    if (profileStatus === 'public' || profileStatus === 'private') {
+      sets.push('profile_status = ?');
+      params.push(profileStatus);
+    }
+    if (sets.length > 0) {
+      params.push(req.userId);
+      await pool.query(`UPDATE users SET ${sets.join(', ')} WHERE user_id = ?`, params);
+    }
+    const [rows] = await pool.query(
+      `SELECT user_id, username, email, first_name, last_name, bio, profile_picture, profile_status, created_at
+       FROM users WHERE user_id = ?`,
+      [req.userId]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const user = rows[0];
+    user.firstName = user.first_name;
+    user.lastName = user.last_name;
+    res.json(user);
+  } catch (err) {
+    console.error('Update profile error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const [rows] = await pool.query(

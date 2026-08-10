@@ -6,6 +6,16 @@ import 'package:pinmap_travel_journal/services/country_service.dart';
 class PlaceService {
   static final Map<String, List<Place>> _cityCache = {};
 
+  static Future<Place?> getPlaceById(int id) async {
+    try {
+      final data = await ApiClient.get('/places/$id');
+      return Place.fromJson(data as Map<String, dynamic>);
+    } catch (e) {
+      debugPrint('PlaceService.getPlaceById($id) error: $e');
+      return null;
+    }
+  }
+
   static Future<List<Place>> getPlacesForCategory(String categoryName, String cityName) async {
     if (!_cityCache.containsKey(cityName)) {
       await _loadPlacesForCity(cityName);

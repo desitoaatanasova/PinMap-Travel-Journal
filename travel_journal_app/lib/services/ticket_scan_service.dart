@@ -19,6 +19,7 @@ class TicketSaveResult {
   final int? ticketId;
   final String? imageUrl;
   final String? localPath;
+  final String? elementKey;
   final bool queuedOffline;
 
   TicketSaveResult({
@@ -27,6 +28,7 @@ class TicketSaveResult {
     this.ticketId,
     this.imageUrl,
     this.localPath,
+    this.elementKey,
     this.queuedOffline = false,
   });
 }
@@ -72,6 +74,7 @@ class TicketScanService {
     required String journalTitle,
     required int countryId,
     required int? pageId,
+    required String elementKey,
     required Uint8List originalBytes,
     required Uint8List processedBytes,
     required bool backgroundRemoved,
@@ -81,6 +84,7 @@ class TicketScanService {
     required double height,
     required double scale,
     required double rotation,
+    int zIndex = 0,
   }) async {
     // Never lose the original: persist locally first (mobile keeps real files).
     final localOriginal = await LocalTicketStore.saveTicketBytes(
@@ -102,6 +106,7 @@ class TicketScanService {
           journalTitle: journalTitle,
           countryId: countryId,
           pageId: pageId,
+          elementKey: elementKey,
           originalBytes: originalBytes,
           processedBytes: processedBytes,
           backgroundRemoved: backgroundRemoved,
@@ -111,6 +116,7 @@ class TicketScanService {
           height: height,
           scale: scale,
           rotation: rotation,
+          zIndex: zIndex,
         );
         return TicketSaveResult(
           journalId: data['journalId'] as int? ?? journalId,
@@ -118,6 +124,7 @@ class TicketScanService {
           ticketId: data['ticketId'] as int?,
           imageUrl: data['processedImageUrl'] as String?,
           localPath: localProcessed,
+          elementKey: elementKey,
           queuedOffline: false,
         );
       } catch (e) {
@@ -137,12 +144,14 @@ class TicketScanService {
         'countryId': countryId,
         'pageId': pageId,
         'backgroundRemoved': backgroundRemoved,
+        'elementKey': elementKey,
         'xPosition': xPosition.round(),
         'yPosition': yPosition.round(),
         'width': width.round(),
         'height': height.round(),
         'scale': scale,
         'rotation': rotation,
+        'zIndex': zIndex,
         'localOriginalPath': localOriginal,
         'localProcessedPath': localProcessed,
         'originalBase64': originalBase64,
@@ -154,6 +163,7 @@ class TicketScanService {
     return TicketSaveResult(
       journalId: journalId,
       localPath: localProcessed,
+      elementKey: elementKey,
       queuedOffline: true,
     );
   }
@@ -170,6 +180,7 @@ class TicketScanService {
     required String journalTitle,
     required int countryId,
     required int? pageId,
+    required String elementKey,
     required Uint8List originalBytes,
     required Uint8List processedBytes,
     required bool backgroundRemoved,
@@ -179,6 +190,7 @@ class TicketScanService {
     required double height,
     required double scale,
     required double rotation,
+    int zIndex = 0,
   }) async {
     final data = await ApiClient.uploadMultipart(
       '/tickets',
@@ -194,7 +206,9 @@ class TicketScanService {
         'height': height.round().toString(),
         'scale': scale.toStringAsFixed(2),
         'rotation': rotation.toStringAsFixed(2),
+        'zIndex': zIndex.toString(),
         'elementType': 'ticket',
+        'elementKey': elementKey,
       },
       files: [
         MultipartFileSpec(

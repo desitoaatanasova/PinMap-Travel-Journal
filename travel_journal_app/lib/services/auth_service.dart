@@ -1,5 +1,6 @@
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 
 class AuthService {
   static UserProfile? _currentUser;
@@ -7,6 +8,12 @@ class AuthService {
 
   static bool get isLoggedIn => _isLoggedIn;
   static UserProfile? get currentUser => _currentUser;
+
+  static int? _userIdFrom(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is int) return raw;
+    return int.tryParse(raw.toString());
+  }
 
   static Future<bool> login(String username, String password) async {
     try {
@@ -16,7 +23,10 @@ class AuthService {
       }, auth: false);
       await ApiClient.setToken(data['token']);
       final u = data['user'];
+      final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
+      await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
+        userId: userId,
         username: u['username'] ?? '',
         firstName: u['firstName'],
         lastName: u['lastName'],
@@ -43,7 +53,10 @@ class AuthService {
       }, auth: false);
       await ApiClient.setToken(data['token']);
       final u = data['user'];
+      final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
+      await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
+        userId: userId,
         username: u['username'] ?? '',
         firstName: u['firstName'],
         lastName: u['lastName'],
@@ -61,6 +74,7 @@ class AuthService {
 
   static Future<void> logout() async {
     await ApiClient.clearToken();
+    await SyncQueueService.deactivateUser();
     _currentUser = null;
     _isLoggedIn = false;
   }
@@ -68,7 +82,10 @@ class AuthService {
   static Future<UserProfile?> getCurrentUser() async {
     try {
       final data = await ApiClient.get('/auth/me');
+      final userId = _userIdFrom(data['user_id']) ?? _userIdFrom(data['userId']) ?? 0;
+      await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
+        userId: userId,
         username: data['username'] ?? '',
         firstName: data['first_name'],
         lastName: data['last_name'],

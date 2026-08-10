@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
+import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'register_screen.dart';
 
@@ -129,10 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (email.isNotEmpty && password.isNotEmpty) {
                             final success = await AuthService.login(email, password);
                             if (success && mounted) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/home',
-                                (route) => false,
-                              );
+                              await DataLoader.loadAll();
+                              if (mounted) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/home',
+                                  (route) => false,
+                                );
+                              }
                             } else if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

@@ -6,6 +6,7 @@ class Trip {
   final DateTime endDate;
   final String tripType;
   final String travelStyle;
+  final int? numberOfDays;
   final List<TripDay> itinerary;
 
   const Trip({
@@ -16,6 +17,7 @@ class Trip {
     required this.endDate,
     this.tripType = '',
     this.travelStyle = '',
+    this.numberOfDays,
     this.itinerary = const [],
   });
 
@@ -27,6 +29,7 @@ class Trip {
       'endDate': endDate.toIso8601String(),
       'tripType': tripType,
       'travelStyle': travelStyle,
+      'numberOfDays': numberOfDays,
       'itinerary': itinerary.map((day) => day.toJson()).toList(),
     };
   }
@@ -40,9 +43,36 @@ class Trip {
       endDate: DateTime.parse(json['end_date']),
       tripType: json['trip_type'] ?? '',
       travelStyle: json['travel_style'] ?? '',
+      numberOfDays: json['number_of_days'] != null
+          ? (json['number_of_days'] as num).toInt()
+          : null,
       itinerary: json['itinerary'] != null
           ? (json['itinerary'] as List).map((d) => TripDay.fromJson(d)).toList()
           : [],
+    );
+  }
+
+  Trip copyWith({
+    int? tripId,
+    String? title,
+    int? countryId,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? tripType,
+    String? travelStyle,
+    int? numberOfDays,
+    List<TripDay>? itinerary,
+  }) {
+    return Trip(
+      tripId: tripId ?? this.tripId,
+      title: title ?? this.title,
+      countryId: countryId ?? this.countryId,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      tripType: tripType ?? this.tripType,
+      travelStyle: travelStyle ?? this.travelStyle,
+      numberOfDays: numberOfDays ?? this.numberOfDays,
+      itinerary: itinerary ?? this.itinerary,
     );
   }
 }
@@ -90,6 +120,22 @@ class TripDay {
           [],
     );
   }
+
+  List<TripActivity> activitiesForSlot(String timeSlot) {
+    switch (timeSlot) {
+      case 'Morning':
+        return morning;
+      case 'Afternoon':
+        return afternoon;
+      case 'Evening':
+        return evening;
+      default:
+        return const [];
+    }
+  }
+
+  List<TripActivity> get allActivities =>
+      [...morning, ...afternoon, ...evening];
 }
 
 class TripActivity {
@@ -98,6 +144,10 @@ class TripActivity {
   final String? placeImage;
   final String timeSlot;
   final String notes;
+  final double? latitude;
+  final double? longitude;
+  final int? categoryId;
+  final String? cityName;
 
   const TripActivity({
     this.placeId,
@@ -105,11 +155,17 @@ class TripActivity {
     this.placeImage,
     this.timeSlot = 'Morning',
     this.notes = '',
+    this.latitude,
+    this.longitude,
+    this.categoryId,
+    this.cityName,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'placeId': placeId,
+      'placeName': placeName,
+      'timeSlot': timeSlot,
       'notes': notes,
     };
   }
@@ -121,6 +177,20 @@ class TripActivity {
       placeImage: json['place_image'],
       timeSlot: json['time_slot'] ?? 'Morning',
       notes: json['notes'] ?? '',
+      latitude: json['latitude'] != null
+          ? (json['latitude'] is String
+              ? double.tryParse(json['latitude'])
+              : (json['latitude'] as num).toDouble())
+          : null,
+      longitude: json['longitude'] != null
+          ? (json['longitude'] is String
+              ? double.tryParse(json['longitude'])
+              : (json['longitude'] as num).toDouble())
+          : null,
+      categoryId: json['category_id'] != null
+          ? (json['category_id'] as num).toInt()
+          : null,
+      cityName: json['city_name'],
     );
   }
 }

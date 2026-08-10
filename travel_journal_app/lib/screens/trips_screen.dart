@@ -7,8 +7,26 @@ import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
-class TripsScreen extends StatelessWidget {
+class TripsScreen extends StatefulWidget {
   const TripsScreen({super.key});
+
+  @override
+  State<TripsScreen> createState() => _TripsScreenState();
+}
+
+class _TripsScreenState extends State<TripsScreen> {
+  Trip? _draft;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDraft();
+  }
+
+  Future<void> _loadDraft() async {
+    final draft = await TripService.loadDraft();
+    if (mounted) setState(() => _draft = draft);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +80,14 @@ class TripsScreen extends StatelessWidget {
               ),
             ),
           ),
+          if (_draft != null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    AppTheme.space4, 0, AppTheme.space4, AppTheme.space2),
+                child: _buildDraftCard(context, _draft!),
+              ),
+            ),
           if (trips.isEmpty)
             SliverFillRemaining(
               child: Center(
@@ -107,6 +133,71 @@ class TripsScreen extends StatelessWidget {
             child: SizedBox(height: AppTheme.space12),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDraftCard(BuildContext context, Trip draft) {
+    return PremiumCard(
+      padding: EdgeInsets.zero,
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TripPlanScreen(
+              tripId: draft.tripId.toString(),
+              trip: draft,
+            ),
+          ),
+        );
+        _loadDraft();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.space3),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppTheme.space2),
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+              ),
+              child: Icon(
+                Icons.auto_awesome,
+                color: AppTheme.primary,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: AppTheme.space3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    draft.title,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.darkBrown,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'AI draft ready — tap to review & save',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: AppTheme.warmGray,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: AppTheme.warmGray,
+            ),
+          ],
+        ),
       ),
     );
   }

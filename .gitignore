@@ -3,6 +3,11 @@ node_modules/
 package-lock.json
 package.json
 
+# Environment / secrets
+.env
+.env.local
+*.env
+
 # Temp files
 *.log
 *.swp

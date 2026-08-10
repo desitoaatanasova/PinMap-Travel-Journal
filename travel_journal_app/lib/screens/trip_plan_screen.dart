@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
+import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
+import 'package:pinmap_travel_journal/screens/trip_map_screen.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
-class TripPlanScreen extends StatelessWidget {
+class TripPlanScreen extends StatefulWidget {
   final String tripId;
   final Trip? trip;
 
@@ -15,8 +18,27 @@ class TripPlanScreen extends StatelessWidget {
   });
 
   @override
+  State<TripPlanScreen> createState() => _TripPlanScreenState();
+}
+
+class _TripPlanScreenState extends State<TripPlanScreen> {
+  Trip? _trip;
+  bool _saving = false;
+  bool _regenerating = false;
+
+  bool get _isDraft => _trip != null && _trip!.tripId == 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _trip =
+        widget.trip ??
+            TripService.getTripById(int.tryParse(widget.tripId) ?? 0);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final trip = this.trip ?? TripService.getTripById(int.tryParse(tripId) ?? 0);
+    final trip = _trip;
 
     if (trip == null) {
       return Scaffold(
@@ -123,62 +145,69 @@ class TripPlanScreen extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context, Trip trip) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Map view coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-            icon: const Icon(Icons.map, size: 18),
-            label: const Text('Map View'),
-          ),
+    final rowChildren = <Widget>[
+      Expanded(
+        child: OutlinedButton.icon(
+          onPressed: () => _openMapView(context, trip),
+          icon: const Icon(Icons.map, size: 18),
+          label: const Text('Map View'),
         ),
-        const SizedBox(width: AppTheme.space2),
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'PDF export coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
+      ),
+      const SizedBox(width: AppTheme.space2),
+      Expanded(
+        child: OutlinedButton.icon(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'PDF export coming soon!',
+                  style: GoogleFonts.dmSans(),
                 ),
-              );
-            },
-            icon: const Icon(Icons.picture_as_pdf, size: 18),
-            label: const Text('Export PDF'),
-          ),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+          icon: const Icon(Icons.picture_as_pdf, size: 18),
+          label: const Text('Export PDF'),
         ),
-        const SizedBox(width: AppTheme.space2),
+      ),
+      const SizedBox(width: AppTheme.space2),
+      if (_isDraft)
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Edit feature coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
+            onPressed: _regenerating ? null : () => _regenerate(context, trip),
+            icon: _regenerating
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh, size: 18),
+            label: const Text('Regenerate'),
+          ),
+        )
+      else
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => _openEditScreen(context, trip),
             icon: const Icon(Icons.edit, size: 18),
             label: const Text('Edit'),
           ),
         ),
-        const SizedBox(width: AppTheme.space2),
+      const SizedBox(width: AppTheme.space2),
+      if (_isDraft)
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => _confirmDiscard(context),
+            icon: const Icon(Icons.close, size: 18),
+            label: const Text('Discard'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.red,
+              side: const BorderSide(color: Colors.red),
+            ),
+          ),
+        )
+      else
         Expanded(
           child: OutlinedButton.icon(
             onPressed: () => _confirmDelete(context, trip.tripId),
@@ -190,7 +219,164 @@ class TripPlanScreen extends StatelessWidget {
             ),
           ),
         ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_isDraft) ...[
+          ElevatedButton.icon(
+            onPressed: _saving ? null : () => _saveDraft(context, trip),
+            icon: _saving
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.save),
+            label: Text(_saving ? 'Saving...' : 'Save Trip'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
+            ),
+          ),
+          const SizedBox(height: AppTheme.space2),
+        ],
+        Row(children: rowChildren),
+        if (_isDraft) ...[
+          const SizedBox(height: AppTheme.space2),
+          Center(
+            child: Text(
+              'AI draft — not saved to your trips yet',
+              style: GoogleFonts.dmSans(
+                fontSize: 12,
+                color: AppTheme.warmGray,
+              ),
+            ),
+          ),
+        ],
       ],
+    );
+  }
+
+  Future<void> _saveDraft(BuildContext context, Trip trip) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _saving = true);
+    try {
+      final saved = await TripService.saveDraftTrip(trip);
+      if (!mounted) return;
+      setState(() {
+        _trip = saved;
+        _saving = false;
+      });
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Trip saved to your trips!',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      final message =
+          e is ApiException ? e.message : 'Could not save the trip';
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(message, style: GoogleFonts.dmSans()),
+        ),
+      );
+    }
+  }
+
+  Future<void> _regenerate(BuildContext context, Trip trip) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _regenerating = true);
+    try {
+      final aiTrip = await TripService.generateTrip(
+        countryId: trip.countryId,
+        numberOfDays: trip.numberOfDays ?? trip.itinerary.length,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
+        tripType: trip.tripType,
+        travelStyle: trip.travelStyle,
+      );
+      await TripService.saveDraft(aiTrip);
+      if (!mounted) return;
+      setState(() {
+        _trip = aiTrip;
+        _regenerating = false;
+      });
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'New itinerary generated',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _regenerating = false);
+      final message =
+          e is ApiException ? e.message : 'Could not regenerate the trip';
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(message, style: GoogleFonts.dmSans()),
+        ),
+      );
+    }
+  }
+
+  void _confirmDiscard(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Discard Draft?',
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'This AI-generated draft will be removed.',
+          style: GoogleFonts.dmSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              TripService.clearDraft();
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Discard', style: GoogleFonts.dmSans()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openMapView(BuildContext context, Trip trip) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TripMapScreen(trip: trip)),
     );
   }
 
@@ -313,6 +499,21 @@ class TripPlanScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _openEditScreen(BuildContext context, Trip trip) async {
+    final updated = await Navigator.push<Trip>(
+      context,
+      MaterialPageRoute(builder: (_) => NewTripScreen(trip: trip)),
+    );
+    if (updated != null && mounted) {
+      setState(() {
+        _trip = updated;
+      });
+      if (updated.tripId == 0) {
+        await TripService.saveDraft(updated);
+      }
+    }
   }
 
   void _confirmDelete(BuildContext context, int tripId) {

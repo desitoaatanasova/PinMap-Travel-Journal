@@ -15,7 +15,7 @@ router.get('/', authenticateToken, async (req, res) => {
       );
       for (const page of pages) {
         const [elements] = await pool.query(
-          'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY element_id', [page.page_id]
+          'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY z_index ASC, element_id ASC', [page.page_id]
         );
         page.elements = elements;
       }
@@ -42,7 +42,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     );
     for (const page of pages) {
       const [elements] = await pool.query(
-        'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY element_id', [page.page_id]
+        'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY z_index ASC, element_id ASC', [page.page_id]
       );
       page.elements = elements;
     }
@@ -85,35 +85,115 @@ router.post('/save', authenticateToken, async (req, res) => {
       journalId = r.insertId;
     }
 
+    const savedPages = [];
     if (pages) {
-      // Delete old pages and elements for this journal
-      const [oldPages] = await conn.query(
+      const [existingPages] = await conn.query(
         'SELECT page_id FROM journal_pages WHERE journal_id = ?', [journalId]
       );
-      for (const oldPage of oldPages) {
-        await conn.query('DELETE FROM journal_elements WHERE page_id = ?', [oldPage.page_id]);
-      }
-      await conn.query('DELETE FROM journal_pages WHERE journal_id = ?', [journalId]);
+      const existingPageIds = new Set(existingPages.map(p => p.page_id));
+      const keptPageIds = new Set();
 
       for (const page of pages) {
-        const [pageResult] = await conn.query(
-          'INSERT INTO journal_pages (journal_id, page_number, background_color) VALUES (?, ?, ?)',
-          [journalId, page.pageNumber, page.backgroundColor || null]
-        );
-        const pageId = pageResult.insertId;
-        if (page.elements) {
+        let pageId;
+        const clientPageId = page.pageId;
+        if (clientPageId && existingPageIds.has(Number(clientPageId))) {
+          pageId = Number(clientPageId);
+          await conn.query(
+            'UPDATE journal_pages SET page_number=?, background_color=? WHERE page_id=?',
+            [page.pageNumber, page.backgroundColor || null, pageId]
+          );
+        } else {
+          const [pageResult] = await conn.query(
+            'INSERT INTO journal_pages (journal_id, page_number, background_color) VALUES (?, ?, ?)',
+            [journalId, page.pageNumber, page.backgroundColor || null]
+          );
+          pageId = pageResult.insertId;
+        }
+        keptPageIds.add(pageId);
+        savedPages.push({ pageId, pageNumber: page.pageNumber });
+
+        if (page.elements && page.elements.length > 0) {
+          const [existingElements] = await conn.query(
+            'SELECT * FROM journal_elements WHERE page_id = ?', [pageId]
+          );
+          const keepElementIds = new Set();
+
           for (const el of page.elements) {
+            const isMedia = el.elementType === 'image' || el.elementType === 'ticket';
+            const content = isMedia ? null : (el.content || null);
+            const imageUrl = isMedia ? ((el.imageUrl || el.content) || null) : null;
+            const elementKey = el.elementKey || null;
+
+            let match = null;
+            if (elementKey) {
+              match = existingElements.find(
+                e => e.element_key && e.element_key === elementKey
+              );
+            }
+            if (!match && el.elementId) {
+              match = existingElements.find(e => e.element_id === Number(el.elementId));
+            }
+
+            if (match) {
+              // Keep the existing image when a media element is still pending
+              // (imageUrl null) so geometry saves don't wipe the upload URL.
+              const keepImage = isMedia && imageUrl == null ? match.image_url : imageUrl;
+              await conn.query(
+                `UPDATE journal_elements SET
+                   element_type=?, content=?, image_url=?,
+                   x_position=?, y_position=?, width=?, height=?,
+                   scale=?, rotation=?, z_index=?,
+                   element_key=COALESCE(?, element_key)
+                 WHERE element_id=?`,
+                [
+                  el.elementType, content, keepImage,
+                  el.xPosition || 0, el.yPosition || 0, el.width || 200, el.height || 100,
+                  el.scale || 1, el.rotation || 0, el.zIndex || 0,
+                  elementKey, match.element_id,
+                ]
+              );
+              keepElementIds.add(match.element_id);
+            } else {
+              const [elResult] = await conn.query(
+                `INSERT INTO journal_elements
+                   (page_id, element_type, content, image_url, x_position, y_position, width, height, scale, rotation, z_index, element_key)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                  pageId, el.elementType, content, imageUrl,
+                  el.xPosition || 0, el.yPosition || 0, el.width || 200, el.height || 100,
+                  el.scale || 1, el.rotation || 0, el.zIndex || 0,
+                  elementKey,
+                ]
+              );
+              keepElementIds.add(elResult.insertId);
+            }
+          }
+
+          if (keepElementIds.size > 0) {
+            const ids = [...keepElementIds];
             await conn.query(
-              'INSERT INTO journal_elements (page_id, element_type, content, x_position, y_position, width, height, scale, rotation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-              [pageId, el.elementType, el.content || null, el.xPosition || 0, el.yPosition || 0, el.width || 200, el.height || 100, el.scale || 1, el.rotation || 0]
+              `DELETE FROM journal_elements WHERE page_id = ? AND element_id NOT IN (${ids.map(() => '?').join(',')})`,
+              [pageId, ...ids]
             );
+          } else {
+            await conn.query('DELETE FROM journal_elements WHERE page_id = ?', [pageId]);
           }
         }
+      }
+
+      if (keptPageIds.size > 0) {
+        const ids = [...keptPageIds];
+        await conn.query(
+          `DELETE FROM journal_pages WHERE journal_id = ? AND page_id NOT IN (${ids.map(() => '?').join(',')})`,
+          [journalId, ...ids]
+        );
+      } else {
+        await conn.query('DELETE FROM journal_pages WHERE journal_id = ?', [journalId]);
       }
     }
 
     await conn.commit();
-    res.status(201).json({ id: journalId });
+    res.status(201).json({ id: journalId, pages: savedPages });
   } catch (err) {
     await conn.rollback();
     console.error('Save journal error:', err);

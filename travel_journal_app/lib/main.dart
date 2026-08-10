@@ -13,11 +13,6 @@ import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/screens/profile_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
-import 'package:pinmap_travel_journal/services/wishlist_service.dart';
-import 'package:pinmap_travel_journal/services/trip_service.dart';
-import 'package:pinmap_travel_journal/services/country_service.dart';
-import 'package:pinmap_travel_journal/services/journal_service.dart';
-import 'package:pinmap_travel_journal/services/visited_places_service.dart';
 import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 import 'package:pinmap_travel_journal/services/connectivity_service.dart';
 import 'package:pinmap_travel_journal/widgets/offline_banner.dart';
@@ -26,14 +21,6 @@ import 'package:pinmap_travel_journal/theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ApiConfig.loadOverride();
-  await WishlistService.loadItems();
-  await TripService.loadTrips();
-  await CountryService.loadCountries();
-  await JournalService.loadJournals();
-  await VisitedPlacesService.loadVisitedPlaces();
-  await SyncQueueService.loadQueue();
-  // Best effort: flush any queued offline actions at startup.
-  SyncQueueService.processQueue();
   runApp(const TravelJournalApp());
 }
 
@@ -72,7 +59,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   int _selectedIndex = 0;
   final ConnectivityService _connectivity = ConnectivityService();
   StreamSubscription<bool>? _onlineSub;
@@ -88,6 +75,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _onlineSub = _connectivity.isOnline.listen((online) {
       if (online) {
         SyncQueueService.processQueue();
@@ -96,7 +84,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Flush anything queued while the app was backgrounded.
+      SyncQueueService.processQueue();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _onlineSub?.cancel();
     super.dispose();
   }

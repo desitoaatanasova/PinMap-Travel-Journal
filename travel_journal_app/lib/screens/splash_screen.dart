@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
+import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -41,7 +42,10 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _checkAuth() async {
     final loggedIn = await AuthService.checkLoggedIn();
     if (loggedIn && mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+      await DataLoader.loadAll();
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+      }
     }
   }
 

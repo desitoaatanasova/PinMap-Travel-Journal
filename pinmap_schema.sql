@@ -134,13 +134,32 @@ CREATE TABLE IF NOT EXISTS journal_pages (
 CREATE TABLE IF NOT EXISTS journal_elements (
   element_id INT AUTO_INCREMENT PRIMARY KEY,
   page_id INT NOT NULL,
-  element_type VARCHAR(50) NOT NULL,
+  element_type ENUM('text','image','sticker','ticket') NOT NULL,
   content TEXT DEFAULT NULL,
+  image_url VARCHAR(500) DEFAULT NULL,
   x_position INT DEFAULT 0,
   y_position INT DEFAULT 0,
   width INT DEFAULT 200,
   height INT DEFAULT 100,
+  scale DOUBLE DEFAULT 1,
+  rotation DOUBLE DEFAULT 0,
+  z_index INT NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (page_id) REFERENCES journal_pages(page_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ===== TICKET SCANS =====
+CREATE TABLE IF NOT EXISTS ticket_scans (
+  ticket_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  journal_id INT NOT NULL,
+  page_id INT DEFAULT NULL,
+  original_image_url VARCHAR(500) DEFAULT NULL,
+  processed_image_url VARCHAR(500) DEFAULT NULL,
+  background_removed TINYINT(1) DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (journal_id) REFERENCES journals(journal_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ===== WISHLIST =====

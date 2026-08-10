@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class NewTripScreen extends StatefulWidget {
-  const NewTripScreen({super.key});
+  final Trip? trip;
+
+  const NewTripScreen({super.key, this.trip});
 
   @override
   State<NewTripScreen> createState() => _NewTripScreenState();
 }
 
 class _NewTripScreenState extends State<NewTripScreen> {
+  late final bool _isEditing;
   int? _selectedCountryId;
   String? _selectedCountryName;
   int _numberOfDays = 3;
@@ -21,6 +25,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   DateTime? _endDate;
   bool _isSolo = true;
   String _vacationType = 'Historical';
+  bool _generating = false;
 
   final List<String> _vacationTypes = const [
     'Historical',
@@ -28,6 +33,22 @@ class _NewTripScreenState extends State<NewTripScreen> {
     'Hidden Gems',
     'Mixed',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final trip = widget.trip;
+    _isEditing = trip != null;
+    if (trip != null) {
+      _selectedCountryId = trip.countryId;
+      _selectedCountryName = trip.title;
+      _numberOfDays = trip.endDate.difference(trip.startDate).inDays + 1;
+      _startDate = trip.startDate;
+      _endDate = trip.endDate;
+      _isSolo = trip.travelStyle != 'Group';
+      _vacationType = trip.tripType.isEmpty ? 'Historical' : trip.tripType;
+    }
+  }
 
   Widget _buildSectionTitle(String title) {
     return Text(
@@ -146,25 +167,123 @@ class _NewTripScreenState extends State<NewTripScreen> {
     return _selectedCountryId != null && _startDate != null && _endDate != null;
   }
 
-  void _generateTripPlan() {
+  Future<void> _generateTripPlan() async {
+    final countryName = _selectedCountryName!;
+    setState(() => _generating = true);
+    try {
+      final aiTrip = await TripService.generateTrip(
+        countryId: _selectedCountryId!,
+        countryName: countryName,
+        numberOfDays: _numberOfDays,
+        startDate: _startDate!,
+        endDate: _endDate!,
+        tripType: _vacationType,
+        travelStyle: _isSolo ? 'Solo' : 'Group',
+      );
+      await TripService.saveDraft(aiTrip);
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TripPlanScreen(
+            tripId: aiTrip.tripId.toString(),
+            trip: aiTrip,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      await _showGenerationError(context, e, countryName);
+    } finally {
+      if (mounted) {
+        setState(() => _generating = false);
+      }
+    }
+  }
+
+  Future<void> _showGenerationError(
+      BuildContext context, Object error, String countryName) async {
+    final message = error is ApiException
+        ? error.message
+        : 'Something went wrong generating your trip.';
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "Couldn't Generate Trip",
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          message,
+          style: GoogleFonts.dmSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: GoogleFonts.dmSans(color: AppTheme.warmGray)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _generateTripPlan();
+            },
+            child: Text('Retry', style: GoogleFonts.dmSans(color: AppTheme.primary)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _useBasicPlan(countryName);
+            },
+            child: Text('Use basic plan', style: GoogleFonts.dmSans(color: AppTheme.primary)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _useBasicPlan(String countryName) {
     final trip = Trip(
       tripId: DateTime.now().millisecondsSinceEpoch,
+      title: countryName,
+      countryId: _selectedCountryId!,
+      startDate: _startDate!,
+      endDate: _endDate!,
+      tripType: _vacationType,
+      travelStyle: _isSolo ? 'Solo' : 'Group',
+      numberOfDays: _numberOfDays,
+      itinerary: _buildMockItinerary(countryName),
+    );
+    TripService.addTrip(trip);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            TripPlanScreen(tripId: trip.tripId.toString(), trip: trip),
+      ),
+    );
+  }
+
+  void _saveTrip() {
+    final trip = Trip(
+      tripId: widget.trip!.tripId,
       title: _selectedCountryName!,
       countryId: _selectedCountryId!,
       startDate: _startDate!,
       endDate: _endDate!,
       tripType: _vacationType,
       travelStyle: _isSolo ? 'Solo' : 'Group',
-      itinerary: _buildMockItinerary(_selectedCountryName!),
+      numberOfDays: _numberOfDays,
+      itinerary: _numberOfDays == widget.trip!.itinerary.length
+          ? widget.trip!.itinerary
+          : _buildMockItinerary(_selectedCountryName!),
     );
-    TripService.addTrip(trip);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TripPlanScreen(
-            tripId: trip.tripId.toString(), trip: trip),
-      ),
-    );
+    if (trip.tripId != 0) {
+      TripService.updateTrip(trip);
+    }
+    Navigator.pop(context, trip);
   }
 
   List<TripDay> _buildMockItinerary(String countryName) {
@@ -205,7 +324,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          'New Trip',
+          _isEditing ? 'Edit Trip' : 'New Trip',
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -388,9 +507,24 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ),
             const SizedBox(height: AppTheme.space8),
             ElevatedButton.icon(
-              onPressed: _canGenerate ? _generateTripPlan : null,
-              icon: const Icon(Icons.auto_awesome),
-              label: const Text('Generate Trip Plan'),
+              onPressed: (_canGenerate && !_generating)
+                  ? (_isEditing ? _saveTrip : _generateTripPlan)
+                  : null,
+              icon: _generating
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Icon(_isEditing ? Icons.save : Icons.auto_awesome),
+              label: Text(
+                _generating
+                    ? 'Generating...'
+                    : (_isEditing ? 'Save Trip' : 'Generate Trip Plan'),
+              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                     vertical: AppTheme.space3),

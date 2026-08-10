@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/screens/settings_screen.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -197,6 +198,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildStatsRow(UserProfile profile) {
+    final placesCount = profile.placesVisited > 0
+        ? profile.placesVisited
+        : VisitedService.visitedPlaceIds.length;
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
@@ -207,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat('${profile.placesVisited}', 'Places', Icons.public),
+          _buildStat('$placesCount', 'Places', Icons.public),
           _buildStat('${profile.tripsPlanned}', 'Trips', Icons.luggage),
           _buildStat('${profile.followersCount}', 'Followers', Icons.people),
           _buildStat('${profile.followingCount}', 'Following', Icons.person_add),
@@ -261,17 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       children: [
         OutlinedButton.icon(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Edit profile coming soon!',
-                  style: GoogleFonts.dmSans(),
-                ),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          },
+          onPressed: _showEditProfileDialog,
           icon: const Icon(Icons.person_outline, size: 20),
           label: const Text('Edit Profile'),
           style: OutlinedButton.styleFrom(
@@ -299,6 +293,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showEditProfileDialog() {
+    final profile = _profile;
+    if (profile == null) return;
+    final firstNameController =
+        TextEditingController(text: profile.firstName ?? '');
+    final lastNameController =
+        TextEditingController(text: profile.lastName ?? '');
+    final bioController = TextEditingController(text: profile.bio ?? '');
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Edit Profile',
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: firstNameController,
+                decoration: const InputDecoration(
+                  labelText: 'First name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: AppTheme.space3),
+              TextField(
+                controller: lastNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Last name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: AppTheme.space3),
+              TextField(
+                controller: bioController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Bio',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await ProfileService.updateProfile(
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                bio: bioController.text,
+              );
+              await ProfileService.reloadProfile();
+              if (dialogContext.mounted) Navigator.pop(dialogContext);
+              if (mounted) {
+                await _loadProfile();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Profile updated',
+                      style: GoogleFonts.dmSans(),
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: Text('Save', style: GoogleFonts.dmSans()),
+          ),
+        ],
+      ),
     );
   }
 

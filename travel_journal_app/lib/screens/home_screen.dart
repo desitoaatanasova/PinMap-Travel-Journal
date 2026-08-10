@@ -7,6 +7,7 @@ import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/location.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/services/location_search_service.dart';
 import 'package:pinmap_travel_journal/screens/country_page.dart';
 import 'package:pinmap_travel_journal/widgets/travel_progress_bar.dart';
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadData() async {
     await CountryService.reloadCountries();
+    await VisitedService.reloadVisited();
     if (mounted) {
       setState(() {
         _countries = CountryService.getAllCountries();
@@ -66,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               position: city.latLng,
               title: city.name,
               category: MarkerCategory.hiddenGems,
+              isVisited: VisitedService.isCityVisited(city.cityId),
             ),
             size: 36,
           ),

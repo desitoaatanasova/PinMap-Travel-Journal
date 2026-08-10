@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/screens/trips_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
+import 'package:pinmap_travel_journal/services/auth_service.dart';
+import 'package:pinmap_travel_journal/services/data_loader.dart';
+import 'package:pinmap_travel_journal/services/profile_service.dart';
+import 'package:pinmap_travel_journal/services/settings_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -19,13 +23,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _selectedLanguage = 'English';
   final List<String> _languages = const [
     'English',
+    'Bulgarian',
     'Spanish',
     'French',
-    'Japanese',
     'German',
+    'Japanese',
     'Chinese',
     'Italian',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settings = await SettingsService.getSettings();
+    final profile = await ProfileService.getProfile();
+    if (mounted) {
+      setState(() {
+        _notificationsEnabled = settings.notificationsEnabled;
+        _offlineModeEnabled = settings.offlineModeEnabled;
+        _selectedLanguage = settings.language;
+        _isProfilePrivate = profile.profileStatus == 'private';
+      });
+    }
+  }
+
+  void _onNotificationsChanged(bool value) {
+    setState(() {
+      _notificationsEnabled = value;
+    });
+    SettingsService.updateSettings(notificationsEnabled: value);
+  }
+
+  void _onOfflineChanged(bool value) {
+    setState(() {
+      _offlineModeEnabled = value;
+    });
+    SettingsService.updateSettings(offlineModeEnabled: value);
+  }
+
+  void _onProfileStatusChanged(bool value) {
+    setState(() {
+      _isProfilePrivate = value;
+    });
+    ProfileService.updateProfile(
+      profileStatus: value ? 'private' : 'public',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,24 +132,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: 'Notifications',
               subtitle: 'Receive travel reminders and updates',
               value: _notificationsEnabled,
-              onChanged: (value) {
-                setState(() {
-                  _notificationsEnabled = value;
-                });
-              },
+              onChanged: _onNotificationsChanged,
             ),
             _buildToggleRow(
               icon: Icons.cloud_off_outlined,
               title: 'Available Offline',
               subtitle: _offlineModeEnabled
-                  ? '3 trips, 12 photos saved'
-                  : 'No content saved offline',
+                  ? 'Offline access enabled'
+                  : 'Offline access disabled',
               value: _offlineModeEnabled,
-              onChanged: (value) {
-                setState(() {
-                  _offlineModeEnabled = value;
-                });
-              },
+              onChanged: _onOfflineChanged,
             ),
             _buildToggleRow(
               icon: Icons.lock_outlined,
@@ -111,11 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ? 'Private - Only followers can see your activity'
                   : 'Public - Anyone can see your activity',
               value: _isProfilePrivate,
-              onChanged: (value) {
-                setState(() {
-                  _isProfilePrivate = value;
-                });
-              },
+              onChanged: _onProfileStatusChanged,
             ),
             const SizedBox(height: AppTheme.space6),
             _buildSectionHeader('General'),
@@ -459,6 +494,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   setState(() {
                     _selectedLanguage = lang;
                   });
+                  SettingsService.updateSettings(language: lang);
                   Navigator.pop(context);
                 },
               );
@@ -554,13 +590,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/login',
-                (route) => false,
-              );
+              await AuthService.logout();
+              await DataLoader.resetAll();
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/login',
+                  (route) => false,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,

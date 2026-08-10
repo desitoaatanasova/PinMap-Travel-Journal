@@ -8,6 +8,8 @@ import 'package:pinmap_travel_journal/models/country_theme.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
 import 'package:pinmap_travel_journal/services/country_theme_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
+import 'package:pinmap_travel_journal/services/ratings_service.dart';
 import 'package:pinmap_travel_journal/screens/city_page.dart';
 import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -25,20 +27,26 @@ class _CountryPageState extends State<CountryPage> {
   final MapController _mapController = MapController();
   int _rating = 0;
   bool _isWishlisted = false;
+  bool _isVisited = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshWishlistState();
+      _refreshState();
     });
   }
 
-  Future<void> _refreshWishlistState() async {
+  Future<void> _refreshState() async {
     await WishlistService.loadItems();
+    final rating = await RatingsService.getCountryRating(
+        widget.country.countryId);
     if (mounted) {
       setState(() {
-        _isWishlisted = WishlistService.isCountryInWishlist(widget.country.countryId);
+        _isWishlisted =
+            WishlistService.isCountryInWishlist(widget.country.countryId);
+        _isVisited = VisitedService.isCountryVisited(widget.country.countryId);
+        _rating = rating?.myRating ?? 0;
       });
     }
   }
@@ -169,9 +177,55 @@ class _CountryPageState extends State<CountryPage> {
             onPressed: () => _showRatingDialog(theme),
             icon: Icon(Icons.star, color: theme.accentColor, size: 20),
             label: Text(
-              _rating > 0 ? 'Rated $_rating/5' : 'Rate',
+              _rating > 0 ? '$_rating/5' : 'Rate',
               style: GoogleFonts.dmSans(
-                fontSize: 16,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppTheme.space3),
+        Expanded(
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isVisited ? Colors.green : theme.primaryColor,
+              foregroundColor: theme.backgroundColor,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
+            ),
+            onPressed: () async {
+              await VisitedService.toggleCountry(widget.country.countryId);
+              if (mounted) {
+                setState(() {
+                  _isVisited = VisitedService.isCountryVisited(
+                      widget.country.countryId);
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      _isVisited
+                          ? '${widget.country.name} marked as visited'
+                          : '${widget.country.name} no longer marked as visited',
+                      style: GoogleFonts.dmSans(),
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            icon: Icon(
+              _isVisited ? Icons.check_circle : Icons.check_circle_outline,
+              color: Colors.white,
+              size: 20,
+            ),
+            label: Text(
+              _isVisited ? 'Visited' : 'Visited?',
+              style: GoogleFonts.dmSans(
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -195,7 +249,7 @@ class _CountryPageState extends State<CountryPage> {
               } else {
                 await WishlistService.addCountry(widget.country.countryId);
               }
-              await _refreshWishlistState();
+              await _refreshState();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -218,7 +272,7 @@ class _CountryPageState extends State<CountryPage> {
             label: Text(
               _isWishlisted ? 'Wishlisted' : 'Wishlist',
               style: GoogleFonts.dmSans(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -344,16 +398,61 @@ class _CountryPageState extends State<CountryPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(AppTheme.space2),
-              child: Text(
-                city.name,
-                style: GoogleFonts.dmSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: theme.textColor,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+              child: Column(
+                children: [
+                  Text(
+                    city.name,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textColor,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  GestureDetector(
+                    onTap: () async {
+                      final cityVisited =
+                          VisitedService.isCityVisited(city.cityId);
+                      await VisitedService.toggleCity(
+                        city.cityId,
+                        countryId: cityVisited
+                            ? null
+                            : widget.country.countryId,
+                      );
+                      if (mounted) setState(() {});
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          VisitedService.isCityVisited(city.cityId)
+                              ? Icons.check_circle
+                              : Icons.check_circle_outline,
+                          size: 12,
+                          color: VisitedService.isCityVisited(city.cityId)
+                              ? Colors.green
+                              : theme.primaryColor.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          VisitedService.isCityVisited(city.cityId)
+                              ? 'Visited'
+                              : 'Mark',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: VisitedService.isCityVisited(city.cityId)
+                                ? Colors.green
+                                : theme.primaryColor.withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -416,6 +515,7 @@ class _CountryPageState extends State<CountryPage> {
                           position: city.latLng,
                           title: city.name,
                           category: MarkerCategory.hiddenGems,
+                          isVisited: VisitedService.isCityVisited(city.cityId),
                         ),
                         size: 36,
                       ),
@@ -452,9 +552,11 @@ class _CountryPageState extends State<CountryPage> {
                 size: 36,
               ),
               onPressed: () {
+                final rating = index + 1;
                 setState(() {
-                  _rating = index + 1;
+                  _rating = rating;
                 });
+                RatingsService.rateCountry(widget.country.countryId, rating);
                 Navigator.pop(context);
               },
             );

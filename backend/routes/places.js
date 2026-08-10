@@ -44,4 +44,28 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const [places] = await pool.query(
+      `SELECT p.*, pc.name AS category_name, pc.icon AS category_icon, pc.marker_color AS category_marker_color
+       FROM places p
+       JOIN place_categories pc ON p.category_id = pc.category_id
+       WHERE p.place_id = ?`,
+      [req.params.id]
+    );
+    if (places.length === 0) {
+      return res.status(404).json({ error: 'Place not found' });
+    }
+    const place = places[0];
+    const [photos] = await pool.query(
+      'SELECT photo_id, image_url FROM place_photos WHERE place_id = ?', [place.place_id]
+    );
+    place.photos = photos;
+    res.json(place);
+  } catch (err) {
+    console.error('Get place error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

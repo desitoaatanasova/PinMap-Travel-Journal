@@ -6,7 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
-import 'package:pinmap_travel_journal/services/visited_places_service.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/widgets/custom_marker.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -37,7 +38,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   void initState() {
     super.initState();
     _isInWishlist = WishlistService.isInWishlist(widget.place.placeId);
-    _isVisited = VisitedPlacesService.isVisited(widget.place.placeId);
+    _isVisited = VisitedService.isPlaceVisited(widget.place.placeId);
   }
 
   Future<void> _toggleWishlist() async {
@@ -369,9 +370,15 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   Widget _buildVisitedButton(Color categoryColor) {
     return ElevatedButton.icon(
       onPressed: () async {
-        await VisitedPlacesService.toggleVisited(widget.place.placeId);
+        await VisitedService.togglePlace(
+          widget.place.placeId,
+          cityId: widget.place.cityId,
+          countryId: widget.place.cityId != 0
+              ? CountryService.countryIdForCity(widget.place.cityId)
+              : 0,
+        );
         setState(() {
-          _isVisited = VisitedPlacesService.isVisited(widget.place.placeId);
+          _isVisited = VisitedService.isPlaceVisited(widget.place.placeId);
         });
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
