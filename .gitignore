@@ -12,6 +12,10 @@ package.json
 *.log
 *.swp
 .DS_Store
+query
+tmp.txt
+.backend.pid
+.flutter.pid
 
 # IDE
 .vscode/
