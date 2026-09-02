@@ -20,7 +20,22 @@ class AiPlannerError extends Error {
   }
 }
 
-async function loadCountryCatalog(countryId) {
+async function loadCountryCatalog({ countryId, cityIds = [] }) {
+  const params = [];
+  let where;
+  if (Array.isArray(cityIds) && cityIds.length > 0) {
+    const validIds = cityIds.map((id) => parseInt(id, 10)).filter((id) => Number.isInteger(id));
+    if (validIds.length > 0) {
+      where = `c.city_id IN (${validIds.map(() => '?').join(',')})`;
+      params.push(...validIds);
+    } else {
+      where = 'c.country_id = ?';
+      params.push(countryId);
+    }
+  } else {
+    where = 'c.country_id = ?';
+    params.push(countryId);
+  }
   const [rows] = await pool.query(
     `SELECT p.place_id, p.name, p.short_description, p.latitude, p.longitude,
             p.image_cover, p.category_id, pc.name AS category_name,
@@ -28,9 +43,9 @@ async function loadCountryCatalog(countryId) {
      FROM places p
      JOIN place_categories pc ON p.category_id = pc.category_id
      JOIN cities c ON p.city_id = c.city_id
-     WHERE c.country_id = ?
+     WHERE ${where}
      ORDER BY pc.category_id, c.name, p.name`,
-    [countryId]
+    params
   );
   return rows;
 }
@@ -53,7 +68,7 @@ function serializeCatalog(places) {
     .join('\n');
 }
 
-function buildPrompt({ countryName, numberOfDays, vacationType, travelStyle, catalogText }) {
+function buildPrompt({ countryName, numberOfDays, vacationType, travelStyle, catalogText, cityNames, arrivalCity, departureCity, participantNames }) {
   const preferredCategories = CATEGORY_BY_TYPE[vacationType] || CATEGORY_BY_TYPE.Mixed;
   const categoryNames = {
     1: 'Historical Sights',
@@ -68,13 +83,30 @@ function buildPrompt({ countryName, numberOfDays, vacationType, travelStyle, cat
       ? 'relaxing cafés, viewpoints and low-key local spots'
       : 'lively squares, restaurants and places with great atmosphere';
 
+  const cityLine = cityNames && cityNames.length > 0
+    ? `- Cities to visit: ${cityNames.join(', ')}`
+    : `- Base country: ${countryName}`;
+  const arrivalLine = arrivalCity
+    ? `- Arrival city: the user arrives in ${arrivalCity} and the first day of the itinerary should start there.`
+    : '';
+  const departureLine = departureCity
+    ? `- Departure city: the user departs from ${departureCity}; the last day should end there (avoid scheduling the final evening far from it).`
+    : '';
+  const groupLine =
+    travelStyle === 'Group' && participantNames && participantNames.length > 0
+      ? `- This is a GROUP trip with these participants: ${participantNames.join(', ')}. Prefer activities, restaurants and squares that work well for a group and mention the group context in notes where relevant.`
+      : '';
+
   return `You are a travel planner for the PinMap app. Create a day-by-day itinerary for a trip to ${countryName}.
 
 User preferences:
 - Duration: exactly ${numberOfDays} day(s)
 - Vacation type: ${vacationType} (strongly prefer places from these categories: ${preferred})
 - Travel style: ${travelStyle}
-
+${cityLine}
+${arrivalLine}
+${departureLine}
+${groupLine}
 Rules:
 1. Use ONLY places from the provided catalog below. Every activity MUST reference a place_id that exists in the catalog. Never invent, guess or approximate a place that is not listed.
 2. The itinerary must have exactly ${numberOfDays} day(s).
@@ -198,12 +230,12 @@ function addDays(dateStr, days) {
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
 }
 
-async function generateTrip({ countryId, countryName, numberOfDays, startDate, endDate, tripType, travelStyle }) {
+async function generateTrip({ countryId, countryName, numberOfDays, startDate, endDate, tripType, travelStyle, cityIds, cityNames, arrivalCity, departureCity, participants }) {
   if (!process.env.GEMINI_API_KEY) {
     throw new AiPlannerError('GEMINI_API_KEY is not set on the server', { code: 'AI_NOT_CONFIGURED' });
   }
 
-  const catalog = await loadCountryCatalog(countryId);
+  const catalog = await loadCountryCatalog({ countryId, cityIds });
   if (catalog.length === 0) {
     throw new AiPlannerError('No places found for this country', { code: 'COUNTRY_NO_PLACES' });
   }
@@ -221,6 +253,13 @@ async function generateTrip({ countryId, countryName, numberOfDays, startDate, e
         vacationType: tripType,
         travelStyle,
         catalogText: serializeCatalog(catalog),
+        cityNames,
+        arrivalCity,
+        departureCity,
+        participantNames:
+          Array.isArray(participants) && participants.length > 0
+            ? participants.map((p) => p.name || p.username || '').filter((n) => n)
+            : null,
       });
       const interaction = await ai.interactions.create({
         model: MODEL,

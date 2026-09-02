@@ -15,6 +15,11 @@ router.post('/generate-trip', authenticateToken, async (req, res) => {
       endDate,
       tripType,
       travelStyle,
+      cityIds,
+      cityNames,
+      arrivalCity,
+      departureCity,
+      participants,
     } = req.body;
 
     if (!countryId || !numberOfDays || numberOfDays < 1 || numberOfDays > 14) {
@@ -39,6 +44,11 @@ router.post('/generate-trip', authenticateToken, async (req, res) => {
       endDate,
       tripType,
       travelStyle,
+      cityIds,
+      cityNames,
+      arrivalCity,
+      departureCity,
+      participants,
     });
 
     res.status(201).json(trip);

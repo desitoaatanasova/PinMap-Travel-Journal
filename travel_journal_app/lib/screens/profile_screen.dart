@@ -1,10 +1,15 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
+import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/image_compressor.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/screens/settings_screen.dart';
+import 'package:pinmap_travel_journal/screens/user_search_screen.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
@@ -17,6 +22,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   UserProfile? _profile;
+  bool _uploadingPhoto = false;
 
   @override
   void initState() {
@@ -27,6 +33,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadProfile() async {
     final p = await ProfileService.getProfile();
     if (mounted) setState(() => _profile = p);
+  }
+
+  Future<void> _uploadPhoto() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 95,
+      maxWidth: 2400,
+    );
+    if (file == null) return;
+    Uint8List bytes = await file.readAsBytes();
+    bytes = await ImageCompressor.compressJpeg(bytes, quality: 85);
+
+    if (!mounted) return;
+    setState(() => _uploadingPhoto = true);
+    try {
+      await ApiClient.uploadMultipart(
+        '/profile/photos',
+        fields: const {},
+        files: [
+          MultipartFileSpec(
+            field: 'photo',
+            bytes: bytes,
+            filename: 'photo.jpg',
+            contentType: 'image/jpeg',
+          ),
+        ],
+      );
+      await ProfileService.reloadProfile();
+      if (!mounted) return;
+      await _loadProfile();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Photo uploaded', style: GoogleFonts.dmSans()),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not upload photo', style: GoogleFonts.dmSans()),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _uploadingPhoto = false);
+    }
+  }
+
+  Future<void> _deletePhoto(int photoId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Delete Photo',
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Remove this photo from your profile?',
+          style: GoogleFonts.dmSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('Delete', style: GoogleFonts.dmSans()),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ApiClient.delete('/profile/photos/$photoId');
+      await ProfileService.reloadProfile();
+      if (!mounted) return;
+      await _loadProfile();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not delete photo', style: GoogleFonts.dmSans()),
+        ),
+      );
+    }
   }
 
   @override
@@ -133,6 +233,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  AppTheme.space4, 0, AppTheme.space4, AppTheme.space2),
+              child: _buildSearchBar(context),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
               child: const SectionHeader(title: 'Travel Photos'),
             ),
@@ -142,10 +249,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final photo = profile.travelPhotos[index];
-                  return _buildPhotoThumbnail(photo);
+                  if (index == 0) {
+                    return _buildUploadTile();
+                  }
+                  final photoIndex = index - 1;
+                  final photo = profile.travelPhotos[photoIndex];
+                  final photoId = profile.travelPhotoIds.length > photoIndex
+                      ? profile.travelPhotoIds[photoIndex]
+                      : null;
+                  return _buildPhotoThumbnail(photo, photoId);
                 },
-                childCount: profile.travelPhotos.length,
+                childCount: profile.travelPhotos.length + 1,
               ),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -244,18 +358,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildPhotoThumbnail(String url) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-      child: CachedNetworkImage(
-        imageUrl: url,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Container(
-          color: AppTheme.lightGray,
-          child: const Center(child: CircularProgressIndicator()),
+  Widget _buildSearchBar(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const UserSearchScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(AppTheme.space3),
+        decoration: BoxDecoration(
+          color: AppTheme.card,
+          borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+          border: Border.all(color: AppTheme.lightGray),
         ),
-        errorWidget: (context, url, error) => Container(
-          color: AppTheme.lightGray,
+        child: Row(
+          children: [
+            const Icon(Icons.search, size: 20, color: AppTheme.warmGray),
+            const SizedBox(width: AppTheme.space2),
+            Text(
+              'Find travellers to follow',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                color: AppTheme.warmGray,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUploadTile() {
+    return GestureDetector(
+      onTap: _uploadingPhoto ? null : _uploadPhoto,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.primary.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          border: Border.all(color: AppTheme.primary.withValues(alpha: 0.25)),
+        ),
+        child: _uploadingPhoto
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_a_photo,
+                    size: 28,
+                    color: AppTheme.primary.withValues(alpha: 0.7),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Add',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoThumbnail(String url, int? photoId) {
+    return GestureDetector(
+      onLongPress: photoId == null
+          ? null
+          : () => _deletePhoto(photoId),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        child: CachedNetworkImage(
+          imageUrl: url,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            color: AppTheme.lightGray,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: AppTheme.lightGray,
+          ),
         ),
       ),
     );

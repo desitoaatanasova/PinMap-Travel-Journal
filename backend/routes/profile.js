@@ -1,8 +1,29 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const fsp = require('fs/promises');
+const multer = require('multer');
 const pool = require('../db');
 const { authenticateToken } = require('../middleware/auth');
+const { buildUserProfile } = require('../services/profileQueries');
 
 const router = express.Router();
+
+const UPLOADS_ROOT = path.join(__dirname, '..', 'uploads');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+function extFromMime(mime) {
+  if (!mime) return '.jpg';
+  if (mime.includes('jpeg') || mime.includes('jpg')) return '.jpg';
+  if (mime.includes('png')) return '.png';
+  if (mime.includes('webp')) return '.webp';
+  if (mime.includes('gif')) return '.gif';
+  return '.jpg';
+}
 
 router.put('/', authenticateToken, async (req, res) => {
   try {
@@ -33,17 +54,10 @@ router.put('/', authenticateToken, async (req, res) => {
       params.push(req.userId);
       await pool.query(`UPDATE users SET ${sets.join(', ')} WHERE user_id = ?`, params);
     }
-    const [rows] = await pool.query(
-      `SELECT user_id, username, email, first_name, last_name, bio, profile_picture, profile_status, created_at
-       FROM users WHERE user_id = ?`,
-      [req.userId]
-    );
-    if (rows.length === 0) {
+    const user = await buildUserProfile(req.userId);
+    if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const user = rows[0];
-    user.firstName = user.first_name;
-    user.lastName = user.last_name;
     res.json(user);
   } catch (err) {
     console.error('Update profile error:', err);
@@ -53,54 +67,69 @@ router.put('/', authenticateToken, async (req, res) => {
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      `SELECT user_id, username, email, first_name, last_name, bio, profile_picture, profile_status, created_at
-       FROM users WHERE user_id = ?`,
-      [req.userId]
-    );
-    if (rows.length === 0) {
+    const user = await buildUserProfile(req.userId);
+    if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const user = rows[0];
-
-    const [photos] = await pool.query(
-      'SELECT image_url FROM user_photos WHERE user_id = ? ORDER BY uploaded_at DESC', [req.userId]
-    );
-    user.travelPhotos = photos.map(p => p.image_url);
-
-    const [visited] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM visited_places WHERE user_id = ?', [req.userId]
-    );
-    user.placesVisited = visited[0].cnt;
-
-    const [ratingsCount] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM ratings WHERE user_id = ?', [req.userId]
-    );
-    user.ratingsGiven = ratingsCount[0].cnt;
-
-    const [tripsCount] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM trips WHERE user_id = ?', [req.userId]
-    );
-    user.tripsPlanned = tripsCount[0].cnt;
-
-    const [journalsCount] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM journals WHERE user_id = ?', [req.userId]
-    );
-    user.journalsCreated = journalsCount[0].cnt;
-
-    const [followersCount] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM followers WHERE followed_user_id = ?', [req.userId]
-    );
-    user.followersCount = followersCount[0].cnt;
-
-    const [followingCount] = await pool.query(
-      'SELECT COUNT(*) AS cnt FROM followers WHERE follower_user_id = ?', [req.userId]
-    );
-    user.followingCount = followingCount[0].cnt;
-
     res.json(user);
   } catch (err) {
     console.error('Get profile error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/profile/photos  (multipart: field "photo")
+router.post('/photos', authenticateToken, upload.single('photo'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'A photo file is required' });
+    }
+    const dir = path.join(UPLOADS_ROOT, String(req.userId), 'profile');
+    await fsp.mkdir(dir, { recursive: true });
+    const ext = extFromMime(req.file.mimetype);
+    const name = `photo_${Date.now()}${ext}`;
+    await fsp.writeFile(path.join(dir, name), req.file.buffer);
+
+    const imageUrl = `/uploads/${req.userId}/profile/${name}`;
+    const [result] = await pool.query(
+      'INSERT INTO user_photos (user_id, image_url) VALUES (?, ?)',
+      [req.userId, imageUrl]
+    );
+
+    const user = await buildUserProfile(req.userId);
+    res.status(201).json({
+      photoId: result.insertId,
+      imageUrl,
+      travelPhotos: user.travelPhotos,
+    });
+  } catch (err) {
+    console.error('Upload profile photo error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// DELETE /api/profile/photos/:photoId
+router.delete('/photos/:photoId', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT image_url FROM user_photos WHERE photo_id = ? AND user_id = ?',
+      [req.params.photoId, req.userId]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Photo not found' });
+    }
+    await pool.query(
+      'DELETE FROM user_photos WHERE photo_id = ? AND user_id = ?',
+      [req.params.photoId, req.userId]
+    );
+    const fileUrl = rows[0].image_url;
+    if (fileUrl && fileUrl.startsWith('/uploads/')) {
+      const filePath = path.join(UPLOADS_ROOT, fileUrl.replace('/uploads/', ''));
+      fs.promises.unlink(filePath).catch(() => {});
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete profile photo error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

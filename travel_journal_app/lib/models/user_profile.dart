@@ -13,6 +13,9 @@ class UserProfile {
   final int followersCount;
   final int followingCount;
   final List<String> travelPhotos;
+  final List<int> travelPhotoIds;
+  final bool isFollowing;
+  final bool isPrivate;
 
   const UserProfile({
     this.userId = 0,
@@ -29,7 +32,32 @@ class UserProfile {
     this.followersCount = 0,
     this.followingCount = 0,
     this.travelPhotos = const [],
+    this.travelPhotoIds = const [],
+    this.isFollowing = false,
+    this.isPrivate = false,
   });
 
   String get displayName => '${firstName ?? username} ${lastName ?? ''}'.trim();
+
+  UserProfile copyWith({bool? isFollowing}) {
+    return UserProfile(
+      userId: userId,
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      bio: bio,
+      profilePicture: profilePicture,
+      profileStatus: profileStatus,
+      placesVisited: placesVisited,
+      ratingsGiven: ratingsGiven,
+      tripsPlanned: tripsPlanned,
+      journalsCreated: journalsCreated,
+      followersCount: followersCount,
+      followingCount: followingCount,
+      travelPhotos: travelPhotos,
+      travelPhotoIds: travelPhotoIds,
+      isFollowing: isFollowing ?? this.isFollowing,
+      isPrivate: isPrivate,
+    );
+  }
 }

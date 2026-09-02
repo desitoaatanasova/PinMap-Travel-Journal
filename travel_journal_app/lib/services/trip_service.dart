@@ -115,6 +115,11 @@ class TripService {
     required DateTime endDate,
     required String tripType,
     required String travelStyle,
+    List<int> cityIds = const [],
+    List<String> cityNames = const [],
+    String? arrivalCity,
+    String? departureCity,
+    List<TripParticipant> participants = const [],
   }) async {
     final data = await ApiClient.post('/ai/generate-trip', body: {
       'countryId': countryId,
@@ -124,6 +129,17 @@ class TripService {
       'endDate': endDate.toIso8601String(),
       'tripType': tripType,
       'travelStyle': travelStyle,
+      'cityIds': cityIds,
+      'cityNames': cityNames,
+      'arrivalCity': arrivalCity,
+      'departureCity': departureCity,
+      'participants': participants
+          .map((p) => {
+                'userId': p.userId,
+                'username': p.username,
+                'name': p.displayName,
+              })
+          .toList(),
     });
     return Trip.fromJson(data as Map<String, dynamic>);
   }
@@ -180,6 +196,10 @@ class TripService {
       'trip_type': trip.tripType,
       'travel_style': trip.travelStyle,
       'number_of_days': trip.numberOfDays,
+      'arrival_city': trip.arrivalCity,
+      'departure_city': trip.departureCity,
+      'city_ids': trip.cityIds,
+      'participant_ids': trip.participants.map((p) => p.userId).toList(),
       'itinerary': trip.itinerary
           .map((d) => {
                 'day_number': d.dayNumber,

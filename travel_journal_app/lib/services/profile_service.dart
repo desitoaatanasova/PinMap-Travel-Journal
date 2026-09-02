@@ -89,6 +89,10 @@ class ProfileService {
       followersCount: data['followersCount'] ?? 0,
       followingCount: data['followingCount'] ?? 0,
       travelPhotos: (data['travelPhotos'] as List?)?.cast<String>() ?? [],
+      travelPhotoIds: (data['travelPhotoIds'] as List?)
+              ?.map((id) => (id as num).toInt())
+              .toList() ??
+          [],
     );
   }
 

@@ -42,6 +42,18 @@ router.get('/:id', authenticateToken, async (req, res) => {
       day.evening = activities.filter(a => a.time_slot === 'Evening');
     }
     trip.itinerary = days;
+    const [cities] = await pool.query(
+      'SELECT city_id FROM trip_cities WHERE trip_id = ? ORDER BY city_id', [trip.trip_id]
+    );
+    trip.cityIds = cities.map((c) => c.city_id);
+    const [participants] = await pool.query(
+      `SELECT tp.user_id, u.username, u.first_name, u.last_name, u.profile_picture
+       FROM trip_participants tp
+       JOIN users u ON u.user_id = tp.user_id
+       WHERE tp.trip_id = ? ORDER BY u.username`,
+      [trip.trip_id]
+    );
+    trip.participants = participants;
     res.json(trip);
   } catch (err) {
     console.error('Get trip error:', err);
@@ -53,7 +65,7 @@ router.post('/', authenticateToken, async (req, res) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary } = req.body;
+    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds } = req.body;
     const numberOfDays =
       req.body.numberOfDays ??
       (itinerary && itinerary.length > 0
@@ -62,10 +74,30 @@ router.post('/', authenticateToken, async (req, res) => {
           ? Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1
           : null);
     const [tripResult] = await conn.query(
-      'INSERT INTO trips (user_id, title, country_id, start_date, end_date, trip_type, travel_style, number_of_days) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [req.userId, title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays]
+      'INSERT INTO trips (user_id, title, country_id, start_date, end_date, trip_type, travel_style, number_of_days, arrival_city, departure_city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [req.userId, title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays, arrivalCity || null, departureCity || null]
     );
     const tripId = tripResult.insertId;
+    if (Array.isArray(cityIds) && cityIds.length > 0) {
+      for (const cityId of cityIds) {
+        if (Number.isInteger(cityId)) {
+          await conn.query(
+            'INSERT IGNORE INTO trip_cities (trip_id, city_id) VALUES (?, ?)',
+            [tripId, cityId]
+          );
+        }
+      }
+    }
+    if (Array.isArray(participantIds) && participantIds.length > 0) {
+      for (const userId of participantIds) {
+        if (Number.isInteger(userId)) {
+          await conn.query(
+            'INSERT IGNORE INTO trip_participants (trip_id, user_id) VALUES (?, ?)',
+            [tripId, userId]
+          );
+        }
+      }
+    }
     if (itinerary) {
       for (const day of itinerary) {
         const [dayResult] = await conn.query(
@@ -112,7 +144,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
       await conn.rollback();
       return res.status(404).json({ error: 'Trip not found' });
     }
-    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary } = req.body;
+    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds } = req.body;
     const numberOfDays =
       req.body.numberOfDays ??
       (itinerary && itinerary.length > 0
@@ -121,9 +153,31 @@ router.put('/:id', authenticateToken, async (req, res) => {
           ? Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1
           : null);
     await conn.query(
-      'UPDATE trips SET title=?, country_id=?, start_date=?, end_date=?, trip_type=?, travel_style=?, number_of_days=? WHERE trip_id=?',
-      [title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays, req.params.id]
+      'UPDATE trips SET title=?, country_id=?, start_date=?, end_date=?, trip_type=?, travel_style=?, number_of_days=?, arrival_city=?, departure_city=? WHERE trip_id=?',
+      [title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays, arrivalCity || null, departureCity || null, req.params.id]
     );
+    await conn.query('DELETE FROM trip_cities WHERE trip_id = ?', [req.params.id]);
+    await conn.query('DELETE FROM trip_participants WHERE trip_id = ?', [req.params.id]);
+    if (Array.isArray(cityIds) && cityIds.length > 0) {
+      for (const cityId of cityIds) {
+        if (Number.isInteger(cityId)) {
+          await conn.query(
+            'INSERT IGNORE INTO trip_cities (trip_id, city_id) VALUES (?, ?)',
+            [req.params.id, cityId]
+          );
+        }
+      }
+    }
+    if (Array.isArray(participantIds) && participantIds.length > 0) {
+      for (const userId of participantIds) {
+        if (Number.isInteger(userId)) {
+          await conn.query(
+            'INSERT IGNORE INTO trip_participants (trip_id, user_id) VALUES (?, ?)',
+            [req.params.id, userId]
+          );
+        }
+      }
+    }
     await conn.query('DELETE FROM trip_days WHERE trip_id = ?', [req.params.id]);
     if (itinerary) {
       for (const day of itinerary) {

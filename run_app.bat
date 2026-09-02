@@ -1,4 +1,4 @@
 @echo off
-set PATH=%PATH%;C:\flutter\bin
-cd /d "C:\Users\User\Desktop\Desi\App\travel_journal_app"
-flutter run -d chrome
+REM Legacy launcher - now delegates to the full stack dev launcher.
+REM Use dev.bat for the complete MySQL + Backend + Flutter flow.
+powershell -ExecutionPolicy Bypass -File "%~dp0dev.ps1" %*

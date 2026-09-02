@@ -8,6 +8,10 @@ class Trip {
   final String travelStyle;
   final int? numberOfDays;
   final List<TripDay> itinerary;
+  final List<int> cityIds;
+  final String? arrivalCity;
+  final String? departureCity;
+  final List<TripParticipant> participants;
 
   const Trip({
     required this.tripId,
@@ -19,6 +23,10 @@ class Trip {
     this.travelStyle = '',
     this.numberOfDays,
     this.itinerary = const [],
+    this.cityIds = const [],
+    this.arrivalCity,
+    this.departureCity,
+    this.participants = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -30,6 +38,10 @@ class Trip {
       'tripType': tripType,
       'travelStyle': travelStyle,
       'numberOfDays': numberOfDays,
+      'arrivalCity': arrivalCity,
+      'departureCity': departureCity,
+      'cityIds': cityIds,
+      'participantIds': participants.map((p) => p.userId).toList(),
       'itinerary': itinerary.map((day) => day.toJson()).toList(),
     };
   }
@@ -46,6 +58,16 @@ class Trip {
       numberOfDays: json['number_of_days'] != null
           ? (json['number_of_days'] as num).toInt()
           : null,
+      arrivalCity: json['arrival_city'],
+      departureCity: json['departure_city'],
+      cityIds: (json['city_ids'] as List?)
+              ?.map((id) => (id as num).toInt())
+              .toList() ??
+          [],
+      participants: (json['participants'] as List?)
+              ?.map((p) => TripParticipant.fromJson(p))
+              .toList() ??
+          [],
       itinerary: json['itinerary'] != null
           ? (json['itinerary'] as List).map((d) => TripDay.fromJson(d)).toList()
           : [],
@@ -62,6 +84,10 @@ class Trip {
     String? travelStyle,
     int? numberOfDays,
     List<TripDay>? itinerary,
+    List<int>? cityIds,
+    String? arrivalCity,
+    String? departureCity,
+    List<TripParticipant>? participants,
   }) {
     return Trip(
       tripId: tripId ?? this.tripId,
@@ -73,6 +99,48 @@ class Trip {
       travelStyle: travelStyle ?? this.travelStyle,
       numberOfDays: numberOfDays ?? this.numberOfDays,
       itinerary: itinerary ?? this.itinerary,
+      cityIds: cityIds ?? this.cityIds,
+      arrivalCity: arrivalCity ?? this.arrivalCity,
+      departureCity: departureCity ?? this.departureCity,
+      participants: participants ?? this.participants,
+    );
+  }
+}
+
+class TripParticipant {
+  final int userId;
+  final String username;
+  final String? firstName;
+  final String? lastName;
+  final String? profilePicture;
+
+  const TripParticipant({
+    required this.userId,
+    required this.username,
+    this.firstName,
+    this.lastName,
+    this.profilePicture,
+  });
+
+  String get displayName => '${firstName ?? username} ${lastName ?? ''}'.trim();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'username': username,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profilePicture': profilePicture,
+    };
+  }
+
+  factory TripParticipant.fromJson(Map<String, dynamic> json) {
+    return TripParticipant(
+      userId: (json['user_id'] ?? json['userId'] ?? 0) as int,
+      username: json['username'] ?? '',
+      firstName: json['first_name'] ?? json['firstName'],
+      lastName: json['last_name'] ?? json['lastName'],
+      profilePicture: json['profile_picture'] ?? json['profilePicture'],
     );
   }
 }
