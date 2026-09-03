@@ -105,11 +105,11 @@ if ($backendHealthy) {
   if (-not (Test-Path (Join-Path $BackendDir "server.js"))) { LE "BACKEND" "Backend server.js not found in $BackendDir"; exit 1 }
   if (-not (Test-Path (Join-Path $BackendDir "package.json"))) { LE "BACKEND" "Backend package.json not found in $BackendDir"; exit 1 }
 
-  L "BACKEND" "Starting Express backend (node --watch server.js) ..."
+  L "BACKEND" "Starting Express backend (node server.js) ..."
   if (Test-Path $BackendLog) { Remove-Item $BackendLog -Force -ErrorAction SilentlyContinue }
   if (Test-Path $BackendErrLog) { Remove-Item $BackendErrLog -Force -ErrorAction SilentlyContinue }
 
-  $backendArgs = "--watch server.js"
+  $backendArgs = "server.js"
   $backendProcess = Start-Process -FilePath "node" -ArgumentList $backendArgs -WorkingDirectory $BackendDir -RedirectStandardOutput $BackendLog -RedirectStandardError $BackendErrLog -WindowStyle Hidden -PassThru
   if ($backendProcess) {
     $backendProcess.Id | Out-File $BackendPidFile -Force

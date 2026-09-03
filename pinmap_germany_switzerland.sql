@@ -76,13 +76,13 @@ SELECT @switzerland_id, 'Montreux','Lakeside resort town famed for its jazz fest
 SET @montreux_id = (SELECT city_id FROM cities WHERE name='Montreux' AND country_id=@switzerland_id);
 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 1, 'Brandenburg Gate','Berlinâ€™s most recognizable landmark and a powerful symbol of German reunification.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Brandenburg Gate');
+SELECT @berlin_id, 1, 'Brandenburg Gate','Berlin’s most recognizable landmark and a powerful symbol of German reunification.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Brandenburg Gate');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 1, 'Reichstag Building','Historic parliament building topped by Norman Fosterâ€™s famous glass dome.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Reichstag Building');
+SELECT @berlin_id, 1, 'Reichstag Building','Historic parliament building topped by Norman Foster’s famous glass dome.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Reichstag Building');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @berlin_id, 1, 'Berlin Cathedral','Monumental Baroque-style cathedral overlooking Museum Island.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Berlin Cathedral');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 1, 'Berlin Wall Memorial','Preserved section of the former Berlin Wall with an open-air exhibition about the cityâ€™s division.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Berlin Wall Memorial');
+SELECT @berlin_id, 1, 'Berlin Wall Memorial','Preserved section of the former Berlin Wall with an open-air exhibition about the city’s division.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Berlin Wall Memorial');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @berlin_id, 1, 'Checkpoint Charlie','Former Cold War crossing point between East and West Berlin.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Checkpoint Charlie');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -100,15 +100,15 @@ SELECT @berlin_id, 2, 'East Side Gallery','Long preserved section of the Berlin 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @berlin_id, 2, 'Hamburger Bahnhof','Major contemporary art museum housed in a former railway station.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Hamburger Bahnhof');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 4, 'Hackesche HÃ¶fe','Beautiful interconnected courtyards filled with boutiques, cafÃ©s, and Art Nouveau architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Hackesche HÃ¶fe');
+SELECT @berlin_id, 4, 'Hackesche Höfe','Beautiful interconnected courtyards filled with boutiques, cafés, and Art Nouveau architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Hackesche Höfe');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 4, 'ClÃ¤rchens Ballhaus','Historic ballroom dating from 1913, famous for its old-world atmosphere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='ClÃ¤rchens Ballhaus');
+SELECT @berlin_id, 4, 'Clärchens Ballhaus','Historic ballroom dating from 1913, famous for its old-world atmosphere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Clärchens Ballhaus');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @berlin_id, 4, 'Pfaueninsel','Peaceful island on the River Havel with a whimsical little palace and free-roaming peacocks.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Pfaueninsel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @berlin_id, 4, 'Teufelsberg','Abandoned Cold War listening station covered in street art, with panoramic views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Teufelsberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @berlin_id, 4, 'Nikolaiviertel','Reconstructed historic quarter around Berlinâ€™s oldest church, offering a very different side of the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Nikolaiviertel');
+SELECT @berlin_id, 4, 'Nikolaiviertel','Reconstructed historic quarter around Berlin’s oldest church, offering a very different side of the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@berlin_id AND name='Nikolaiviertel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 1, 'Marienplatz','The historic heart of Munich, dominated by the magnificent Neues Rathaus.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Marienplatz');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -118,11 +118,11 @@ SELECT @munich_id, 1, 'Munich Residenz','Former royal palace of the Bavarian rul
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 1, 'Nymphenburg Palace','Magnificent Baroque palace and former summer residence of the Bavarian electors and kings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Nymphenburg Palace');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @munich_id, 1, 'Frauenkirche','Munichâ€™s iconic twin-towered cathedral.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Frauenkirche');
+SELECT @munich_id, 1, 'Frauenkirche','Munich’s iconic twin-towered cathedral.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Frauenkirche');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 1, 'Asam Church','Tiny but extraordinarily ornate late-Baroque/Rococo church created by the Asam brothers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Asam Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @munich_id, 2, 'Alte Pinakothek','One of Europeâ€™s most important collections of Old Master paintings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Alte Pinakothek');
+SELECT @munich_id, 2, 'Alte Pinakothek','One of Europe’s most important collections of Old Master paintings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Alte Pinakothek');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 2, 'Neue Pinakothek','Traditionally dedicated to 19th-century art; currently closed for renovation, with selected works displayed elsewhere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Neue Pinakothek');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -138,7 +138,7 @@ SELECT @munich_id, 4, 'Hofgarten','Elegant Renaissance-style garden beside the R
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 4, 'Michaelskirche','Monumental Renaissance church with an impressive interior and royal tombs.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Michaelskirche');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @munich_id, 4, 'Alter SÃ¼dfriedhof','Atmospheric historic cemetery filled with old monuments and sculptures.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Alter SÃ¼dfriedhof');
+SELECT @munich_id, 4, 'Alter Südfriedhof','Atmospheric historic cemetery filled with old monuments and sculptures.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Alter Südfriedhof');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @munich_id, 4, 'Lehel','Elegant historic neighborhood with quiet streets and beautiful architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@munich_id AND name='Lehel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -148,23 +148,23 @@ SELECT @hamburg_id, 1, 'Speicherstadt','UNESCO-listed warehouse district of magn
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 1, 'Hamburg Rathaus','Monumental Neo-Renaissance city hall with an ornate interior.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Hamburg Rathaus');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 1, 'St Michael''s Church','Hamburgâ€™s iconic Baroque church, known as the Michel.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='St Michael''s Church');
+SELECT @hamburg_id, 1, 'St Michael''s Church','Hamburg’s iconic Baroque church, known as the Michel.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='St Michael''s Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 1, 'St Nikolai Memorial','Atmospheric WWII memorial preserved from the former church.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='St Nikolai Memorial');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 1, 'Chile House','Striking 1920s expressionist office building famous for its ship-like shape.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Chile House');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 1, 'Hamburg Harbour','Historic working harbor that shaped Hamburgâ€™s identity and wealth.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Hamburg Harbour');
+SELECT @hamburg_id, 1, 'Hamburg Harbour','Historic working harbor that shaped Hamburg’s identity and wealth.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Hamburg Harbour');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 2, 'Hamburger Kunsthalle','One of Germanyâ€™s most important art museums, spanning medieval art to modern works.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Hamburger Kunsthalle');
+SELECT @hamburg_id, 2, 'Hamburger Kunsthalle','One of Germany’s most important art museums, spanning medieval art to modern works.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Hamburger Kunsthalle');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 2, 'Deichtorhallen Hamburg','Major exhibition space for contemporary art and photography.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Deichtorhallen Hamburg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 2, 'International Maritime Museum Hamburg','Huge collection exploring thousands of years of maritime history.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='International Maritime Museum Hamburg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 2, 'Elbphilharmonie','Spectacular modern concert hall and one of the cityâ€™s architectural icons.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Elbphilharmonie');
+SELECT @hamburg_id, 2, 'Elbphilharmonie','Spectacular modern concert hall and one of the city’s architectural icons.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Elbphilharmonie');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 2, 'Miniatur Wunderland','Enormous model railway and miniature world, one of Hamburgâ€™s most popular attractions.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Miniatur Wunderland');
+SELECT @hamburg_id, 2, 'Miniatur Wunderland','Enormous model railway and miniature world, one of Hamburg’s most popular attractions.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Miniatur Wunderland');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 4, 'Treppenviertel','Picturesque hillside neighborhood overlooking the Elbe, filled with narrow stairways and charming houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Treppenviertel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -174,23 +174,23 @@ SELECT @hamburg_id, 4, 'Kontorhausviertel','Historic business district surroundi
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @hamburg_id, 4, 'Planten un Blomen','Beautiful botanical gardens and park in the heart of the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Planten un Blomen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @hamburg_id, 4, 'Ã–velgÃ¶nne','Former fishing village on the Elbe with a small beach and historic houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Ã–velgÃ¶nne');
+SELECT @hamburg_id, 4, 'Övelgönne','Former fishing village on the Elbe with a small beach and historic houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@hamburg_id AND name='Övelgönne');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 1, 'Cologne Cathedral','Cologneâ€™s spectacular Gothic cathedral and one of Europeâ€™s most famous landmarks. Climb the tower for views over the Rhine and historic center.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Cologne Cathedral');
+SELECT @cologne_id, 1, 'Cologne Cathedral','Cologne’s spectacular Gothic cathedral and one of Europe’s most famous landmarks. Climb the tower for views over the Rhine and historic center.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Cologne Cathedral');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 1, 'Roman-Germanic Museum','Museum exploring Cologneâ€™s Roman origins and archaeological heritage.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Roman-Germanic Museum');
+SELECT @cologne_id, 1, 'Roman-Germanic Museum','Museum exploring Cologne’s Roman origins and archaeological heritage.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Roman-Germanic Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 1, 'Great St Martin Church','Striking Romanesque church overlooking the Rhine.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Great St Martin Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 1, 'Historic Town Hall','One of Germanyâ€™s oldest city halls, with a beautifully decorated Renaissance-style faÃ§ade.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Historic Town Hall');
+SELECT @cologne_id, 1, 'Historic Town Hall','One of Germany’s oldest city halls, with a beautifully decorated Renaissance-style façade.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Historic Town Hall');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 1, 'Hohenzollern Bridge','Famous railway bridge across the Rhine with spectacular cathedral views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Hohenzollern Bridge');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 2, 'Museum Ludwig','Excellent collection of modern and contemporary art, including works by Pablo Picasso.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Museum Ludwig');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 2, 'Wallraf-Richartz Museum','One of Germanyâ€™s oldest museums, with European art from the medieval period through the 19th century.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Wallraf-Richartz Museum');
+SELECT @cologne_id, 2, 'Wallraf-Richartz Museum','One of Germany’s oldest museums, with European art from the medieval period through the 19th century.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Wallraf-Richartz Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 2, 'Museum SchnÃ¼tgen','Fascinating collection of medieval Christian art housed in a historic Romanesque church.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Museum SchnÃ¼tgen');
+SELECT @cologne_id, 2, 'Museum Schnütgen','Fascinating collection of medieval Christian art housed in a historic Romanesque church.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Museum Schnütgen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 2, 'Museum of Applied Arts Cologne','Design and decorative arts from the Middle Ages to contemporary works.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Museum of Applied Arts Cologne');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -202,7 +202,7 @@ SELECT @cologne_id, 4, 'EL-DE Haus','Former Gestapo headquarters, now a museum d
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 4, 'St Gereon''s Basilica','Unusual Romanesque church incorporating an ancient Roman structure.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='St Gereon''s Basilica');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @cologne_id, 4, 'Belgian Quarter','Stylish neighborhood filled with independent boutiques, cafÃ©s, galleries, and street art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Belgian Quarter');
+SELECT @cologne_id, 4, 'Belgian Quarter','Stylish neighborhood filled with independent boutiques, cafés, galleries, and street art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Belgian Quarter');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @cologne_id, 4, 'Melaten Cemetery','Atmospheric historic cemetery filled with elaborate monuments and sculptures.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@cologne_id AND name='Melaten Cemetery');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -210,15 +210,15 @@ SELECT @dresden_id, 1, 'Zwinger','Magnificent Baroque palace complex with ornate
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 1, 'Frauenkirche Dresden','Iconic Baroque church rebuilt after its destruction during WWII.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Frauenkirche Dresden');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 1, 'Semperoper','Grand 19th-century opera house and one of Dresdenâ€™s architectural symbols.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Semperoper');
+SELECT @dresden_id, 1, 'Semperoper','Grand 19th-century opera house and one of Dresden’s architectural symbols.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Semperoper');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 1, 'Dresden Castle','Former residence of the Saxon electors and kings, now home to several museums.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Dresden Castle');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 1, 'BrÃ¼hl''s Terrace','Elegant riverside promenade overlooking the Elbe, nicknamed the â€œBalcony of Europe.â€', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='BrÃ¼hl''s Terrace');
+SELECT @dresden_id, 1, 'Brühl''s Terrace','Elegant riverside promenade overlooking the Elbe, nicknamed the “Balcony of Europe.”', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Brühl''s Terrace');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 1, 'FÃ¼rstenzug','Huge porcelain mural depicting the rulers of Saxony.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='FÃ¼rstenzug');
+SELECT @dresden_id, 1, 'Fürstenzug','Huge porcelain mural depicting the rulers of Saxony.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Fürstenzug');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 2, 'GemÃ¤ldegalerie Alte Meister','Outstanding collection of European Old Masters, including works by Raphael, Titian, and Rembrandt.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='GemÃ¤ldegalerie Alte Meister');
+SELECT @dresden_id, 2, 'Gemäldegalerie Alte Meister','Outstanding collection of European Old Masters, including works by Raphael, Titian, and Rembrandt.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Gemäldegalerie Alte Meister');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 2, 'Green Vault','One of Europe''s most spectacular historic treasure collections.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Green Vault');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -226,11 +226,11 @@ SELECT @dresden_id, 2, 'Albertinum','Museum of 19th- and 20th-century art, inclu
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 2, 'Porzellansammlung','Extraordinary collection of Meissen and other porcelain.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Porzellansammlung');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 2, 'Kunsthofpassage','Creative collection of courtyards featuring colorful faÃ§ades, independent shops, and cafÃ©s.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Kunsthofpassage');
+SELECT @dresden_id, 2, 'Kunsthofpassage','Creative collection of courtyards featuring colorful façades, independent shops, and cafés.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Kunsthofpassage');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 4, 'Pillnitz Palace and Park','Beautiful riverside palace complex surrounded by landscaped gardens.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Pillnitz Palace and Park');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @dresden_id, 4, 'Neustadt Dresden','Creative district filled with street art, independent boutiques, cafÃ©s, and unusual architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Neustadt Dresden');
+SELECT @dresden_id, 4, 'Neustadt Dresden','Creative district filled with street art, independent boutiques, cafés, and unusual architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Neustadt Dresden');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 4, 'Pfunds Molkerei','Historic dairy shop famous for its incredibly elaborate hand-painted tiled interior.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Pfunds Molkerei');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -238,21 +238,21 @@ SELECT @dresden_id, 4, 'Grosser Garten','Vast Baroque park perfect for escaping 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @dresden_id, 4, 'Loschwitz Bridge','Historic blue bridge with beautiful views of the Elbe valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@dresden_id AND name='Loschwitz Bridge');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 1, 'Heidelberg Castle','Dramatic Renaissance castle ruins overlooking the city and Neckar Valley; one of Germanyâ€™s most iconic landmarks.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Heidelberg Castle');
+SELECT @heidelberg_id, 1, 'Heidelberg Castle','Dramatic Renaissance castle ruins overlooking the city and Neckar Valley; one of Germany’s most iconic landmarks.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Heidelberg Castle');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 1, 'Altstadt Heidelberg','Beautiful historic center filled with Baroque buildings, narrow streets, and traditional squares.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Altstadt Heidelberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 1, 'Old Bridge Heidelberg','Historic stone bridge across the Neckar, with excellent views toward the castle.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Old Bridge Heidelberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 1, 'Church of the Holy Spirit','Landmark Gothic church on the HauptstraÃŸe.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Church of the Holy Spirit');
+SELECT @heidelberg_id, 1, 'Church of the Holy Spirit','Landmark Gothic church on the Hauptstraße.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Church of the Holy Spirit');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 1, 'Heidelberg University','Founded in 1386, it is Germanyâ€™s oldest university.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Heidelberg University');
+SELECT @heidelberg_id, 1, 'Heidelberg University','Founded in 1386, it is Germany’s oldest university.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Heidelberg University');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 1, 'Student Prison Heidelberg','Fascinating former university jail whose walls are covered with student graffiti.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Student Prison Heidelberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 2, 'KurpfÃ¤lzisches Museum','Art and historical collections covering the region from prehistory to modern times.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='KurpfÃ¤lzisches Museum');
+SELECT @heidelberg_id, 2, 'Kurpfälzisches Museum','Art and historical collections covering the region from prehistory to modern times.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Kurpfälzisches Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 2, 'Philosophers'' Walk','Historic hillside path associated with Heidelbergâ€™s intellectual and literary tradition, with beautiful views of the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Philosophers'' Walk');
+SELECT @heidelberg_id, 2, 'Philosophers'' Walk','Historic hillside path associated with Heidelberg’s intellectual and literary tradition, with beautiful views of the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Philosophers'' Walk');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 2, 'German Pharmacy Museum','Unique museum tracing the history of pharmacy through centuries of European culture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='German Pharmacy Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -260,7 +260,7 @@ SELECT @heidelberg_id, 4, 'Philosophers'' Walk','Go early or around sunset for p
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 4, 'Heiligenberg','Forested hill above the Neckar with ancient ruins, viewpoints, and walking paths.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Heiligenberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @heidelberg_id, 4, 'ThingstÃ¤tte','Atmospheric open-air amphitheater hidden in the forest on Heiligenberg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='ThingstÃ¤tte');
+SELECT @heidelberg_id, 4, 'Thingstätte','Atmospheric open-air amphitheater hidden in the forest on Heiligenberg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Thingstätte');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @heidelberg_id, 4, 'Kornmarkt','Small historic square beneath the castle with one of the city''s best castle views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@heidelberg_id AND name='Kornmarkt');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -274,29 +274,29 @@ SELECT @nuremberg_id, 1, 'St Sebaldus Church','Magnificent medieval church named
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 1, 'St Lorenz Church','One of Nuremberg''s great Gothic landmarks, with an impressive interior.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='St Lorenz Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @nuremberg_id, 1, 'SchÃ¶ner Brunnen','Ornate 14th-century fountain on the Hauptmarkt.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='SchÃ¶ner Brunnen');
+SELECT @nuremberg_id, 1, 'Schöner Brunnen','Ornate 14th-century fountain on the Hauptmarkt.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Schöner Brunnen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 1, 'Heilig-Geist-Spital','Historic medieval hospital complex extending over the Pegnitz River.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Heilig-Geist-Spital');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 2, 'Germanisches Nationalmuseum','Germany''s largest museum of cultural history, with art and objects spanning prehistoric times to the present.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Germanisches Nationalmuseum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @nuremberg_id, 2, 'Albrecht DÃ¼rer''s House','Former home of Renaissance master Albrecht DÃ¼rer.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Albrecht DÃ¼rer''s House');
+SELECT @nuremberg_id, 2, 'Albrecht Dürer''s House','Former home of Renaissance master Albrecht Dürer.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Albrecht Dürer''s House');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 2, 'New Museum Nuremberg','Modern and contemporary art and design in a striking glass building.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='New Museum Nuremberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @nuremberg_id, 2, 'Kunsthalle NÃ¼rnberg','Contemporary art exhibitions in the historic city center.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Kunsthalle NÃ¼rnberg');
+SELECT @nuremberg_id, 2, 'Kunsthalle Nürnberg','Contemporary art exhibitions in the historic city center.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Kunsthalle Nürnberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 2, 'DB Museum','Fascinating museum dedicated to the history of German railways.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='DB Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 4, 'Nuremberg City Walls','Walk along sections of the remarkably preserved medieval fortifications.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Nuremberg City Walls');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @nuremberg_id, 4, 'WeiÃŸgerbergasse','One of the prettiest streets in the Old Town, lined with colorful historic half-timbered houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='WeiÃŸgerbergasse');
+SELECT @nuremberg_id, 4, 'Weißgerbergasse','One of the prettiest streets in the Old Town, lined with colorful historic half-timbered houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Weißgerbergasse');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 4, 'Nuremberg Rock-Cut Cellars','Underground medieval tunnels and cellars beneath the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Nuremberg Rock-Cut Cellars');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @nuremberg_id, 4, 'Handwerkerhof Nuremberg','Small reconstructed medieval-style crafts quarter beside the main railway station.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Handwerkerhof Nuremberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @nuremberg_id, 4, 'TiergÃ¤rtnertorplatz','Atmospheric square beneath the castle, surrounded by historic buildings and cafÃ©s.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='TiergÃ¤rtnertorplatz');
+SELECT @nuremberg_id, 4, 'Tiergärtnertorplatz','Atmospheric square beneath the castle, surrounded by historic buildings and cafés.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@nuremberg_id AND name='Tiergärtnertorplatz');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @rothenburgobdertauber_id, 1, 'Rothenburg Town Hall','Magnificent Gothic and Renaissance town hall overlooking the Marktplatz.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='Rothenburg Town Hall');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -304,7 +304,7 @@ SELECT @rothenburgobdertauber_id, 1, 'Rothenburg Town Walls','Almost completely 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @rothenburgobdertauber_id, 1, 'St James'' Church','Gothic church famous for the extraordinary Holy Blood Altarpiece carved by Tilman Riemenschneider.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='St James'' Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @rothenburgobdertauber_id, 1, 'PlÃ¶nlein','The town''s iconic forked medieval street, framed by a yellow half-timbered house and two towers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='PlÃ¶nlein');
+SELECT @rothenburgobdertauber_id, 1, 'Plönlein','The town''s iconic forked medieval street, framed by a yellow half-timbered house and two towers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='Plönlein');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @rothenburgobdertauber_id, 1, 'Burgtor','Impressive medieval gateway marking the western entrance to the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='Burgtor');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -326,25 +326,25 @@ SELECT @rothenburgobdertauber_id, 4, 'Kobolzeller Tor','Dramatic medieval gate l
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @rothenburgobdertauber_id, 4, 'Tauber Valley','Scenic countryside beneath the town, especially beautiful from the Burggarten viewpoints.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@rothenburgobdertauber_id AND name='Tauber Valley');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @frankfurt_id, 1, 'RÃ¶mer','Frankfurtâ€™s iconic medieval town hall complex overlooking the RÃ¶merberg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='RÃ¶mer');
+SELECT @frankfurt_id, 1, 'Römer','Frankfurt’s iconic medieval town hall complex overlooking the Römerberg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Römer');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @frankfurt_id, 1, 'RÃ¶merberg','Historic central square surrounded by reconstructed traditional buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='RÃ¶merberg');
+SELECT @frankfurt_id, 1, 'Römerberg','Historic central square surrounded by reconstructed traditional buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Römerberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 1, 'Frankfurt Cathedral','Impressive Gothic cathedral where several Holy Roman Emperors were crowned.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Frankfurt Cathedral');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 1, 'St Paul''s Church Frankfurt','Symbolically important site of German democracy and the meeting place of the 1848 Frankfurt Parliament.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='St Paul''s Church Frankfurt');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @frankfurt_id, 1, 'Neue Altstadt','Reconstructed historic quarter connecting RÃ¶merberg with the cathedral.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Neue Altstadt');
+SELECT @frankfurt_id, 1, 'Neue Altstadt','Reconstructed historic quarter connecting Römerberg with the cathedral.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Neue Altstadt');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 1, 'Goethe House','Birthplace of Johann Wolfgang von Goethe.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Goethe House');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @frankfurt_id, 2, 'StÃ¤del Museum','One of Germanyâ€™s finest art museums, covering more than 700 years of European art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='StÃ¤del Museum');
+SELECT @frankfurt_id, 2, 'Städel Museum','One of Germany’s finest art museums, covering more than 700 years of European art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Städel Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 2, 'Liebieghaus','Exceptional collection of European sculpture from antiquity through the 19th century.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Liebieghaus');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 2, 'Museum Angewandte Kunst','Museum dedicated to design, decorative arts, and visual culture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Museum Angewandte Kunst');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @frankfurt_id, 2, 'German Film Institute &amp; Film Museum','Explores the history and development of cinema.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='German Film Institute &amp; Film Museum');
+SELECT @frankfurt_id, 2, 'German Film Institute & Film Museum','Explores the history and development of cinema.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='German Film Institute & Film Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @frankfurt_id, 2, 'Museumsufer','Museum district along the Main River containing numerous museums within walking distance of one another.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@frankfurt_id AND name='Museumsufer');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -362,7 +362,7 @@ SELECT @frankfurt_id, 4, 'Eiserner Steg','Pedestrian bridge across the Main offe
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 1, 'Freiburg Minster','Magnificent Gothic cathedral and the city''s most recognizable landmark, famous for its intricate tower.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Freiburg Minster');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @freiburg_id, 1, 'MÃ¼nsterplatz','Historic square surrounding the cathedral, lined with colorful medieval and Baroque buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='MÃ¼nsterplatz');
+SELECT @freiburg_id, 1, 'Münsterplatz','Historic square surrounding the cathedral, lined with colorful medieval and Baroque buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Münsterplatz');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 1, 'Augustiner Museum','Historic former monastery housing an important collection of medieval and Baroque art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Augustiner Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -370,7 +370,7 @@ SELECT @freiburg_id, 1, 'Schwabentor','One of Freiburg''s two remaining medieval
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 1, 'Martinstor','Another beautifully preserved medieval gate and symbol of the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Martinstor');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @freiburg_id, 1, 'Freiburg Old Town','Compact historic center filled with narrow streets, historic houses, and the famous BÃ¤chle water channels.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Freiburg Old Town');
+SELECT @freiburg_id, 1, 'Freiburg Old Town','Compact historic center filled with narrow streets, historic houses, and the famous Bächle water channels.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Freiburg Old Town');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 2, 'Augustinermuseum','Excellent collection of medieval, Renaissance, and Baroque art from the Upper Rhine region.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Augustinermuseum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -378,9 +378,9 @@ SELECT @freiburg_id, 2, 'Museum Natur und Mensch','Museum combining natural hist
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 2, 'University of Freiburg','Historic university founded in 1457, contributing to the city''s intellectual and cultural atmosphere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='University of Freiburg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @freiburg_id, 4, 'Freiburg BÃ¤chle','Tiny open water channels running through the Old Town streets, a distinctive medieval feature of Freiburg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Freiburg BÃ¤chle');
+SELECT @freiburg_id, 4, 'Freiburg Bächle','Tiny open water channels running through the Old Town streets, a distinctive medieval feature of Freiburg.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Freiburg Bächle');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @freiburg_id, 4, 'KonviktstraÃŸe','One of the prettiest streets in the city, with colorful faÃ§ades and climbing flowers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='KonviktstraÃŸe');
+SELECT @freiburg_id, 4, 'Konviktstraße','One of the prettiest streets in the city, with colorful façades and climbing flowers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Konviktstraße');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 4, 'Schlossberg','Forested hill directly above the Old Town with walking paths and panoramic views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Schlossberg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -388,19 +388,19 @@ SELECT @freiburg_id, 4, 'Kanonenplatz','Scenic viewpoint on Schlossberg overlook
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @freiburg_id, 4, 'Seepark','Peaceful lakeside park with gardens and walking paths.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@freiburg_id AND name='Seepark');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 1, 'GrossmÃ¼nster','Zurichâ€™s iconic twin-towered Romanesque church and one of the city''s most important landmarks.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='GrossmÃ¼nster');
+SELECT @zurich_id, 1, 'Grossmünster','Zurich’s iconic twin-towered Romanesque church and one of the city''s most important landmarks.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Grossmünster');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 1, 'FraumÃ¼nster','Historic church famous for its stunning stained-glass windows designed by Marc Chagall.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='FraumÃ¼nster');
+SELECT @zurich_id, 1, 'Fraumünster','Historic church famous for its stunning stained-glass windows designed by Marc Chagall.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Fraumünster');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zurich_id, 1, 'St Peter''s Church','Historic church with one of the largest clock faces in Europe.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='St Peter''s Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 1, 'Old Town Zurich','Atmospheric medieval streets filled with guild houses, churches, cafÃ©s, and historic buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Old Town Zurich');
+SELECT @zurich_id, 1, 'Old Town Zurich','Atmospheric medieval streets filled with guild houses, churches, cafés, and historic buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Old Town Zurich');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zurich_id, 1, 'Lindenhof','Historic hill and peaceful square offering views over the Old Town and the Limmat River.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Lindenhof');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 1, 'Bahnhofstrasse','One of Europeâ€™s most famous shopping streets, running from the main station toward Lake Zurich.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Bahnhofstrasse');
+SELECT @zurich_id, 1, 'Bahnhofstrasse','One of Europe’s most famous shopping streets, running from the main station toward Lake Zurich.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Bahnhofstrasse');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 2, 'Kunsthaus ZÃ¼rich','Switzerlandâ€™s largest art museum, with works ranging from the Middle Ages to modern and contemporary art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Kunsthaus ZÃ¼rich');
+SELECT @zurich_id, 2, 'Kunsthaus Zürich','Switzerland’s largest art museum, with works ranging from the Middle Ages to modern and contemporary art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Kunsthaus Zürich');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zurich_id, 2, 'Swiss National Museum','Excellent museum exploring Swiss cultural history, art, and traditions.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Swiss National Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -408,7 +408,7 @@ SELECT @zurich_id, 2, 'Museum Rietberg','Major museum dedicated to non-European 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zurich_id, 2, 'Pavillon Le Corbusier','Striking modernist pavilion designed by Le Corbusier.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Pavillon Le Corbusier');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zurich_id, 2, 'ETH ZÃ¼rich','Historic university associated with Albert Einstein and offering spectacular views over the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='ETH ZÃ¼rich');
+SELECT @zurich_id, 2, 'ETH Zürich','Historic university associated with Albert Einstein and offering spectacular views over the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='ETH Zürich');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zurich_id, 4, 'Augustinergasse','One of the prettiest streets in the Old Town, lined with colorful historic houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zurich_id AND name='Augustinergasse');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -422,17 +422,17 @@ SELECT @zurich_id, 4, 'Zurich West','Former industrial district transformed into
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 1, 'St Pierre Cathedral','Historic cathedral at the heart of the Old Town, closely connected to the Protestant Reformation and John Calvin.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='St Pierre Cathedral');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 1, 'Geneva Old Town','The city''s historic center, filled with narrow streets, hidden squares, cafÃ©s, and centuries-old buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Geneva Old Town');
+SELECT @geneva_id, 1, 'Geneva Old Town','The city''s historic center, filled with narrow streets, hidden squares, cafés, and centuries-old buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Geneva Old Town');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 1, 'Maison Tavel','Geneva''s oldest private house, now a museum exploring the city''s history.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Maison Tavel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 1, 'Place du Bourg-de-Four','The oldest square in Geneva, surrounded by historic buildings and cafÃ©s.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Place du Bourg-de-Four');
+SELECT @geneva_id, 1, 'Place du Bourg-de-Four','The oldest square in Geneva, surrounded by historic buildings and cafés.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Place du Bourg-de-Four');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 1, 'Reformation Wall','Monumental memorial dedicated to the leaders and history of the Protestant Reformation.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Reformation Wall');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 1, 'Parc des Bastions','Historic park containing the Reformation Wall and giant outdoor chess boards.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Parc des Bastions');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 2, 'MusÃ©e d''Art et d''Histoire','Geneva''s largest art and history museum, with collections ranging from archaeology to fine art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='MusÃ©e d''Art et d''Histoire');
+SELECT @geneva_id, 2, 'Musée d''Art et d''Histoire','Geneva''s largest art and history museum, with collections ranging from archaeology to fine art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Musée d''Art et d''Histoire');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 2, 'Patek Philippe Museum','Fascinating museum exploring the history of Swiss watchmaking and decorative arts.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Patek Philippe Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -442,27 +442,27 @@ SELECT @geneva_id, 2, 'Fondation Martin Bodmer','Extraordinary library and museu
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 2, 'CERN Science Gateway','Modern science center exploring particle physics and the work of CERN.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='CERN Science Gateway');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 4, 'Carouge','Charming Mediterranean-feeling district with artisan workshops, colorful streets, and cafÃ©s.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Carouge');
+SELECT @geneva_id, 4, 'Carouge','Charming Mediterranean-feeling district with artisan workshops, colorful streets, and cafés.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Carouge');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 4, 'Parc de La Grange','Beautiful lakeside park with rose gardens and views across Lake Geneva.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Parc de La Grange');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 4, 'Bains des PÃ¢quis','Popular local swimming and social spot on the lake, with beautiful views of the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Bains des PÃ¢quis');
+SELECT @geneva_id, 4, 'Bains des Pâquis','Popular local swimming and social spot on the lake, with beautiful views of the city.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Bains des Pâquis');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @geneva_id, 4, 'ÃŽle Rousseau','Small island in the RhÃ´ne River dedicated to philosopher Jean-Jacques Rousseau.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='ÃŽle Rousseau');
+SELECT @geneva_id, 4, 'Île Rousseau','Small island in the Rhône River dedicated to philosopher Jean-Jacques Rousseau.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Île Rousseau');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @geneva_id, 4, 'Quai des Bergues','Elegant lakeside promenade with views toward the Jet d''Eau and Mont Blanc.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@geneva_id AND name='Quai des Bergues');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lucerne_id, 1, 'Chapel Bridge','Lucerneâ€™s most famous landmark and one of Europeâ€™s oldest covered wooden bridges, decorated with historic paintings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Chapel Bridge');
+SELECT @lucerne_id, 1, 'Chapel Bridge','Lucerne’s most famous landmark and one of Europe’s oldest covered wooden bridges, decorated with historic paintings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Chapel Bridge');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lucerne_id, 1, 'Water Tower Lucerne','Historic octagonal tower beside the Chapel Bridge, once used as a prison, treasury, and archive.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Water Tower Lucerne');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lucerne_id, 1, 'Old Town Lucerne','Beautiful medieval streets filled with colorful painted faÃ§ades, fountains, and historic guild houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Old Town Lucerne');
+SELECT @lucerne_id, 1, 'Old Town Lucerne','Beautiful medieval streets filled with colorful painted façades, fountains, and historic guild houses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Old Town Lucerne');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lucerne_id, 1, 'Musegg Wall','Remarkably preserved medieval city wall with several towers open to visitors.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Musegg Wall');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lucerne_id, 1, 'Hofkirche St Leodegar','Important Renaissance church with distinctive twin towers.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Hofkirche St Leodegar');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lucerne_id, 1, 'Jesuit Church Lucerne','One of Switzerlandâ€™s finest examples of early Baroque architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Jesuit Church Lucerne');
+SELECT @lucerne_id, 1, 'Jesuit Church Lucerne','One of Switzerland’s finest examples of early Baroque architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Jesuit Church Lucerne');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lucerne_id, 2, 'Rosengart Collection','Excellent collection of modern art, particularly works by Pablo Picasso and Paul Klee.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Rosengart Collection');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -482,7 +482,7 @@ SELECT @lucerne_id, 4, 'Meggenhorn Castle','Picturesque lakeside castle surround
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lucerne_id, 4, 'Reuss River','Walk along the quieter stretches of the river away from Chapel Bridge.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lucerne_id AND name='Reuss River');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @bern_id, 1, 'Zytglogge','Bernâ€™s famous medieval clock tower, featuring an astronomical clock and mechanical figures.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Zytglogge');
+SELECT @bern_id, 1, 'Zytglogge','Bern’s famous medieval clock tower, featuring an astronomical clock and mechanical figures.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Zytglogge');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @bern_id, 1, 'Bern Minster','Switzerland''s largest church and an impressive example of late Gothic architecture.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Bern Minster');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -492,9 +492,9 @@ SELECT @bern_id, 1, 'Federal Palace of Switzerland','The seat of the Swiss Feder
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @bern_id, 1, 'Kramgasse','One of the Old Town''s most beautiful historic streets, lined with fountains and covered arcades.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Kramgasse');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @bern_id, 1, 'KÃ¤figturm','Historic medieval tower that once formed part of the cityâ€™s defenses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='KÃ¤figturm');
+SELECT @bern_id, 1, 'Käfigturm','Historic medieval tower that once formed part of the city’s defenses.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Käfigturm');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @bern_id, 2, 'Kunstmuseum Bern','Switzerlandâ€™s oldest art museum, with works ranging from the Middle Ages to contemporary art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Kunstmuseum Bern');
+SELECT @bern_id, 2, 'Kunstmuseum Bern','Switzerland’s oldest art museum, with works ranging from the Middle Ages to contemporary art.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Kunstmuseum Bern');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @bern_id, 2, 'Zentrum Paul Klee','Museum dedicated to Swiss artist Paul Klee, housed in a striking building designed by Renzo Piano.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Zentrum Paul Klee');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -502,7 +502,7 @@ SELECT @bern_id, 2, 'Einstein House','Former apartment of Albert Einstein, where
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @bern_id, 2, 'Museum of Communication','Interactive museum exploring the history of communication and technology.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Museum of Communication');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @bern_id, 2, 'Bern Historical Museum','One of Switzerlandâ€™s most important cultural history museums.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Bern Historical Museum');
+SELECT @bern_id, 2, 'Bern Historical Museum','One of Switzerland’s most important cultural history museums.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Bern Historical Museum');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @bern_id, 4, 'Rosengarten Bern','Beautiful rose garden on a hill overlooking the entire Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@bern_id AND name='Rosengarten Bern');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -518,7 +518,7 @@ SELECT @interlaken_id, 1, 'Interlaken Monastery','Historic former Augustinian mo
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @interlaken_id, 1, 'Unterseen','Charming historic town beside Interlaken with traditional Swiss houses and a quieter atmosphere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@interlaken_id AND name='Unterseen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @interlaken_id, 1, 'HÃ¶heweg','The main promenade connecting Interlaken West and Interlaken Ost, offering beautiful views toward the Jungfrau.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@interlaken_id AND name='HÃ¶heweg');
+SELECT @interlaken_id, 1, 'Höheweg','The main promenade connecting Interlaken West and Interlaken Ost, offering beautiful views toward the Jungfrau.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@interlaken_id AND name='Höheweg');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @interlaken_id, 1, 'Unspunnen Castle','Medieval castle ruins just outside Interlaken, associated with traditional Swiss festivals.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@interlaken_id AND name='Unspunnen Castle');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -536,7 +536,7 @@ SELECT @interlaken_id, 4, 'Saxeten','Quiet Alpine village hidden in a valley nea
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @interlaken_id, 4, 'Harder Kulm','Mountain viewpoint directly above Interlaken with panoramic views over both lakes.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@interlaken_id AND name='Harder Kulm');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zermatt_id, 1, 'Matterhorn Museum â€“ Zermatlantis','Museum telling the story of Zermatt, Alpine life, and the dramatic first ascent of the Matterhorn.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Matterhorn Museum â€“ Zermatlantis');
+SELECT @zermatt_id, 1, 'Matterhorn Museum – Zermatlantis','Museum telling the story of Zermatt, Alpine life, and the dramatic first ascent of the Matterhorn.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Matterhorn Museum – Zermatlantis');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zermatt_id, 1, 'Hinterdorf','The oldest part of Zermatt, filled with beautifully preserved traditional wooden barns and chalets.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Hinterdorf');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -544,7 +544,7 @@ SELECT @zermatt_id, 1, 'Mountaineers'' Cemetery','Small, atmospheric cemetery de
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zermatt_id, 1, 'St Mauritius Church','Historic church in the center of the village.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='St Mauritius Church');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @zermatt_id, 2, 'Matterhorn Museum â€“ Zermatlantis','Best place to understand the cultural history of the village and the development of mountaineering.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Matterhorn Museum â€“ Zermatlantis');
+SELECT @zermatt_id, 2, 'Matterhorn Museum – Zermatlantis','Best place to understand the cultural history of the village and the development of mountaineering.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Matterhorn Museum – Zermatlantis');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @zermatt_id, 4, 'Hinterdorf','Wander away from the busy main streets into Zermatt''s oldest and most atmospheric quarter.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@zermatt_id AND name='Hinterdorf');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -562,17 +562,17 @@ SELECT @lauterbrunnen_id, 1, 'Lauterbrunnen Village','Traditional Swiss village 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lauterbrunnen_id, 1, 'Wengen','Historic car-free mountain village above the Lauterbrunnen Valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Wengen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lauterbrunnen_id, 1, 'MÃ¼rren','Traditional car-free Alpine village perched high above the valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='MÃ¼rren');
+SELECT @lauterbrunnen_id, 1, 'Mürren','Traditional car-free Alpine village perched high above the valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Mürren');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lauterbrunnen_id, 2, 'Valley Museum Lauterbrunnen','Small museum exploring the history, traditions, and everyday life of the Lauterbrunnen Valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Valley Museum Lauterbrunnen');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lauterbrunnen_id, 4, 'TrÃ¼mmelbach Falls','Powerful waterfalls hidden inside a mountain, accessible through tunnels and walkways carved into the rock.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='TrÃ¼mmelbach Falls');
+SELECT @lauterbrunnen_id, 4, 'Trümmelbach Falls','Powerful waterfalls hidden inside a mountain, accessible through tunnels and walkways carved into the rock.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Trümmelbach Falls');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lauterbrunnen_id, 4, 'Staubbach Falls','One of Switzerland''s highest free-falling waterfalls and the symbol of the valley.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Staubbach Falls');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lauterbrunnen_id, 4, 'Isenfluh','Tiny mountain village above Lauterbrunnen with spectacular views and a much quieter atmosphere.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Isenfluh');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @lauterbrunnen_id, 4, 'Gimmelwald','Peaceful traditional mountain village below MÃ¼rren, largely untouched by large-scale tourism.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Gimmelwald');
+SELECT @lauterbrunnen_id, 4, 'Gimmelwald','Peaceful traditional mountain village below Mürren, largely untouched by large-scale tourism.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Gimmelwald');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @lauterbrunnen_id, 4, 'Sefinen Valley','Remote and dramatic Alpine valley ideal for escaping the busiest areas.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@lauterbrunnen_id AND name='Sefinen Valley');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -606,7 +606,7 @@ SELECT @basel_id, 1, 'Basel Minster','The city''s iconic Gothic and Romanesque c
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @basel_id, 1, 'Basel Old Town','One of Switzerland''s best-preserved historic centers, filled with medieval streets, fountains, and beautifully decorated buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@basel_id AND name='Basel Old Town');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @basel_id, 1, 'Basel Town Hall','Striking bright-red Renaissance town hall with an elaborately decorated faÃ§ade.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@basel_id AND name='Basel Town Hall');
+SELECT @basel_id, 1, 'Basel Town Hall','Striking bright-red Renaissance town hall with an elaborately decorated façade.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@basel_id AND name='Basel Town Hall');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @basel_id, 1, 'Marktplatz Basel','Historic central square dominated by the Town Hall and surrounded by markets and historic buildings.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@basel_id AND name='Marktplatz Basel');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -636,7 +636,7 @@ SELECT @basel_id, 4, 'Merian Gardens','Beautiful botanical gardens and historic 
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @basel_id, 4, 'Rhine Promenade','One of the best places to experience the city, particularly in summer when locals gather along the river.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@basel_id AND name='Rhine Promenade');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @montreux_id, 1, 'ChÃ¢teau de Chillon','One of Switzerland''s most famous castles, dramatically positioned on a small rocky island on Lake Geneva. Its history stretches back to the medieval period.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='ChÃ¢teau de Chillon');
+SELECT @montreux_id, 1, 'Château de Chillon','One of Switzerland''s most famous castles, dramatically positioned on a small rocky island on Lake Geneva. Its history stretches back to the medieval period.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Château de Chillon');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @montreux_id, 1, 'Montreux Old Town','Historic upper part of the city with narrow streets, traditional houses, and views over Lake Geneva.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Montreux Old Town');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
@@ -644,7 +644,7 @@ SELECT @montreux_id, 1, 'Vieille Ville de Montreux','Atmospheric historic quarte
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @montreux_id, 1, 'Church of Saint-Vincent','Historic church dating largely from the medieval period, located in the Old Town.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Church of Saint-Vincent');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
-SELECT @montreux_id, 1, 'Caux','Beautiful mountain village above Montreux with historic Belle Ã‰poque hotels and spectacular views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Caux');
+SELECT @montreux_id, 1, 'Caux','Beautiful mountain village above Montreux with historic Belle Époque hotels and spectacular views.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Caux');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)
 SELECT @montreux_id, 2, 'Queen Studio Experience','Museum and exhibition inside the former Mountain Studios, where Queen recorded several albums.', NULL, NULL FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM places WHERE city_id=@montreux_id AND name='Queen Studio Experience');
 INSERT INTO places (city_id, category_id, name, short_description, latitude, longitude)

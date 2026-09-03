@@ -303,6 +303,7 @@ async function generateTrip({ countryId, countryName, numberOfDays, startDate, e
     }
   }
 
+  const itinerary=buildItinerary(plan, byId, dates);
   return {
     trip_id: 0,
     title: plan.title || `${countryName} Adventure`,
@@ -312,7 +313,7 @@ async function generateTrip({ countryId, countryName, numberOfDays, startDate, e
     trip_type: tripType,
     travel_style: travelStyle,
     number_of_days: numberOfDays,
-    itinerary: buildItinerary(plan, byId, dates),
+    itinerary,
   };
 }
 
