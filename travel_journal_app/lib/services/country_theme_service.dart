@@ -85,6 +85,24 @@ class CountryThemeService {
         surfaceColor: Color(0xFFfff0e8),
         gradientColors: [Color(0xFFc85103), Color(0xFFe8630a), Color(0xFF4a1e01)],
       ),
+      'Germany': CountryTheme(
+        primaryColor: Color(0xFFb24736),
+        secondaryColor: Color(0xFFc45a47),
+        backgroundColor: Color(0xFFfef6ec),
+        textColor: Color(0xFF3a1a0f),
+        accentColor: Color(0xFFf6e5ca),
+        surfaceColor: Color(0xFFfdf0e0),
+        gradientColors: [Color(0xFFb24736), Color(0xFFc45a47), Color(0xFF3a1a0f)],
+      ),
+      'Switzerland': CountryTheme(
+        primaryColor: Color(0xFF1b7895),
+        secondaryColor: Color(0xFF2a8fb3),
+        backgroundColor: Color(0xFFf0f9fb),
+        textColor: Color(0xFF0f2a33),
+        accentColor: Color(0xFFfffaef),
+        surfaceColor: Color(0xFFe8f4f8),
+        gradientColors: [Color(0xFF1b7895), Color(0xFF2a8fb3), Color(0xFF0f2a33)],
+      ),
     };
     return themes[countryName] ?? CountryTheme(
       primaryColor: Color(0xFF3E2723),

@@ -30,6 +30,7 @@ class TravelJournalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'PinMap: Travel journal',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
