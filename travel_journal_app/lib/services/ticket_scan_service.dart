@@ -138,13 +138,7 @@ class TicketScanService {
     final hasLocalFile = localOriginal != null || localProcessed != null;
     final hasBase64 = (originalBase64 != null && originalBase64.isNotEmpty) || (processedBase64 != null && processedBase64.isNotEmpty);
     if (!hasLocalFile && !hasBase64) {
-      debugPrint('TicketScanService: image too large for offline queue (>2MB on web) — not queuing. Connect online to upload.');
-      return TicketSaveResult(
-        journalId: journalId,
-        localPath: localProcessed,
-        elementKey: elementKey,
-        queuedOffline: false,
-      );
+      throw TicketScanException('Ticket cannot be saved offline because it exceeds the browser offline storage limit (2MB). Please reconnect to the internet and try again.');
     }
 
     await SyncQueueService.enqueue(SyncAction(

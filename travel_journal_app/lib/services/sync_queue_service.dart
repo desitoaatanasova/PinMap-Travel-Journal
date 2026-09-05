@@ -14,6 +14,7 @@ enum SyncActionType {
   updateTrip,
   deleteTrip,
   saveDraft,
+  deleteJournal,
   addTicketScan,
   saveProfile,
   saveSettings,
@@ -24,6 +25,7 @@ enum SyncActionType {
 }
 
 class SyncAction {
+  final String id;
   final SyncActionType type;
   final Map<String, dynamic> data;
   final DateTime timestamp;
@@ -33,6 +35,7 @@ class SyncAction {
   bool isDeadLetter;
 
   SyncAction({
+    String? id,
     required this.type,
     required this.data,
     required this.timestamp,
@@ -40,9 +43,20 @@ class SyncAction {
     this.lastAttempt,
     this.lastError,
     this.isDeadLetter = false,
-  });
+  }) : id = id ?? '${DateTime.now().millisecondsSinceEpoch}_${type.name}_${data['id'] ?? data['journalId'] ?? data['placeId'] ?? data['cityId'] ?? data['countryId'] ?? ''}_${_nextSeq++}';
+
+  static int _nextSeq = 0;
+
+  static String _synthId(Map<String, dynamic> json) {
+    final t = json['timestamp'] as String? ?? DateTime.now().toIso8601String();
+    final type = json['type'] as String? ?? 'saveDraft';
+    final data = json['data'] as Map<String, dynamic>? ?? {};
+    final ent = data['id'] ?? data['journalId'] ?? data['placeId'] ?? data['cityId'] ?? data['countryId'] ?? '';
+    return 'legacy_${t}_${type}_$ent';
+  }
 
   factory SyncAction.fromJson(Map<String, dynamic> json) => SyncAction(
+        id: json['id'] as String? ?? _synthId(json),
         type: SyncActionType.values.firstWhere(
           (e) => e.name == json['type'],
           orElse: () => SyncActionType.saveDraft,
@@ -56,6 +70,7 @@ class SyncAction {
       );
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'type': type.name,
         'data': data,
         'timestamp': timestamp.toIso8601String(),
@@ -153,6 +168,11 @@ class SyncQueueService {
       queue.removeWhere(
         (a) => a.type == SyncActionType.saveDraft && a.data['id'] == journalId,
       );
+      queue.removeWhere((a) => a.type == SyncActionType.deleteJournal && a.data['id'] == journalId);
+    }
+    if (action.type == SyncActionType.deleteJournal) {
+      final jid = action.data['id'];
+      queue.removeWhere((a) => (a.type == SyncActionType.saveDraft && a.data['id'] == jid) || (a.type == SyncActionType.deleteJournal && a.data['id'] == jid));
     }
     if (action.type == SyncActionType.toggleVisited) {
       final id = action.data['placeId'];
@@ -209,6 +229,10 @@ class SyncQueueService {
         await _saveQueue();
         continue;
       } catch (e) {
+        if (action.type == SyncActionType.deleteJournal && e is ApiException && e.statusCode == 404) {
+          processed.add(action);
+          continue;
+        }
         final cls = _classifyFailure(e);
         if (cls == 'auth') {
           _authPaused = true;
@@ -264,6 +288,8 @@ class SyncQueueService {
         await ApiClient.delete('/trips/${action.data['id']}');
       case SyncActionType.saveDraft:
         await ApiClient.post('/journal/save', body: action.data);
+      case SyncActionType.deleteJournal:
+        await ApiClient.delete('/journal/${action.data['id']}');
       case SyncActionType.addTicketScan:
         await _processTicketScan(action.data);
       case SyncActionType.saveProfile:
@@ -325,6 +351,42 @@ class SyncQueueService {
       'elementType': (data['elementType'] ?? 'ticket').toString(),
       'elementKey': (data['elementKey'] ?? '').toString(),
     }, files: files);
+  }
+
+  static Future<List<SyncAction>> getDeadLetters() async {
+    await loadQueue();
+    return List.unmodifiable(_currentQueue().where((a) => a.isDeadLetter));
+  }
+
+  static int get deadLetterCount => _currentQueue().where((a) => a.isDeadLetter).length;
+
+  static Future<bool> retryDeadLetter(String actionId) async {
+    final uid = _activeUserId;
+    if (uid == null) return false;
+    final queue = _queues[uid];
+    if (queue == null) return false;
+    final idx = queue.indexWhere((a) => a.id == actionId && a.isDeadLetter);
+    if (idx == -1) return false;
+    final action = queue[idx];
+    action.isDeadLetter = false;
+    action.retryCount = 0;
+    action.lastError = null;
+    action.lastAttempt = null;
+    await _saveQueue();
+    unawaited(processQueue());
+    return true;
+  }
+
+  static Future<bool> discardDeadLetter(String actionId) async {
+    final uid = _activeUserId;
+    if (uid == null) return false;
+    final queue = _queues[uid];
+    if (queue == null) return false;
+    final idx = queue.indexWhere((a) => a.id == actionId && a.isDeadLetter);
+    if (idx == -1) return false;
+    queue.removeAt(idx);
+    await _saveQueue();
+    return true;
   }
 
   static int get pendingCount => _activeQueue().length;
