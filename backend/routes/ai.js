@@ -54,15 +54,20 @@ router.post('/generate-trip', authenticateToken, async (req, res) => {
     res.status(201).json(trip);
   } catch (err) {
     if (err instanceof AiPlannerError) {
-      const status =
-        err.code === 'AI_NOT_CONFIGURED'
-          ? 503
-          : err.code === 'COUNTRY_NO_PLACES'
-            ? 400
-            : 502;
+      let status = 502;
+      if (err.code === 'AI_NOT_CONFIGURED') status = 503;
+      else if (err.code === 'COUNTRY_NO_PLACES' || err.code === 'INSUFFICIENT_PLACES') status = 400;
+      else if (err.code === 'AI_TIMEOUT') status = 504;
+      else if (err.code === 'AI_RATE_LIMIT') status = 503;
+      else if (err.code === 'AI_AUTH_ERROR' || err.code === 'AI_MODEL_NOT_FOUND') status = 503;
+      else if (err.code === 'AI_INVALID_RESPONSE' || err.code === 'AI_EMPTY_RESPONSE' || err.code === 'AI_PROVIDER_ERROR') status = 502;
+      else if (err.code === 'AI_ERROR') status = 502;
       return res.status(status).json({ error: err.message });
     }
     console.error('Generate trip error:', err);
+    if (err && (err.status === 429 || (err.message && err.message.toLowerCase().includes('quota')))) {
+      return res.status(503).json({ error: 'AI trip planning is temporarily unavailable. Please try again.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });

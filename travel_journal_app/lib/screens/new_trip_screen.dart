@@ -626,16 +626,16 @@ class _NewTripScreenState extends State<NewTripScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              _useBasicPlan(countryName);
+              _createBasicItinerary(countryName);
             },
-            child: Text('Use basic plan', style: GoogleFonts.dmSans(color: AppTheme.primary)),
+            child: Text('Create basic itinerary without AI', style: GoogleFonts.dmSans(color: AppTheme.primary)),
           ),
         ],
       ),
     );
   }
 
-  void _useBasicPlan(String countryName) {
+  void _createBasicItinerary(String countryName) {
     final trip = Trip(
       tripId: DateTime.now().millisecondsSinceEpoch,
       title: countryName,
@@ -662,6 +662,17 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   void _saveTrip() {
+    if (_numberOfDays != widget.trip!.itinerary.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            ''Cannot change trip duration here. Please create a new trip to change days.'',
+            style: GoogleFonts.dmSans(),
+          ),
+        ),
+      );
+      return;
+    }
     final trip = Trip(
       tripId: widget.trip!.tripId,
       title: _selectedCountryName!,
@@ -669,15 +680,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
       startDate: _startDate!,
       endDate: _endDate!,
       tripType: _vacationType,
-      travelStyle: _isSolo ? 'Solo' : 'Group',
+      travelStyle: _isSolo ? ''Solo'' : ''Group'',
       numberOfDays: _numberOfDays,
       cityIds: _selectedCityIds.toList(),
       arrivalCity: _arrivalCity,
       departureCity: _departureCity,
       participants: _selectedParticipants,
-      itinerary: _numberOfDays == widget.trip!.itinerary.length
-          ? widget.trip!.itinerary
-          : _buildMockItinerary(_selectedCountryName!),
+      itinerary: widget.trip!.itinerary,
     );
     if (trip.tripId != 0) {
       TripService.updateTrip(trip);
@@ -692,21 +701,21 @@ class _NewTripScreenState extends State<NewTripScreen> {
         morning: [
           TripActivity(
             placeName: 'Day ${index + 1} Morning Sightseeing',
-            timeSlot: '9:00 AM',
+            timeSlot: 'Morning',
             notes: 'Explore top attractions in $countryName',
           ),
         ],
         afternoon: [
           TripActivity(
             placeName: 'Day ${index + 1} Afternoon Exploration',
-            timeSlot: '2:00 PM',
+            timeSlot: 'Afternoon',
             notes: 'Discover hidden corners of $countryName',
           ),
         ],
         evening: [
           TripActivity(
             placeName: 'Day ${index + 1} Evening',
-            timeSlot: '7:00 PM',
+            timeSlot: 'Evening',
             notes: 'Dinner and relaxation in $countryName',
           ),
         ],
@@ -1018,3 +1027,4 @@ class _NewTripScreenState extends State<NewTripScreen> {
     );
   }
 }
+

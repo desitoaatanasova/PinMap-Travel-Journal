@@ -20,6 +20,7 @@ class TripMapScreen extends StatefulWidget {
 class _TripMapScreenState extends State<TripMapScreen> {
   final MapController _mapController = MapController();
   int? _selectedDay;
+  bool _didFitInitial = false;
 
   static const List<Color> _dayColors = [
     Color(0xFF8B4513),
@@ -53,6 +54,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
     for (final day in days) {
       for (final a in day.allActivities) {
         if (a.latitude != null && a.longitude != null) {
+          if (a.latitude! < -90 || a.latitude! > 90 || a.longitude! < -180 || a.longitude! > 180) continue;
           points.add(LatLng(a.latitude!, a.longitude!));
         }
       }
@@ -60,29 +62,49 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return points;
   }
 
-  LatLng _center() {
-    final points = _pointsForDays(_visibleDays);
-    if (points.isEmpty) return const LatLng(48.8566, 2.3522);
+  LatLng? _centerOrNull(List<LatLng> points) {
+    if (points.isEmpty) return null;
     final lat = points.map((p) => p.latitude).reduce((a, b) => a + b) / points.length;
     final lng = points.map((p) => p.longitude).reduce((a, b) => a + b) / points.length;
     return LatLng(lat, lng);
   }
 
-  void _selectDay(int? dayNumber) {
-    setState(() => _selectedDay = dayNumber);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final points = _pointsForDays(_visibleDays);
-      if (points.length >= 2) {
+  int get _validCount => _pointsForDays(_visibleDays).length;
+
+  void _fitVisible() {
+    final points = _pointsForDays(_visibleDays);
+    if (points.isEmpty) return;
+    if (points.length >= 2) {
+      try {
         _mapController.fitCamera(
           CameraFit.bounds(
             bounds: LatLngBounds.fromPoints(points),
             padding: const EdgeInsets.all(64),
           ),
         );
-      } else if (points.length == 1) {
+      } catch (_) {}
+    } else if (points.length == 1) {
+      try {
         _mapController.move(points.first, 12);
-      }
+      } catch (_) {}
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _didFitInitial) return;
+      _didFitInitial = true;
+      _fitVisible();
+    });
+  }
+
+  void _selectDay(int? dayNumber) {
+    setState(() => _selectedDay = dayNumber);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _fitVisible();
     });
   }
 
@@ -91,13 +113,14 @@ class _TripMapScreenState extends State<TripMapScreen> {
     for (final day in _visibleDays) {
       for (final a in day.allActivities) {
         if (a.latitude == null || a.longitude == null) continue;
+        if (a.latitude! < -90 || a.latitude! > 90 || a.longitude! < -180 || a.longitude! > 180) continue;
         markers.add(
           Marker(
             point: LatLng(a.latitude!, a.longitude!),
             width: 48,
             height: 48,
             child: GestureDetector(
-              onTap: () => _openPlace(a),
+              onTap: () => _showActivitySheet(a, day.dayNumber),
               child: _DayMarker(
                 color: _dayColor(day.dayNumber),
                 label: '${day.dayNumber}',
@@ -130,6 +153,79 @@ class _TripMapScreenState extends State<TripMapScreen> {
       }
     }
     return lines;
+  }
+
+  void _showActivitySheet(TripActivity activity, int dayNumber) {
+    final hasPlace = activity.placeId != null;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.fromLTRB(AppTheme.space4, AppTheme.space4, AppTheme.space4, AppTheme.space4 + 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(color: _dayColor(dayNumber), shape: BoxShape.circle),
+                  alignment: Alignment.center,
+                  child: Text('$dayNumber', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(width: AppTheme.space3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(activity.placeName ?? 'Activity', style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.darkBrown)),
+                      if ((activity.cityName ?? '').isNotEmpty)
+                        Text(activity.cityName!, style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.space3),
+            Wrap(
+              spacing: AppTheme.space2,
+              children: [
+                _InfoChip(icon: Icons.calendar_today, label: 'Day $dayNumber'),
+                _InfoChip(icon: Icons.wb_sunny, label: activity.timeSlot),
+                if (activity.categoryId != null) _InfoChip(icon: Icons.category, label: 'Category ${activity.categoryId}'),
+              ],
+            ),
+            if (activity.notes.isNotEmpty) ...[
+              const SizedBox(height: AppTheme.space3),
+              Text(activity.notes, style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.darkBrown)),
+            ],
+            const SizedBox(height: AppTheme.space4),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Close', style: GoogleFonts.dmSans()),
+                  ),
+                ),
+                const SizedBox(width: AppTheme.space3),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: hasPlace ? () { Navigator.pop(context); _openPlace(activity); } : null,
+                    child: Text('View details', style: GoogleFonts.dmSans()),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _openPlace(TripActivity activity) async {
@@ -169,6 +265,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final points = _pointsForDays(_visibleDays);
+    final center = _centerOrNull(points);
+    final polylines = _buildPolylines();
+    final markers = _buildMarkers();
+    final hasValid = points.isNotEmpty;
     return Scaffold(
       backgroundColor: AppTheme.bg,
       extendBody: true,
@@ -188,22 +289,50 @@ class _TripMapScreenState extends State<TripMapScreen> {
         children: [
           _buildDaySelector(),
           Expanded(
-            child: FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _center(),
-                initialZoom: 8,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.pinmap_travel_journal',
-                ),
-                if (_buildPolylines().isNotEmpty)
-                  PolylineLayer(polylines: _buildPolylines()),
-                MarkerLayer(markers: _buildMarkers()),
-              ],
-            ),
+            child: hasValid
+                ? FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: center ?? const LatLng(20, 0),
+                      initialZoom: center != null ? 8 : 2,
+                      onMapReady: () {
+                        if (!_didFitInitial) {
+                          _didFitInitial = true;
+                          WidgetsBinding.instance.addPostFrameCallback((_) => _fitVisible());
+                        }
+                      },
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.pinmap_travel_journal',
+                      ),
+                      if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
+                      MarkerLayer(markers: markers),
+                    ],
+                  )
+                : Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.space4),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.map_outlined, size: 56, color: AppTheme.warmGray.withValues(alpha: 0.6)),
+                          const SizedBox(height: AppTheme.space3),
+                          Text(
+                            'No mapped locations',
+                            style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.darkBrown),
+                          ),
+                          const SizedBox(height: AppTheme.space2),
+                          Text(
+                            'This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.warmGray),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
           ),
           _buildLegend(),
         ],
@@ -283,7 +412,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
             const SizedBox(height: AppTheme.space2),
           ],
           Text(
-            '${_visibleDays.fold<int>(0, (sum, d) => sum + d.allActivities.length)} places shown',
+            '$_validCount places shown${_validCount == 0 ? " — no coordinates" : ""}',
             textAlign: TextAlign.center,
             style: GoogleFonts.dmSans(
               fontSize: 12,
@@ -292,6 +421,26 @@ class _TripMapScreenState extends State<TripMapScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // Straight-line visualization per day (not real routing).
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _InfoChip({required this.icon, required this.label});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(color: AppTheme.bg, borderRadius: BorderRadius.circular(AppTheme.radiusFull), border: Border.all(color: AppTheme.lightGray)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 14, color: AppTheme.warmGray),
+        const SizedBox(width: 4),
+        Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.darkBrown, fontWeight: FontWeight.w500)),
+      ]),
     );
   }
 }

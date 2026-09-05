@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
 import 'package:pinmap_travel_journal/screens/trip_map_screen.dart';
@@ -297,13 +298,54 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _regenerating = true);
     try {
+      if (CountryService.getAllCountries().isEmpty) {
+        try {
+          await CountryService.loadCountries();
+        } catch (_) {}
+      }
+      String countryName = '';
+      try {
+        final countries = CountryService.getAllCountries();
+        for (final co in countries) {
+          if (co.countryId == trip.countryId) { countryName = co.name; break; }
+        }
+      } catch (_) {}
+      if (countryName.isEmpty && trip.countryId != 0) {
+        try {
+          await CountryService.loadCountries();
+          for (final co in CountryService.getAllCountries()) {
+            if (co.countryId == trip.countryId) { countryName = co.name; break; }
+          }
+        } catch (_) {}
+      }
+      List<String> cityNames = trip.cityIds
+          .map((id) => CountryService.cityName(id))
+          .where((n) => n != null && n!.isNotEmpty)
+          .map((n) => n!)
+          .toList();
+      if (trip.cityIds.isNotEmpty && cityNames.isEmpty) {
+        try {
+          await CountryService.loadCountries();
+          cityNames = trip.cityIds
+              .map((id) => CountryService.cityName(id))
+              .where((n) => n != null && n!.isNotEmpty)
+              .map((n) => n!)
+              .toList();
+        } catch (_) {}
+      }
       final aiTrip = await TripService.generateTrip(
         countryId: trip.countryId,
+        countryName: countryName,
         numberOfDays: trip.numberOfDays ?? trip.itinerary.length,
         startDate: trip.startDate,
         endDate: trip.endDate,
         tripType: trip.tripType,
         travelStyle: trip.travelStyle,
+        cityIds: trip.cityIds,
+        cityNames: cityNames,
+        arrivalCity: trip.arrivalCity,
+        departureCity: trip.departureCity,
+        participants: trip.participants,
       );
       await TripService.saveDraft(aiTrip);
       if (!mounted) return;
