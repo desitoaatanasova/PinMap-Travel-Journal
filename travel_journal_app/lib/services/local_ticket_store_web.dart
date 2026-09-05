@@ -7,3 +7,5 @@ Future<String?> saveTicketBytes(
 }) async {
   return null; // no persistent local file system on web
 }
+
+Future<void> deleteTicketsForJournal(int journalId) async {}

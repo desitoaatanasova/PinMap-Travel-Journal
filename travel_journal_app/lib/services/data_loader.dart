@@ -23,6 +23,16 @@ class DataLoader {
     SettingsService.reset();
   }
 
+  static Future<void> resetUserData() async {
+    VisitedService.reset();
+    WishlistService.reset();
+    TripService.reset();
+    JournalService.reset();
+    ProfileService.reset();
+    RatingsService.reset();
+    SettingsService.reset();
+  }
+
   static Future<void> loadAll() async {
     await resetAll();
     try {

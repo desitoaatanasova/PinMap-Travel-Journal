@@ -32,3 +32,13 @@ Future<String?> saveTicketBytes(
   await file.writeAsBytes(bytes, flush: true);
   return file.path;
 }
+
+Future<void> deleteTicketsForJournal(int journalId) async {
+  try {
+    final root = await getApplicationDocumentsDirectory();
+    final folder = Directory('${root.path}/tickets/$journalId');
+    if (await folder.exists()) {
+      await folder.delete(recursive: true);
+    }
+  } catch (_) {}
+}

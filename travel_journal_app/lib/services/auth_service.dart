@@ -1,5 +1,6 @@
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 
 class AuthService {
@@ -24,6 +25,7 @@ class AuthService {
       await ApiClient.setToken(data['token']);
       final u = data['user'];
       final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
+      await DataLoader.resetUserData();
       SyncQueueService.clearAuthPause();
       await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
@@ -55,6 +57,7 @@ class AuthService {
       await ApiClient.setToken(data['token']);
       final u = data['user'];
       final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
+      await DataLoader.resetUserData();
       SyncQueueService.clearAuthPause();
       await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
@@ -77,6 +80,7 @@ class AuthService {
   static Future<void> logout() async {
     await ApiClient.clearToken();
     await SyncQueueService.deactivateUser();
+    await DataLoader.resetUserData();
     _currentUser = null;
     _isLoggedIn = false;
   }
@@ -85,6 +89,9 @@ class AuthService {
     try {
       final data = await ApiClient.get('/auth/me');
       final userId = _userIdFrom(data['user_id']) ?? _userIdFrom(data['userId']) ?? 0;
+      if (SyncQueueService.activeUserId != userId) {
+        await DataLoader.resetUserData();
+      }
       SyncQueueService.clearAuthPause();
       await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(

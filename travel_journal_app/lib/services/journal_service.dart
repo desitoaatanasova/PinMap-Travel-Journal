@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/local_ticket_store.dart';
 import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 
 class JournalSaveResult {
@@ -117,6 +118,9 @@ class JournalService {
 
   static Future<void> deleteJournal(int id) async {
     _journals.removeWhere((j) => j.journalId == id);
+    try {
+      await LocalTicketStore.deleteTicketsForJournal(id);
+    } catch (_) {}
     try {
       await ApiClient.delete('/journal/$id');
     } catch (e) {

@@ -173,6 +173,7 @@ class SyncQueueService {
     if (action.type == SyncActionType.deleteJournal) {
       final jid = action.data['id'];
       queue.removeWhere((a) => (a.type == SyncActionType.saveDraft && a.data['id'] == jid) || (a.type == SyncActionType.deleteJournal && a.data['id'] == jid));
+      queue.removeWhere((a) => a.type == SyncActionType.addTicketScan && (a.data['journalId'] == jid || a.data['journalId']?.toString() == jid.toString()));
     }
     if (action.type == SyncActionType.toggleVisited) {
       final id = action.data['placeId'];

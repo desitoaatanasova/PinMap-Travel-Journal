@@ -8,7 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TripService {
   static List<Trip> _trips = [];
   static bool _loaded = false;
-  static const String _draftKey = 'ai_trip_draft';
+  static const String _legacyDraftKey = 'ai_trip_draft';
+
+  static String _draftKey() {
+    final uid = SyncQueueService.activeUserId;
+    if (uid != null) return 'ai_trip_draft_$uid';
+    return _legacyDraftKey;
+  }
+
+  static String _scopedDraftKey() => _draftKey();
 
   static Future<void> loadTrips() async {
     if (_loaded) return;
@@ -50,17 +58,8 @@ class TripService {
     body['id'] = trip.tripId;
     try {
       final data = await ApiClient.post('/trips', body: body);
-      final newTrip = Trip(
-        tripId: data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0,
-        title: trip.title,
-        countryId: trip.countryId,
-        startDate: trip.startDate,
-        endDate: trip.endDate,
-        tripType: trip.tripType,
-        travelStyle: trip.travelStyle,
-        numberOfDays: trip.numberOfDays,
-        itinerary: trip.itinerary,
-      );
+      final serverId = data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0;
+      final newTrip = trip.copyWith(tripId: serverId);
       _trips.add(newTrip);
     } catch (e) {
       debugPrint('TripService.addTrip offline: $e');
@@ -169,12 +168,22 @@ class TripService {
   /// Persists the AI draft locally so it survives navigation/app restarts.
   static Future<void> saveDraft(Trip draft) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_draftKey, jsonEncode(_toApiJson(draft)));
+    await prefs.setString(_scopedDraftKey(), jsonEncode(_toApiJson(draft)));
   }
 
   static Future<Trip?> loadDraft() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_draftKey);
+    final key = _scopedDraftKey();
+    String? raw = prefs.getString(key);
+    if (raw == null && key != _legacyDraftKey) {
+      raw = prefs.getString(_legacyDraftKey);
+      if (raw != null) {
+        try {
+          await prefs.setString(key, raw);
+        } catch (_) {}
+        await prefs.remove(_legacyDraftKey);
+      }
+    }
     if (raw == null) return null;
     try {
       final json = jsonDecode(raw) as Map<String, dynamic>;
@@ -187,7 +196,10 @@ class TripService {
 
   static Future<void> clearDraft() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_draftKey);
+    await prefs.remove(_scopedDraftKey());
+    if (_scopedDraftKey() != _legacyDraftKey) {
+      await prefs.remove(_legacyDraftKey);
+    }
   }
 
   static Map<String, dynamic> _toApiJson(Trip trip) {

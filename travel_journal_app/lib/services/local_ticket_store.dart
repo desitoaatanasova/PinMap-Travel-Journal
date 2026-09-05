@@ -15,4 +15,8 @@ class LocalTicketStore {
   }) {
     return impl.saveTicketBytes(bytes, journalId, original: original);
   }
+
+  static Future<void> deleteTicketsForJournal(int journalId) {
+    return impl.deleteTicketsForJournal(journalId);
+  }
 }
