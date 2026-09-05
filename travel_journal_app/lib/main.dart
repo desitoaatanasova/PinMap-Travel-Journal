@@ -78,8 +78,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _onlineSub = _connectivity.isOnline.listen((online) {
-      if (online) {
+      if (online && SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
         SyncQueueService.processQueue();
+      }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
+        final online = await _connectivity.isCurrentlyOnline;
+        if (online) SyncQueueService.processQueue();
       }
     });
   }
@@ -87,8 +93,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      // Flush anything queued while the app was backgrounded.
-      SyncQueueService.processQueue();
+      if (SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
+        SyncQueueService.processQueue();
+      }
     }
   }
 

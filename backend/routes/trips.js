@@ -65,7 +65,17 @@ router.post('/', authenticateToken, async (req, res) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds } = req.body;
+    const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds, clientId } = req.body;
+    if (clientId) {
+      const [existing] = await conn.query(
+        'SELECT trip_id FROM trips WHERE user_id = ? AND client_id = ?',
+        [req.userId, clientId]
+      );
+      if (existing.length > 0) {
+        await conn.commit();
+        return res.status(200).json({ id: existing[0].trip_id, deduped: true });
+      }
+    }
     const numberOfDays =
       req.body.numberOfDays ??
       (itinerary && itinerary.length > 0
@@ -74,8 +84,8 @@ router.post('/', authenticateToken, async (req, res) => {
           ? Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1
           : null);
     const [tripResult] = await conn.query(
-      'INSERT INTO trips (user_id, title, country_id, start_date, end_date, trip_type, travel_style, number_of_days, arrival_city, departure_city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [req.userId, title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays, arrivalCity || null, departureCity || null]
+      'INSERT INTO trips (user_id, client_id, title, country_id, start_date, end_date, trip_type, travel_style, number_of_days, arrival_city, departure_city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [req.userId, clientId || null, title, countryId, startDate, endDate, tripType, travelStyle, numberOfDays, arrivalCity || null, departureCity || null]
     );
     const tripId = tripResult.insertId;
     if (Array.isArray(cityIds) && cityIds.length > 0) {

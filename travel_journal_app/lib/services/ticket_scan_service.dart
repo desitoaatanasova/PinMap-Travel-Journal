@@ -135,6 +135,17 @@ class TicketScanService {
     // Offline (or upload failure): keep the image locally and queue a retry.
     final originalBase64 = await _embedForQueue(originalBytes, localOriginal);
     final processedBase64 = await _embedForQueue(processedBytes, localProcessed);
+    final hasLocalFile = localOriginal != null || localProcessed != null;
+    final hasBase64 = (originalBase64 != null && originalBase64.isNotEmpty) || (processedBase64 != null && processedBase64.isNotEmpty);
+    if (!hasLocalFile && !hasBase64) {
+      debugPrint('TicketScanService: image too large for offline queue (>2MB on web) — not queuing. Connect online to upload.');
+      return TicketSaveResult(
+        journalId: journalId,
+        localPath: localProcessed,
+        elementKey: elementKey,
+        queuedOffline: false,
+      );
+    }
 
     await SyncQueueService.enqueue(SyncAction(
       type: SyncActionType.addTicketScan,

@@ -27,8 +27,20 @@ class SyncAction {
   final SyncActionType type;
   final Map<String, dynamic> data;
   final DateTime timestamp;
+  int retryCount;
+  DateTime? lastAttempt;
+  String? lastError;
+  bool isDeadLetter;
 
-  SyncAction({required this.type, required this.data, required this.timestamp});
+  SyncAction({
+    required this.type,
+    required this.data,
+    required this.timestamp,
+    this.retryCount = 0,
+    this.lastAttempt,
+    this.lastError,
+    this.isDeadLetter = false,
+  });
 
   factory SyncAction.fromJson(Map<String, dynamic> json) => SyncAction(
         type: SyncActionType.values.firstWhere(
@@ -37,12 +49,20 @@ class SyncAction {
         ),
         data: json['data'] as Map<String, dynamic>,
         timestamp: DateTime.parse(json['timestamp'] as String),
+        retryCount: (json['retryCount'] as num?)?.toInt() ?? 0,
+        lastAttempt: json['lastAttempt'] != null ? DateTime.tryParse(json['lastAttempt'] as String) : null,
+        lastError: json['lastError'] as String?,
+        isDeadLetter: json['isDeadLetter'] as bool? ?? false,
       );
 
   Map<String, dynamic> toJson() => {
         'type': type.name,
         'data': data,
         'timestamp': timestamp.toIso8601String(),
+        'retryCount': retryCount,
+        'lastAttempt': lastAttempt?.toIso8601String(),
+        'lastError': lastError,
+        'isDeadLetter': isDeadLetter,
       };
 }
 
@@ -50,27 +70,38 @@ class SyncQueueService {
   static final Map<int, List<SyncAction>> _queues = {};
   static int? _activeUserId;
   static bool _loaded = false;
+  static bool _authPaused = false;
+  static String? _authError;
 
   static String _keyFor(int? userId) => 'sync_queue_${userId ?? -1}';
 
-  /// Activates the queue for [userId] and loads its persisted actions.
-  /// Call after a successful login/register and after restoring a session.
+  static bool get isAuthPaused => _authPaused;
+  static String? get authError => _authError;
+  static int? get activeUserId => _activeUserId;
+
+  static void clearAuthPause() {
+    _authPaused = false;
+    _authError = null;
+  }
+
   static Future<void> activateUser(int userId) async {
     if (_activeUserId == userId && _loaded) return;
     _activeUserId = userId;
     _queues[userId] = [];
     _loaded = false;
+    _authPaused = false;
+    _authError = null;
     await loadQueue(userId: userId);
   }
 
-  /// Clears the in-memory queue when the user logs out. Persisted actions
-  /// stay in storage so they can be flushed after the user signs back in.
   static Future<void> deactivateUser() async {
     if (_activeUserId != null && _queues[_activeUserId] != null) {
       await _saveQueue();
     }
     _activeUserId = null;
     _loaded = false;
+    _authPaused = false;
+    _authError = null;
   }
 
   static Future<void> loadQueue({int? userId}) async {
@@ -100,6 +131,10 @@ class SyncQueueService {
     return _queues[uid] ??= [];
   }
 
+  static List<SyncAction> _activeQueue() {
+    return _currentQueue().where((a) => !a.isDeadLetter).toList();
+  }
+
   static Future<void> _saveQueue() async {
     final uid = _activeUserId;
     if (uid == null) return;
@@ -113,34 +148,91 @@ class SyncQueueService {
     final uid = _activeUserId;
     if (uid == null) return;
     final queue = _queues[uid] ??= [];
-    // Coalesce journal draft saves: only the latest draft per journal matters.
     if (action.type == SyncActionType.saveDraft) {
       final journalId = action.data['id'];
       queue.removeWhere(
         (a) => a.type == SyncActionType.saveDraft && a.data['id'] == journalId,
       );
     }
+    if (action.type == SyncActionType.toggleVisited) {
+      final id = action.data['placeId'];
+      queue.removeWhere((a) => a.type == SyncActionType.toggleVisited && a.data['placeId'] == id);
+    }
+    if (action.type == SyncActionType.toggleCityVisited) {
+      final id = action.data['cityId'];
+      queue.removeWhere((a) => a.type == SyncActionType.toggleCityVisited && a.data['cityId'] == id);
+    }
+    if (action.type == SyncActionType.toggleCountryVisited) {
+      final id = action.data['countryId'];
+      queue.removeWhere((a) => a.type == SyncActionType.toggleCountryVisited && a.data['countryId'] == id);
+    }
     queue.add(action);
     await _saveQueue();
-    // Non-blocking: never block the UI on a network flush.
     unawaited(processQueue());
+  }
+
+  static bool _isNetworkError(Object e) {
+    final s = e.toString().toLowerCase();
+    return s.contains('socketexception') || s.contains('timeoutexception') || s.contains('failed host lookup') || s.contains('connection');
+  }
+
+  static String _classifyFailure(Object e) {
+    if (e is ApiException) {
+      final c = e.statusCode;
+      if (c == 401 || c == 403) return 'auth';
+      if (c == 400 || c == 404 || c == 422) return 'dead';
+      if (c == 409) return 'conflict';
+      if (c == 429 || (c >= 500 && c <= 599)) return 'retry';
+      return 'retry';
+    }
+    if (_isNetworkError(e)) return 'retry';
+    return 'retry';
   }
 
   static Future<void> processQueue() async {
     final uid = _activeUserId;
     if (uid == null) return;
+    if (_authPaused) return;
     final queue = _queues[uid] ??= [];
     if (queue.isEmpty) return;
+    final active = _activeQueue();
+    if (active.isEmpty) return;
     final processed = <SyncAction>[];
-    for (final action in List<SyncAction>.from(queue)) {
+    for (final action in List<SyncAction>.from(active)) {
       try {
         await _processAction(action);
         processed.add(action);
-      } on StateError {
-        // Payload (e.g. ticket image bytes) is gone — drop it silently.
-        processed.add(action);
+      } on StateError catch (e) {
+        action.isDeadLetter = true;
+        action.lastError = e.message;
+        action.lastAttempt = DateTime.now();
+        await _saveQueue();
+        continue;
       } catch (e) {
-        // Stop on the first failure to preserve ordering; retry later.
+        final cls = _classifyFailure(e);
+        if (cls == 'auth') {
+          _authPaused = true;
+          _authError = e.toString();
+          action.lastError = e.toString();
+          action.lastAttempt = DateTime.now();
+          await _saveQueue();
+          break;
+        }
+        if (cls == 'dead') {
+          action.isDeadLetter = true;
+          action.lastError = e.toString();
+          action.lastAttempt = DateTime.now();
+          await _saveQueue();
+          continue;
+        }
+        if (cls == 'conflict') {
+          processed.add(action);
+          continue;
+        }
+        action.retryCount += 1;
+        action.lastError = e.toString();
+        action.lastAttempt = DateTime.now();
+        await _saveQueue();
         break;
       }
     }
@@ -235,7 +327,8 @@ class SyncQueueService {
     }, files: files);
   }
 
-  static int get pendingCount => _currentQueue().length;
-  static List<SyncAction> get pendingActions =>
-      List.unmodifiable(_currentQueue());
+  static int get pendingCount => _activeQueue().length;
+  static List<SyncAction> get pendingActions => List.unmodifiable(_activeQueue());
+  static List<SyncAction> get deadLetters => List.unmodifiable(_currentQueue().where((a) => a.isDeadLetter));
+  static List<SyncAction> get allActions => List.unmodifiable(_currentQueue());
 }

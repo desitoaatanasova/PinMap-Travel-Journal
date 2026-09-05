@@ -666,7 +666,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            ''Cannot change trip duration here. Please create a new trip to change days.'',
+            'Cannot change trip duration here. Please create a new trip to change days.',
             style: GoogleFonts.dmSans(),
           ),
         ),
@@ -680,7 +680,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
       startDate: _startDate!,
       endDate: _endDate!,
       tripType: _vacationType,
-      travelStyle: _isSolo ? ''Solo'' : ''Group'',
+      travelStyle: _isSolo ? 'Solo' : 'Group',
       numberOfDays: _numberOfDays,
       cityIds: _selectedCityIds.toList(),
       arrivalCity: _arrivalCity,

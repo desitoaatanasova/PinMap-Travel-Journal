@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
+import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 
 class JournalSaveResult {
   final int journalId;
@@ -39,7 +40,6 @@ class JournalService {
     } catch (e) {
       debugPrint('JournalService.reloadJournals error: $e');
     }
-    // reloadJournals is void
   }
 
   static Journal? getJournalById(int id) {
@@ -50,35 +50,69 @@ class JournalService {
     }
   }
 
-  /// Persists a journal server-side and updates the local cache with the
-  /// server id and fresh page ids. Returns the server result.
   static Future<JournalSaveResult> saveJournal(Journal journal) async {
     final body = journal.toJson();
-    final data = await ApiClient.post('/journal/save', body: body);
-    final serverId = data['id'] is int
-        ? data['id'] as int
-        : int.tryParse(data['id'].toString()) ?? journal.journalId;
-    final savedPages = <SavedPage>[
-      for (final page in (data['pages'] as List?) ?? <dynamic>[])
-        SavedPage(
-          pageId: (page['pageId'] as num?)?.toInt() ?? 0,
-          pageNumber: (page['pageNumber'] as num?)?.toInt() ?? 0,
-        ),
-    ];
-    final saved = Journal(
-      journalId: serverId,
-      title: journal.title,
-      countryId: journal.countryId,
-      coverImage: journal.coverImage,
-      pages: journal.pages,
-    );
-    final index = _journals.indexWhere((j) => j.journalId == journal.journalId);
-    if (index >= 0) {
-      _journals[index] = saved;
-    } else {
-      _journals.add(saved);
+    try {
+      final data = await ApiClient.post('/journal/save', body: body);
+      final serverId = data['id'] is int
+          ? data['id'] as int
+          : int.tryParse(data['id'].toString()) ?? journal.journalId;
+      final savedPages = <SavedPage>[
+        for (final page in (data['pages'] as List?) ?? <dynamic>[])
+          SavedPage(
+            pageId: (page['pageId'] as num?)?.toInt() ?? 0,
+            pageNumber: (page['pageNumber'] as num?)?.toInt() ?? 0,
+          ),
+      ];
+      final saved = Journal(
+        journalId: serverId,
+        title: journal.title,
+        countryId: journal.countryId,
+        coverImage: journal.coverImage,
+        pages: journal.pages,
+      );
+      final index = _journals.indexWhere((j) => j.journalId == journal.journalId);
+      if (index >= 0) {
+        _journals[index] = saved;
+      } else {
+        _journals.add(saved);
+      }
+      return JournalSaveResult(journalId: serverId, pages: savedPages);
+    } catch (e) {
+      final isRetryable = _isRetryableError(e);
+      if (isRetryable) {
+        await SyncQueueService.enqueue(SyncAction(
+          type: SyncActionType.saveDraft,
+          data: body,
+          timestamp: DateTime.now(),
+        ));
+        final optimistic = Journal(
+          journalId: journal.journalId,
+          title: journal.title,
+          countryId: journal.countryId,
+          coverImage: journal.coverImage,
+          pages: journal.pages,
+        );
+        final idx = _journals.indexWhere((j) => j.journalId == journal.journalId);
+        if (idx >= 0) {
+          _journals[idx] = optimistic;
+        } else {
+          _journals.add(optimistic);
+        }
+        return JournalSaveResult(journalId: journal.journalId, pages: []);
+      }
+      rethrow;
     }
-    return JournalSaveResult(journalId: serverId, pages: savedPages);
+  }
+
+  static bool _isRetryableError(Object e) {
+    if (e is ApiException) {
+      final c = e.statusCode;
+      if (c == 401 || c == 403 || c == 400 || c == 404 || c == 422) return false;
+      return true;
+    }
+    final s = e.toString().toLowerCase();
+    return s.contains('socketexception') || s.contains('timeout') || s.contains('failed host lookup') || s.contains('connection');
   }
 
   static Future<void> deleteJournal(int id) async {

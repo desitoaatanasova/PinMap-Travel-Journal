@@ -41,9 +41,15 @@ class TripService {
 
   static List<Trip> getAllTrips() => _trips;
 
+  static String _clientIdFor(Trip trip) => 'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
+
   static Future<void> addTrip(Trip trip) async {
+    final clientId = _clientIdFor(trip);
+    final body = trip.toJson();
+    body['clientId'] = clientId;
+    body['id'] = trip.tripId;
     try {
-      final data = await ApiClient.post('/trips', body: trip.toJson());
+      final data = await ApiClient.post('/trips', body: body);
       final newTrip = Trip(
         tripId: data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0,
         title: trip.title,
@@ -58,8 +64,6 @@ class TripService {
       _trips.add(newTrip);
     } catch (e) {
       debugPrint('TripService.addTrip offline: $e');
-      final body = trip.toJson();
-      body['id'] = trip.tripId;
       _trips.add(trip);
       await SyncQueueService.enqueue(SyncAction(
         type: SyncActionType.addTrip,
