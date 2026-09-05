@@ -42,18 +42,22 @@ router.post('/', authenticateToken, async (req, res) => {
   try {
     const { placeId, countryId } = req.body;
     if (placeId) {
-      const [result] = await pool.query(
-        'INSERT INTO wishlist (user_id, place_id) VALUES (?, ?)',
-        [req.userId, placeId]
-      );
-      return res.status(201).json({ id: result.insertId, type: 'place' });
+      const pid = parseInt(placeId, 10);
+      if (!Number.isInteger(pid) || pid <= 0) return res.status(400).json({ error: 'Invalid placeId' });
+      const [place] = await pool.query('SELECT place_id FROM places WHERE place_id = ?', [pid]);
+      if (place.length === 0) return res.status(404).json({ error: 'Place not found' });
+      await pool.query('INSERT IGNORE INTO wishlist (user_id, place_id) VALUES (?, ?)', [req.userId, pid]);
+      const [rows] = await pool.query('SELECT wishlist_id FROM wishlist WHERE user_id = ? AND place_id = ?', [req.userId, pid]);
+      return res.status(201).json({ id: rows[0].wishlist_id, type: 'place' });
     }
     if (countryId) {
-      const [result] = await pool.query(
-        'INSERT INTO wishlist (user_id, country_id) VALUES (?, ?)',
-        [req.userId, countryId]
-      );
-      return res.status(201).json({ id: result.insertId, type: 'country' });
+      const cid = parseInt(countryId, 10);
+      if (!Number.isInteger(cid) || cid <= 0) return res.status(400).json({ error: 'Invalid countryId' });
+      const [country] = await pool.query('SELECT country_id FROM countries WHERE country_id = ?', [cid]);
+      if (country.length === 0) return res.status(404).json({ error: 'Country not found' });
+      await pool.query('INSERT IGNORE INTO wishlist (user_id, country_id) VALUES (?, ?)', [req.userId, cid]);
+      const [rows] = await pool.query('SELECT wishlist_id FROM wishlist WHERE user_id = ? AND country_id = ?', [req.userId, cid]);
+      return res.status(201).json({ id: rows[0].wishlist_id, type: 'country' });
     }
     res.status(400).json({ error: 'placeId or countryId required' });
   } catch (err) {

@@ -7,6 +7,7 @@ import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/image_compressor.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/screens/settings_screen.dart';
 import 'package:pinmap_travel_journal/screens/user_search_screen.dart';
@@ -150,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fit: StackFit.expand,
                 children: [
                   if (profile.travelPhotos.isNotEmpty)
-                    CachedNetworkImage(
+                    AuthenticatedCachedImage(
                       imageUrl: profile.travelPhotos[0],
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
@@ -435,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           : () => _deletePhoto(photoId),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        child: CachedNetworkImage(
+        child: AuthenticatedCachedImage(
           imageUrl: url,
           fit: BoxFit.cover,
           placeholder: (context, url) => Container(

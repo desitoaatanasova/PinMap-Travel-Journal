@@ -7,6 +7,7 @@ import 'package:pinmap_travel_journal/screens/journal_editor/canvas_element.dart
 import 'package:pinmap_travel_journal/screens/journal_editor/text_edit_overlay.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 
 /// Parses a '#RRGGBB' (or '#AARRGGBB') string into a [Color], falling back to
 /// the scrapbook paper colour when unset or invalid.
@@ -258,6 +259,16 @@ class _EditorPageState extends State<EditorPage> {
     final url = el.imageUrl;
     if (url == null || url.isEmpty) {
       return _imageFallback(width, height);
+    }
+    if (url.startsWith('/uploads/')) {
+      return AuthenticatedCachedImage(
+        imageUrl: url,
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(width: width, height: height, color: AppTheme.lightGray),
+        errorWidget: (context, url, error) => _imageFallback(width, height),
+      );
     }
     return CachedNetworkImage(
       imageUrl: ApiConfig.assetUrl(url),

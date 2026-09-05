@@ -1,4 +1,12 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET is not configured — set it in backend/.env (see .env.example)');
+  process.exit(1);
+}
+if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+  console.error('FATAL: DB_HOST/DB_USER/DB_PASSWORD/DB_NAME are not configured — set them in backend/.env (see .env.example)');
+  process.exit(1);
+}
 
 const express = require('express');
 const cors = require('cors');
@@ -17,6 +25,7 @@ const ratingRoutes = require('./routes/ratings');
 const settingsRoutes = require('./routes/settings');
 const aiRoutes = require('./routes/ai');
 const userRoutes = require('./routes/users');
+const uploadsRoutes = require('./routes/uploads');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,7 +37,7 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', uploadsRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/countries', countryRoutes);

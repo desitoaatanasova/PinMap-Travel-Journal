@@ -66,6 +66,42 @@ router.post('/', authenticateToken, async (req, res) => {
   try {
     await conn.beginTransaction();
     const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds, clientId } = req.body;
+    if (clientId != null && (typeof clientId !== 'string' || clientId.length > 64)) {
+      await conn.rollback();
+      return res.status(400).json({ error: 'clientId must be a string max 64 chars' });
+    }
+    if (typeof title !== 'string' || title.trim().length === 0) {
+      await conn.rollback();
+      return res.status(400).json({ error: 'title is required' });
+    }
+    if (title.trim().length > 200) {
+      await conn.rollback();
+      return res.status(400).json({ error: 'title must be max 200 chars' });
+    }
+    if (countryId != null) {
+      const cid = parseInt(countryId, 10);
+      if (!Number.isInteger(cid) || cid <= 0) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'Invalid countryId' });
+      }
+      const [c] = await conn.query('SELECT country_id FROM countries WHERE country_id = ?', [cid]);
+      if (c.length === 0) {
+        await conn.rollback();
+        return res.status(404).json({ error: 'Country not found' });
+      }
+    }
+    if (startDate != null || endDate != null) {
+      const s = startDate ? new Date(startDate) : null;
+      const e = endDate ? new Date(endDate) : null;
+      if ((startDate && isNaN(s.getTime())) || (endDate && isNaN(e.getTime()))) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'Invalid date' });
+      }
+      if (s && e && s > e) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'startDate must be <= endDate' });
+      }
+    }
     if (clientId) {
       const [existing] = await conn.query(
         'SELECT trip_id FROM trips WHERE user_id = ? AND client_id = ?',
@@ -155,6 +191,34 @@ router.put('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Trip not found' });
     }
     const { title, countryId, startDate, endDate, tripType, travelStyle, itinerary, arrivalCity, departureCity, cityIds, participantIds } = req.body;
+    if (title != null && (typeof title !== 'string' || title.trim().length === 0 || title.trim().length > 200)) {
+      await conn.rollback();
+      return res.status(400).json({ error: 'title must be 1-200 chars' });
+    }
+    if (countryId != null) {
+      const cid = parseInt(countryId, 10);
+      if (!Number.isInteger(cid) || cid <= 0) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'Invalid countryId' });
+      }
+      const [c] = await conn.query('SELECT country_id FROM countries WHERE country_id = ?', [cid]);
+      if (c.length === 0) {
+        await conn.rollback();
+        return res.status(404).json({ error: 'Country not found' });
+      }
+    }
+    if (startDate != null || endDate != null) {
+      const s = startDate ? new Date(startDate) : null;
+      const e = endDate ? new Date(endDate) : null;
+      if ((startDate && isNaN(s.getTime())) || (endDate && isNaN(e.getTime()))) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'Invalid date' });
+      }
+      if (s && e && s > e) {
+        await conn.rollback();
+        return res.status(400).json({ error: 'startDate must be <= endDate' });
+      }
+    }
     const numberOfDays =
       req.body.numberOfDays ??
       (itinerary && itinerary.length > 0

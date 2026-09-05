@@ -38,6 +38,14 @@ class ApiClient {
     await prefs.remove(_tokenKey);
   }
 
+  static Future<Map<String, String>> authHeadersForImage() async {
+    final token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      return {'Authorization': 'Bearer $token'};
+    }
+    return {};
+  }
+
   static Future<Map<String, String>> _headers({bool auth = true}) async {
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=utf-8',
