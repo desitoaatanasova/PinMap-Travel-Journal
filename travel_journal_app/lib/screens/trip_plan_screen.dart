@@ -301,7 +301,9 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       if (CountryService.getAllCountries().isEmpty) {
         try {
           await CountryService.loadCountries();
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('TripPlanScreen loadCountries failed: $e');
+        }
       }
       String countryName = '';
       try {
@@ -309,14 +311,18 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
         for (final co in countries) {
           if (co.countryId == trip.countryId) { countryName = co.name; break; }
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('TripPlanScreen country lookup failed: $e');
+      }
       if (countryName.isEmpty && trip.countryId != 0) {
         try {
           await CountryService.loadCountries();
           for (final co in CountryService.getAllCountries()) {
             if (co.countryId == trip.countryId) { countryName = co.name; break; }
           }
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('TripPlanScreen fallback loadCountries failed: $e');
+        }
       }
       List<String> cityNames = trip.cityIds
           .map((id) => CountryService.cityName(id))
@@ -331,7 +337,9 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
               .where((n) => n != null && n!.isNotEmpty)
               .map((n) => n!)
               .toList();
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('TripPlanScreen cityNames fallback failed: $e');
+        }
       }
       final aiTrip = await TripService.generateTrip(
         countryId: trip.countryId,

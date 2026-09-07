@@ -47,7 +47,7 @@ class TripService {
     }
   }
 
-  static List<Trip> getAllTrips() => _trips;
+  static List<Trip> getAllTrips() => List.unmodifiable(_trips);
 
   static String _clientIdFor(Trip trip) => 'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
 
@@ -180,7 +180,9 @@ class TripService {
       if (raw != null) {
         try {
           await prefs.setString(key, raw);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('TripService migrate legacy draft failed: $e');
+        }
         await prefs.remove(_legacyDraftKey);
       }
     }

@@ -120,7 +120,9 @@ class JournalService {
     _journals.removeWhere((j) => j.journalId == id);
     try {
       await LocalTicketStore.deleteTicketsForJournal(id);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('JournalService deleteTickets cleanup failed: $e');
+    }
     try {
       await ApiClient.delete('/journal/$id');
     } catch (e) {
@@ -168,7 +170,7 @@ class JournalService {
     }
   }
 
-  static List<Journal> getAllJournals() => _journals;
+  static List<Journal> getAllJournals() => List.unmodifiable(_journals);
 
   static void reset() {
     _journals = [];

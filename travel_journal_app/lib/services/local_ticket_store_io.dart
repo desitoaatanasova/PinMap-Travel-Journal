@@ -40,5 +40,7 @@ Future<void> deleteTicketsForJournal(int journalId) async {
     if (await folder.exists()) {
       await folder.delete(recursive: true);
     }
-  } catch (_) {}
+  } catch (e) {
+    // ignore: empty_catch — best-effort cleanup, folder may already be gone
+  }
 }

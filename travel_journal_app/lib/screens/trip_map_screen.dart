@@ -82,11 +82,15 @@ class _TripMapScreenState extends State<TripMapScreen> {
             padding: const EdgeInsets.all(64),
           ),
         );
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('TripMapScreen.fitCamera error: $e');
+      }
     } else if (points.length == 1) {
       try {
         _mapController.move(points.first, 12);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('TripMapScreen.move error: $e');
+      }
     }
   }
 
@@ -255,7 +259,9 @@ class _TripMapScreenState extends State<TripMapScreen> {
       countryName = CountryService.getAllCountries()
           .firstWhere((c) => c.countryId == widget.trip.countryId)
           .name;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('TripMapScreen country lookup failed: $e');
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

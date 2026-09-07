@@ -112,7 +112,7 @@ class WishlistService {
     return _items.any((item) => item.countryId == countryId);
   }
 
-  static List<WishlistItem> getAllItems() => _items;
+  static List<WishlistItem> getAllItems() => List.unmodifiable(_items);
 
   static Future<void> removeCountry(int countryId) async {
     final item = _items.firstWhere(

@@ -61,11 +61,11 @@ class CityPin {
       name: json['name'] ?? '',
       description: json['description'],
       latitude: (json['latitude'] is String
-          ? double.parse(json['latitude'])
-          : (json['latitude'] as num)).toDouble(),
+          ? double.tryParse(json['latitude']) ?? 0
+          : (json['latitude'] as num?)?.toDouble() ?? 0),
       longitude: (json['longitude'] is String
-          ? double.parse(json['longitude'])
-          : (json['longitude'] as num)).toDouble(),
+          ? double.tryParse(json['longitude']) ?? 0
+          : (json['longitude'] as num?)?.toDouble() ?? 0),
     );
   }
 }

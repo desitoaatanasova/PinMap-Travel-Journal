@@ -233,8 +233,13 @@ class TripActivity {
     return {
       'placeId': placeId,
       'placeName': placeName,
+      'placeImage': placeImage,
       'timeSlot': timeSlot,
       'notes': notes,
+      'latitude': latitude,
+      'longitude': longitude,
+      'categoryId': categoryId,
+      'cityName': cityName,
     };
   }
 

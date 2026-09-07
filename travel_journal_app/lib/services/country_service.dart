@@ -44,7 +44,7 @@ class CountryService {
   }
 
   static List<Country> getAllCountries() {
-    return _countries;
+    return List.unmodifiable(_countries);
   }
 
   static Country? findCountryByLocation(double lat, double lng) {

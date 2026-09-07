@@ -8,13 +8,9 @@ class ProfileService {
 
   static Future<UserProfile> getProfile() async {
     if (_profile != null) return _profile!;
-    try {
-      final data = await ApiClient.get('/profile');
-      _profile = _parseProfile(data);
-      return _profile!;
-    } catch (e) {
-      return _mockProfile;
-    }
+    final data = await ApiClient.get('/profile');
+    _profile = _parseProfile(data);
+    return _profile!;
   }
 
   static Future<void> reloadProfile() async {
@@ -96,8 +92,4 @@ class ProfileService {
     );
   }
 
-  static final UserProfile _mockProfile = UserProfile(
-    username: 'TravelExplorer',
-    bio: 'Wandering the world one city at a time',
-  );
 }

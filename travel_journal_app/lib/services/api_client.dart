@@ -59,15 +59,19 @@ class ApiClient {
     return headers;
   }
 
+  static dynamic _handleResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    }
+    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+  }
+
   static Future<dynamic> get(String path, {bool auth = true}) async {
     final response = await http.get(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 
   static Future<dynamic> post(String path, {Map<String, dynamic>? body, bool auth = true}) async {
@@ -76,10 +80,7 @@ class ApiClient {
       headers: await _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 
   static Future<dynamic> put(String path, {Map<String, dynamic>? body, bool auth = true}) async {
@@ -88,10 +89,7 @@ class ApiClient {
       headers: await _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 
   static Future<dynamic> patch(String path, {Map<String, dynamic>? body, bool auth = true}) async {
@@ -100,10 +98,7 @@ class ApiClient {
       headers: await _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 
   static Future<dynamic> delete(String path, {bool auth = true}) async {
@@ -111,10 +106,7 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 
   static Future<dynamic> uploadMultipart(
@@ -142,10 +134,7 @@ class ApiClient {
     }
     final streamed = await request.send();
     final response = await http.Response.fromStream(streamed);
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    }
-    throw ApiException(response.statusCode, utf8.decode(response.bodyBytes));
+    return _handleResponse(response);
   }
 }
 
