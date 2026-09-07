@@ -193,7 +193,7 @@ router.post('/', authenticateToken, upload.fields([{ name: 'original', maxCount:
     await conn.commit();
     res.status(201).json({
       ticketId: scan.insertId,
-      elementId: el.insertId,
+      elementId: elementId,
       journalId,
       pageId,
       originalImageUrl: originalUrl,
