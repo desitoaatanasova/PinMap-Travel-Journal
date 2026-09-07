@@ -427,7 +427,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () {
+              controller.dispose();
+              Navigator.pop(dialogContext);
+            },
             child: Text(
               'Cancel',
               style: GoogleFonts.dmSans(color: AppTheme.warmGray),
@@ -435,7 +438,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
-              await ApiConfig.setOverride(controller.text);
+              final text = controller.text;
+              controller.dispose();
+              await ApiConfig.setOverride(text);
               if (mounted) {
                 Navigator.pop(dialogContext);
                 setState(() {});
@@ -454,7 +459,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
-    );
+    ).whenComplete(() => controller.dispose());
   }
 
   void _showLanguagePicker() {

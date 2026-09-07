@@ -40,12 +40,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final picker = ImagePicker();
     final file = await picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 2400,
+      imageQuality: 88,
+      maxWidth: 1080,
     );
     if (file == null) return;
     Uint8List bytes = await file.readAsBytes();
-    bytes = await ImageCompressor.compressJpeg(bytes, quality: 85);
 
     if (!mounted) return;
     setState(() => _uploadingPhoto = true);
@@ -538,7 +537,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () {
+              firstNameController.dispose();
+              lastNameController.dispose();
+              bioController.dispose();
+              Navigator.pop(dialogContext);
+            },
             child: Text(
               'Cancel',
               style: GoogleFonts.dmSans(color: AppTheme.warmGray),
@@ -546,10 +550,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              final first = firstNameController.text;
+              final last = lastNameController.text;
+              final bio = bioController.text;
+              firstNameController.dispose();
+              lastNameController.dispose();
+              bioController.dispose();
               await ProfileService.updateProfile(
-                firstName: firstNameController.text,
-                lastName: lastNameController.text,
-                bio: bioController.text,
+                firstName: first,
+                lastName: last,
+                bio: bio,
               );
               await ProfileService.reloadProfile();
               if (dialogContext.mounted) Navigator.pop(dialogContext);
@@ -570,7 +580,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-    );
+    ).whenComplete(() {
+      firstNameController.dispose();
+      lastNameController.dispose();
+      bioController.dispose();
+    });
   }
 
 }

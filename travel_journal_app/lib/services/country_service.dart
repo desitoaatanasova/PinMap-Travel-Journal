@@ -15,12 +15,19 @@ class CountryService {
     if (_loaded) return;
     try {
       _lastError = null;
-      final data = await ApiClient.get('/countries');
-      _countries = (data as List).map((json) => Country.fromJson(json)).toList();
-      for (var i = 0; i < _countries.length; i++) {
-        final detail = await ApiClient.get('/countries/${_countries[i].countryId}');
-        if (detail['cities'] != null) {
-          _countries[i] = Country.fromJson(detail);
+      final data = await ApiClient.get('/countries?include=cities');
+      if (data is List && data.isNotEmpty && (data.first as Map).containsKey('cities')) {
+        _countries = (data as List).map((json) => Country.fromJson(json as Map<String, dynamic>)).toList();
+      } else {
+        _countries = (data as List).map((json) => Country.fromJson(json as Map<String, dynamic>)).toList();
+        final details = await Future.wait(
+          _countries.map((c) => ApiClient.get('/countries/${c.countryId}')),
+        );
+        for (var i = 0; i < _countries.length; i++) {
+          final detail = details[i];
+          if (detail is Map && detail['cities'] != null) {
+            _countries[i] = Country.fromJson(detail as Map<String, dynamic>);
+          }
         }
       }
       _loaded = true;

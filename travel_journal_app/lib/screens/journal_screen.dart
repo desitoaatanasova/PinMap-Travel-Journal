@@ -78,58 +78,51 @@ class JournalScreen extends StatelessWidget {
             ...grouped.entries.map((entry) {
               final country = entry.key;
               final countryJournals = entry.value;
-              return SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.space4, vertical: AppTheme.space2),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.public,
-                            size: 18,
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
+                sliver: SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppTheme.space2),
+                    child: Row(
+                      children: [
+                        Icon(Icons.public, size: 18, color: AppTheme.primary),
+                        const SizedBox(width: AppTheme.space2),
+                        Text(
+                          country.toUpperCase(),
+                          style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
                             color: AppTheme.primary,
+                            letterSpacing: 1.2,
                           ),
-                          const SizedBox(width: AppTheme.space2),
-                          Text(
-                            country.toUpperCase(),
-                            style: GoogleFonts.dmSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.primary,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.space4),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: AppTheme.space4,
-                          mainAxisSpacing: AppTheme.space4,
-                          childAspectRatio: 0.75,
                         ),
-                        itemCount: countryJournals.length,
-                        itemBuilder: (context, index) {
-                          final journal = countryJournals[index];
-                          return _buildJournalCard(context, journal);
-                        },
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: AppTheme.space4),
-                  ],
+                  ),
                 ),
               );
             }),
+          if (journals.isNotEmpty)
+            ...grouped.entries.map((entry) {
+              final countryJournals = entry.value;
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _buildJournalCard(context, countryJournals[index]),
+                    childCount: countryJournals.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: AppTheme.space4,
+                    mainAxisSpacing: AppTheme.space4,
+                    childAspectRatio: 0.75,
+                  ),
+                ),
+              );
+            }),
+          if (journals.isNotEmpty)
+            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space4)),
           const SliverToBoxAdapter(
             child: SizedBox(height: AppTheme.space12),
           ),
@@ -239,6 +232,8 @@ class JournalScreen extends StatelessWidget {
                   ? CachedNetworkImage(
                       imageUrl: journal.coverImage!,
                       fit: BoxFit.cover,
+                      memCacheWidth: 400,
+                      maxWidthDiskCache: 400,
                       placeholder: (context, url) => _buildCoverFallback(),
                       errorWidget: (context, url, error) =>
                           _buildCoverFallback(),

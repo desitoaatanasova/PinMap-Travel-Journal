@@ -61,16 +61,27 @@ class _EditorPageState extends State<EditorPage> {
   static const double _cullMargin = 200;
 
   final Map<String, _DragState> _dragState = {};
+  final Map<String, Size> _textSizeCache = {};
+  final Map<String, String> _textCacheKey = {};
+
+  String _textKey(EditorElement el) => '${el.displayText}|${el.fontFamily}|${el.fontSize}|${el.textColorValue}|${el.bold}|${el.italic}|${el.underline}|${el.textAlign.name}';
 
   Size _baseSize(EditorElement el) {
     switch (el.type) {
       case 'text':
+        final key = _textKey(el);
+        if (_textCacheKey[el.id] == key && _textSizeCache.containsKey(el.id)) {
+          return _textSizeCache[el.id]!;
+        }
         final tp = TextPainter(
           text: TextSpan(text: el.displayText, style: el.textStyle),
           textDirection: TextDirection.ltr,
           textAlign: el.textAlign,
         )..layout(maxWidth: _textWrapWidth);
-        return tp.size;
+        final s = tp.size;
+        _textSizeCache[el.id] = s;
+        _textCacheKey[el.id] = key;
+        return s;
       case 'sticker':
         final size = el.stickerSize ?? 40;
         return Size(size, size);
@@ -97,8 +108,24 @@ class _EditorPageState extends State<EditorPage> {
     widget.onElementChanged(el);
   }
 
+  void _evictStaleCache(Iterable<EditorElement> elements) {
+    final alive = elements.map((e) => e.id).toSet();
+    _dragState.removeWhere((k, _) => !alive.contains(k));
+    _textSizeCache.removeWhere((k, _) => !alive.contains(k));
+    _textCacheKey.removeWhere((k, _) => !alive.contains(k));
+  }
+
+  @override
+  void didUpdateWidget(covariant EditorPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.page.elements.length != widget.page.elements.length) {
+      _evictStaleCache(widget.page.elements);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _evictStaleCache(widget.page.elements);
     return LayoutBuilder(builder: (context, constraints) {
       final pageW = constraints.maxWidth;
       final pageH = constraints.maxHeight;
@@ -186,27 +213,29 @@ class _EditorPageState extends State<EditorPage> {
       top: el.y,
       width: size.width,
       height: size.height,
-      child: Transform.rotate(
-        angle: el.rotation * pi / 180,
-        alignment: Alignment.center,
-        child: Transform.scale(
-          scale: el.scale,
+      child: RepaintBoundary(
+        child: Transform.rotate(
+          angle: el.rotation * pi / 180,
           alignment: Alignment.center,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => widget.onSelect(el.id),
-            onDoubleTap: () => widget.onElementDoubleTap(el),
-            onLongPress: () => widget.onElementLongPress(el),
-            onScaleStart: (_) => _startGesture(el),
-            onScaleUpdate: (d) => _applyGesture(el, d),
-            child: Container(
-              decoration: selected
-                  ? BoxDecoration(
-                      border: Border.all(color: AppTheme.primary, width: 1.5),
-                      borderRadius: BorderRadius.circular(6),
-                    )
-                  : null,
-              child: content,
+          child: Transform.scale(
+            scale: el.scale,
+            alignment: Alignment.center,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onSelect(el.id),
+              onDoubleTap: () => widget.onElementDoubleTap(el),
+              onLongPress: () => widget.onElementLongPress(el),
+              onScaleStart: (_) => _startGesture(el),
+              onScaleUpdate: (d) => _applyGesture(el, d),
+              child: Container(
+                decoration: selected
+                    ? BoxDecoration(
+                        border: Border.all(color: AppTheme.primary, width: 1.5),
+                        borderRadius: BorderRadius.circular(6),
+                      )
+                    : null,
+                child: content,
+              ),
             ),
           ),
         ),
@@ -253,6 +282,8 @@ class _EditorPageState extends State<EditorPage> {
         width: width,
         height: height,
         fit: BoxFit.cover,
+        cacheWidth: width.isFinite ? (width * 2).round() : null,
+        cacheHeight: height.isFinite ? (height * 2).round() : null,
         errorBuilder: (context, error, stack) => _imageFallback(width, height),
       );
     }
@@ -274,6 +305,10 @@ class _EditorPageState extends State<EditorPage> {
       imageUrl: ApiConfig.assetUrl(url),
       width: width,
       height: height,
+      memCacheWidth: width.isFinite ? (width * 2).round() : null,
+      memCacheHeight: height.isFinite ? (height * 2).round() : null,
+      maxWidthDiskCache: width.isFinite ? (width * 2).round() : null,
+      maxHeightDiskCache: height.isFinite ? (height * 2).round() : null,
       fit: BoxFit.cover,
       placeholder: (context, url) => Container(
         width: width,

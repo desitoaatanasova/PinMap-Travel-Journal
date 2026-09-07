@@ -26,20 +26,35 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
     const trip = trips[0];
     const [days] = await pool.query('SELECT * FROM trip_days WHERE trip_id = ? ORDER BY day_number', [trip.trip_id]);
-    for (const day of days) {
+    if (days.length > 0) {
+      const dayIds = days.map((d) => d.day_id);
       const [activities] = await pool.query(
         `SELECT ta.*, p.name AS place_name, p.image_cover AS place_image,
                 p.latitude, p.longitude, p.category_id, c.name AS city_name
          FROM trip_activities ta
          LEFT JOIN places p ON ta.place_id = p.place_id
          LEFT JOIN cities c ON p.city_id = c.city_id
-         WHERE ta.day_id = ?
+         WHERE ta.day_id IN (${dayIds.map(() => '?').join(',')})
          ORDER BY FIELD(ta.time_slot, 'Morning', 'Afternoon', 'Evening'), ta.order_index, ta.activity_id`,
-        [day.day_id]
+        dayIds
       );
-      day.morning = activities.filter(a => a.time_slot === 'Morning');
-      day.afternoon = activities.filter(a => a.time_slot === 'Afternoon');
-      day.evening = activities.filter(a => a.time_slot === 'Evening');
+      const byDay = new Map();
+      for (const a of activities) {
+        if (!byDay.has(a.day_id)) byDay.set(a.day_id, []);
+        byDay.get(a.day_id).push(a);
+      }
+      for (const day of days) {
+        const acts = byDay.get(day.day_id) || [];
+        day.morning = acts.filter(a => a.time_slot === 'Morning');
+        day.afternoon = acts.filter(a => a.time_slot === 'Afternoon');
+        day.evening = acts.filter(a => a.time_slot === 'Evening');
+      }
+    } else {
+      for (const day of days) {
+        day.morning = [];
+        day.afternoon = [];
+        day.evening = [];
+      }
     }
     trip.itinerary = days;
     const [cities] = await pool.query(

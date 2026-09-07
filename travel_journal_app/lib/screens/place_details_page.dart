@@ -212,6 +212,8 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                 child: CachedNetworkImage(
                   imageUrl: url,
                   fit: BoxFit.cover,
+                  memCacheWidth: 800,
+                  maxWidthDiskCache: 800,
                   placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(),
                   ),

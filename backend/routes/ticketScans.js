@@ -9,10 +9,26 @@ const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 const UPLOADS_ROOT = path.join(__dirname, '..', 'uploads');
+const TMP_ROOT = path.join(UPLOADS_ROOT, '.tmp');
+
+const allowedMime = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg']);
+function fileFilter(req, file, cb) {
+  if (allowedMime.has(file.mimetype)) return cb(null, true);
+  cb(new Error('Invalid file type'));
+}
 
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 20 * 1024 * 1024 },
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      fsp.mkdir(TMP_ROOT, { recursive: true }).then(() => cb(null, TMP_ROOT)).catch(cb);
+    },
+    filename: (req, file, cb) => {
+      const ext = extFromMime(file.mimetype);
+      cb(null, `tmp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${ext}`);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024, files: 2 },
+  fileFilter,
 });
 
 function ensureDir(dir) {
@@ -114,13 +130,12 @@ router.post('/', authenticateToken, upload.fields([{ name: 'original', maxCount:
     const originalExt = original ? extFromMime(original.mimetype) : null;
     const originalName = originalExt ? `ticket_${String(n).padStart(3, '0')}_original${originalExt}` : null;
 
+    await ensureDir(dir);
     if (processed) {
-      await ensureDir(dir);
-      await fsp.writeFile(path.join(dir, processedName), processed.buffer);
+      await fsp.rename(processed.path, path.join(dir, processedName));
     }
     if (original && originalName) {
-      await ensureDir(dir);
-      await fsp.writeFile(path.join(dir, originalName), original.buffer);
+      await fsp.rename(original.path, path.join(dir, originalName));
     }
 
     const baseUrl = '/uploads';
@@ -202,8 +217,13 @@ router.post('/', authenticateToken, upload.fields([{ name: 'original', maxCount:
     });
   } catch (err) {
     await conn.rollback();
-    if (journalDir) {
-      await fsp.readdir(journalDir).catch(() => []);
+    if (processed && processed.path) await fsp.unlink(processed.path).catch(() => {});
+    if (original && original.path) await fsp.unlink(original.path).catch(() => {});
+    if (err && err.message === 'Invalid file type') {
+      return res.status(400).json({ error: 'Invalid file type. Only JPEG, PNG, WebP, GIF allowed' });
+    }
+    if (err && err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'File too large. Max 5MB per image' });
     }
     console.error('Upload ticket error:', err);
     res.status(500).json({ error: 'Server error' });

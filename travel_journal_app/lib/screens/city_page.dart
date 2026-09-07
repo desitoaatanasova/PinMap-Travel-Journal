@@ -115,6 +115,8 @@ class _CityPageState extends State<CityPage> {
             CachedNetworkImage(
               imageUrl: 'https://source.unsplash.com/800x400/?${widget.cityName},city',
               fit: BoxFit.cover,
+              memCacheWidth: 800,
+              maxWidthDiskCache: 800,
               placeholder: (context, url) => Container(
                 color: AppTheme.darkBrown,
                 child: const Center(child: CircularProgressIndicator()),

@@ -98,6 +98,8 @@ class _CountryPageState extends State<CountryPage> {
             CachedNetworkImage(
               imageUrl: widget.country.flagImage ?? '',
               fit: BoxFit.cover,
+              memCacheWidth: 800,
+              maxWidthDiskCache: 800,
               placeholder: (context, url) => Container(
                 color: theme.primaryColor,
                 child: const Center(child: CircularProgressIndicator()),
@@ -133,6 +135,10 @@ class _CountryPageState extends State<CountryPage> {
                             imageUrl: widget.country.flagImage!,
                             width: 40,
                             height: 28,
+                            memCacheWidth: 120,
+                            memCacheHeight: 84,
+                            maxWidthDiskCache: 120,
+                            maxHeightDiskCache: 84,
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.flag, size: 28, color: Colors.white70),
@@ -381,6 +387,8 @@ class _CountryPageState extends State<CountryPage> {
                 child: CachedNetworkImage(
                         imageUrl: 'https://source.unsplash.com/200x150/?${city.name},city',
                         fit: BoxFit.cover,
+                        memCacheWidth: 300,
+                        maxWidthDiskCache: 300,
                         placeholder: (context, url) => Container(
                           color: theme.primaryColor.withValues(alpha: 0.1),
                           child: const Center(child: CircularProgressIndicator()),

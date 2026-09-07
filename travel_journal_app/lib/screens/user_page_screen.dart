@@ -75,6 +75,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                     CachedNetworkImage(
                       imageUrl: _user.travelPhotos[0],
                       fit: BoxFit.cover,
+                      memCacheWidth: 800,
+                      maxWidthDiskCache: 800,
                       placeholder: (context, url) =>
                           Container(color: AppTheme.primary),
                       errorWidget: (context, url, error) =>
@@ -311,6 +313,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
               child: CachedNetworkImage(
                 imageUrl: _user.travelPhotos[index],
                 fit: BoxFit.cover,
+                memCacheWidth: 300,
+                maxWidthDiskCache: 300,
                 placeholder: (context, url) => Container(
                   color: AppTheme.lightGray,
                   child: const Center(child: CircularProgressIndicator()),

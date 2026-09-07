@@ -168,6 +168,8 @@ class _WishListScreenState extends State<WishListScreen> {
                   ? CachedNetworkImage(
                       imageUrl: item.image!,
                       fit: BoxFit.cover,
+                      memCacheWidth: 400,
+                      maxWidthDiskCache: 400,
                       placeholder: (context, url) => _buildImageFallback(item),
                       errorWidget: (context, url, error) =>
                           _buildImageFallback(item),
@@ -263,6 +265,10 @@ class _WishListScreenState extends State<WishListScreen> {
                     imageUrl: item.image!,
                     width: 100,
                     height: 100,
+                    memCacheWidth: 300,
+                    memCacheHeight: 300,
+                    maxWidthDiskCache: 300,
+                    maxHeightDiskCache: 300,
                     fit: BoxFit.cover,
                     placeholder: (context, url) =>
                         _buildListImageFallback(item),

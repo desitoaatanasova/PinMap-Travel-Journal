@@ -21,35 +21,21 @@ async function buildUserProfile(userId, { viewerId = null } = {}) {
   user.travelPhotos = photos.map((p) => p.image_url);
   user.travelPhotoIds = photos.map((p) => p.photo_id);
 
-  const [visited] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM visited_places WHERE user_id = ?', [userId]
-  );
-  user.placesVisited = visited[0].cnt;
-
-  const [ratingsCount] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM ratings WHERE user_id = ?', [userId]
-  );
-  user.ratingsGiven = ratingsCount[0].cnt;
-
-  const [tripsCount] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM trips WHERE user_id = ?', [userId]
-  );
-  user.tripsPlanned = tripsCount[0].cnt;
-
-  const [journalsCount] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM journals WHERE user_id = ?', [userId]
-  );
-  user.journalsCreated = journalsCount[0].cnt;
-
-  const [followersCount] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM followers WHERE followed_user_id = ?', [userId]
-  );
-  user.followersCount = followersCount[0].cnt;
-
-  const [followingCount] = await pool.query(
-    'SELECT COUNT(*) AS cnt FROM followers WHERE follower_user_id = ?', [userId]
-  );
-  user.followingCount = followingCount[0].cnt;
+  const [visited, ratingsCount, tripsCount, journalsCount, followersCount, followingCount] =
+    await Promise.all([
+      pool.query('SELECT COUNT(*) AS cnt FROM visited_places WHERE user_id = ?', [userId]),
+      pool.query('SELECT COUNT(*) AS cnt FROM ratings WHERE user_id = ?', [userId]),
+      pool.query('SELECT COUNT(*) AS cnt FROM trips WHERE user_id = ?', [userId]),
+      pool.query('SELECT COUNT(*) AS cnt FROM journals WHERE user_id = ?', [userId]),
+      pool.query('SELECT COUNT(*) AS cnt FROM followers WHERE followed_user_id = ?', [userId]),
+      pool.query('SELECT COUNT(*) AS cnt FROM followers WHERE follower_user_id = ?', [userId]),
+    ]);
+  user.placesVisited = visited[0][0].cnt;
+  user.ratingsGiven = ratingsCount[0][0].cnt;
+  user.tripsPlanned = tripsCount[0][0].cnt;
+  user.journalsCreated = journalsCount[0][0].cnt;
+  user.followersCount = followersCount[0][0].cnt;
+  user.followingCount = followingCount[0][0].cnt;
 
   user.isFollowing = false;
   if (viewerId && viewerId !== userId) {

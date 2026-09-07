@@ -175,8 +175,9 @@ class TicketScanService {
 
   static Future<String?> _embedForQueue(
       Uint8List bytes, String? localPath) async {
-    if (localPath != null) return null; // file exists locally, no need to embed
-    if (bytes.length > 2 * 1024 * 1024) return null; // too large for prefs
+    if (localPath != null) return null;
+    if (!kIsWeb) return null;
+    if (bytes.length > 2 * 1024 * 1024) return null;
     return base64Encode(bytes);
   }
 

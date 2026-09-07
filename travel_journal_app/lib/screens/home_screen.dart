@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,9 +25,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
+  Timer? _searchDebounce;
   List<Location> _searchResults = [];
   bool _showSuggestions = false;
   List<Country> _countries = [];
+  List<Marker>? _cachedMarkers;
+  int _cachedMarkerHash = 0;
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
@@ -56,7 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Marker> get _mapMarkers {
-    return _countries.expand((country) {
+    final hash = _countries.length * 31 + VisitedService.visitedCityIds.length;
+    if (_cachedMarkers != null && _cachedMarkerHash == hash) return _cachedMarkers!;
+    final markers = _countries.expand((country) {
       return country.cityPins.map((city) {
         return Marker(
           point: city.latLng,
@@ -75,6 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       });
     }).toList();
+    _cachedMarkers = markers;
+    _cachedMarkerHash = hash;
+    return markers;
   }
 
   @override
@@ -355,9 +364,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onSearchChanged(String query) {
-    setState(() {
-      _searchResults = LocationSearchService.searchLocations(query);
-      _showSuggestions = query.isNotEmpty;
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 250), () {
+      if (!mounted) return;
+      setState(() {
+        _searchResults = LocationSearchService.searchLocations(query);
+        _showSuggestions = query.isNotEmpty;
+      });
     });
   }
 
@@ -382,6 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _mapController.dispose();
     _searchController.dispose();
     _sheetController.dispose();
@@ -421,6 +435,10 @@ class _CountryListCard extends StatelessWidget {
                       imageUrl: country.flagImage!,
                       width: 52,
                       height: 52,
+                      memCacheWidth: 156,
+                      memCacheHeight: 156,
+                      maxWidthDiskCache: 156,
+                      maxHeightDiskCache: 156,
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) => _buildFlagPlaceholder(country),
                     )
@@ -458,6 +476,10 @@ class _CountryListCard extends StatelessWidget {
                       imageUrl: country.flagImage!,
                       width: 72,
                       height: 72,
+                      memCacheWidth: 216,
+                      memCacheHeight: 216,
+                      maxWidthDiskCache: 216,
+                      maxHeightDiskCache: 216,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => _buildCardImagePlaceholder(),
                       errorWidget: (context, url, error) =>

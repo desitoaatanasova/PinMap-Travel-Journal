@@ -11,8 +11,10 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   charset: process.env.DB_CHARSET || 'utf8mb4',
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  connectionLimit: parseInt(process.env.DB_POOL_LIMIT || '20', 10),
+  queueLimit: parseInt(process.env.DB_QUEUE_LIMIT || '50', 10),
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
 });
 
 module.exports = pool;

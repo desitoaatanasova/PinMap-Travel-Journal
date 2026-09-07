@@ -332,6 +332,10 @@ class _CategoryPageState extends State<CategoryPage> {
           imageUrl: imageUrl,
           width: 80,
           height: 80,
+          memCacheWidth: 240,
+          memCacheHeight: 240,
+          maxWidthDiskCache: 240,
+          maxHeightDiskCache: 240,
           fit: BoxFit.cover,
           placeholder: (context, url) => _buildPlaceholder(categoryColor, place),
           errorWidget: (context, url, error) =>

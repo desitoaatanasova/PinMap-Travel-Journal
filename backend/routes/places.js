@@ -19,12 +19,20 @@ router.get('/', async (req, res) => {
     sql += ' ORDER BY p.name';
     const [rows] = await pool.query(sql, params);
 
-    // Attach photos for each place
-    for (const place of rows) {
+    if (rows.length > 0) {
+      const placeIds = rows.map((r) => r.place_id);
       const [photos] = await pool.query(
-        'SELECT photo_id, image_url FROM place_photos WHERE place_id = ?', [place.place_id]
+        `SELECT photo_id, image_url, place_id FROM place_photos WHERE place_id IN (${placeIds.map(() => '?').join(',')})`,
+        placeIds
       );
-      place.photos = photos;
+      const byPlace = new Map();
+      for (const ph of photos) {
+        if (!byPlace.has(ph.place_id)) byPlace.set(ph.place_id, []);
+        byPlace.get(ph.place_id).push({ photo_id: ph.photo_id, image_url: ph.image_url });
+      }
+      for (const place of rows) {
+        place.photos = byPlace.get(place.place_id) || [];
+      }
     }
 
     res.json(rows);

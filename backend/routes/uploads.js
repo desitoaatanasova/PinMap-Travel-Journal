@@ -1,6 +1,7 @@
 const express = require('express');
-const path = require('path');
 const fs = require('fs');
+const fsp = require('fs/promises');
+const path = require('path');
 const pool = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const { buildUserProfile } = require('../services/profileQueries');
@@ -30,7 +31,7 @@ router.get('/:userId/profile/:filename', authenticateToken, async (req, res) => 
     const filePath = path.join(UPLOADS_ROOT, String(targetUserId), 'profile', filename);
     const resolved = path.resolve(filePath);
     if (!resolved.startsWith(path.resolve(UPLOADS_ROOT))) return res.status(403).json({ error: 'Invalid path' });
-    if (!fs.existsSync(resolved)) return res.status(404).json({ error: 'File not found' });
+    try { await fsp.access(resolved, fs.constants.R_OK); } catch { return res.status(404).json({ error: 'File not found' }); }
     return res.sendFile(resolved);
   } catch (err) {
     console.error('Serve profile upload error:', err);
@@ -54,7 +55,7 @@ router.get('/:userId/:journalId/:filename', authenticateToken, async (req, res) 
     const filePath = path.join(UPLOADS_ROOT, String(userId), String(journalId), filename);
     const resolved = path.resolve(filePath);
     if (!resolved.startsWith(path.resolve(UPLOADS_ROOT))) return res.status(403).json({ error: 'Invalid path' });
-    if (!fs.existsSync(resolved)) return res.status(404).json({ error: 'File not found' });
+    try { await fsp.access(resolved, fs.constants.R_OK); } catch { return res.status(404).json({ error: 'File not found' }); }
     return res.sendFile(resolved);
   } catch (err) {
     console.error('Serve ticket upload error:', err);

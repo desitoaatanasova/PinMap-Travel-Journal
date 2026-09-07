@@ -87,6 +87,8 @@ class SyncQueueService {
   static bool _loaded = false;
   static bool _authPaused = false;
   static String? _authError;
+  static bool _isProcessing = false;
+  static bool _requeued = false;
 
   static String _keyFor(int? userId) => 'sync_queue_${userId ?? -1}';
 
@@ -211,61 +213,74 @@ class SyncQueueService {
   }
 
   static Future<void> processQueue() async {
-    final uid = _activeUserId;
-    if (uid == null) return;
-    if (_authPaused) return;
-    final queue = _queues[uid] ??= [];
-    if (queue.isEmpty) return;
-    final active = _activeQueue();
-    if (active.isEmpty) return;
-    final processed = <SyncAction>[];
-    for (final action in List<SyncAction>.from(active)) {
-      try {
-        await _processAction(action);
-        processed.add(action);
-      } on StateError catch (e) {
-        action.isDeadLetter = true;
-        action.lastError = e.message;
-        action.lastAttempt = DateTime.now();
-        await _saveQueue();
-        continue;
-      } catch (e) {
-        if (action.type == SyncActionType.deleteJournal && e is ApiException && e.statusCode == 404) {
+    if (_isProcessing) {
+      _requeued = true;
+      return;
+    }
+    _isProcessing = true;
+    try {
+      final uid = _activeUserId;
+      if (uid == null) return;
+      if (_authPaused) return;
+      final queue = _queues[uid] ??= [];
+      if (queue.isEmpty) return;
+      final active = _activeQueue();
+      if (active.isEmpty) return;
+      final processed = <SyncAction>[];
+      for (final action in List<SyncAction>.from(active)) {
+        try {
+          await _processAction(action);
           processed.add(action);
+        } on StateError catch (e) {
+          action.isDeadLetter = true;
+          action.lastError = e.message;
+          action.lastAttempt = DateTime.now();
+          await _saveQueue();
           continue;
-        }
-        final cls = _classifyFailure(e);
-        if (cls == 'auth') {
-          _authPaused = true;
-          _authError = e.toString();
+        } catch (e) {
+          if (action.type == SyncActionType.deleteJournal && e is ApiException && e.statusCode == 404) {
+            processed.add(action);
+            continue;
+          }
+          final cls = _classifyFailure(e);
+          if (cls == 'auth') {
+            _authPaused = true;
+            _authError = e.toString();
+            action.lastError = e.toString();
+            action.lastAttempt = DateTime.now();
+            await _saveQueue();
+            break;
+          }
+          if (cls == 'dead') {
+            action.isDeadLetter = true;
+            action.lastError = e.toString();
+            action.lastAttempt = DateTime.now();
+            await _saveQueue();
+            continue;
+          }
+          if (cls == 'conflict') {
+            processed.add(action);
+            continue;
+          }
+          action.retryCount += 1;
           action.lastError = e.toString();
           action.lastAttempt = DateTime.now();
           await _saveQueue();
           break;
         }
-        if (cls == 'dead') {
-          action.isDeadLetter = true;
-          action.lastError = e.toString();
-          action.lastAttempt = DateTime.now();
-          await _saveQueue();
-          continue;
+      }
+      if (processed.isNotEmpty) {
+        for (final action in processed) {
+          queue.remove(action);
         }
-        if (cls == 'conflict') {
-          processed.add(action);
-          continue;
-        }
-        action.retryCount += 1;
-        action.lastError = e.toString();
-        action.lastAttempt = DateTime.now();
         await _saveQueue();
-        break;
       }
-    }
-    if (processed.isNotEmpty) {
-      for (final action in processed) {
-        queue.remove(action);
+    } finally {
+      _isProcessing = false;
+      if (_requeued) {
+        _requeued = false;
+        unawaited(processQueue());
       }
-      await _saveQueue();
     }
   }
 

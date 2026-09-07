@@ -166,6 +166,10 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                         imageUrl: country.flagImage!,
                         width: 40,
                         height: 28,
+                        memCacheWidth: 120,
+                        memCacheHeight: 84,
+                        maxWidthDiskCache: 120,
+                        maxHeightDiskCache: 84,
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.flag, size: 24, color: Color(0xFF8B7355)),

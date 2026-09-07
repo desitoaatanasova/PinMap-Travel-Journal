@@ -57,6 +57,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.use((err, req, res, next) => {
+  if (err && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'File too large. Max 5MB per image' });
+  }
+  if (err && err.message === 'Invalid file type') {
+    return res.status(400).json({ error: 'Invalid file type. Only JPEG, PNG, WebP, GIF allowed' });
+  }
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Server error' });
+});
+
 app.listen(PORT, () => {
   console.log(`PinMap API running on http://localhost:${PORT}`);
 });

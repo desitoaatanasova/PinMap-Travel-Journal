@@ -100,6 +100,12 @@ class _TripMapScreenState extends State<TripMapScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
   void _selectDay(int? dayNumber) {
     setState(() => _selectedDay = dayNumber);
     WidgetsBinding.instance.addPostFrameCallback((_) {

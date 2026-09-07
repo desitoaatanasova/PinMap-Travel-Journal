@@ -25,9 +25,14 @@ class VisitedService {
 
   static Future<void> _fetchAll() async {
     try {
-      final places = await ApiClient.get('/visited/places');
-      final cities = await ApiClient.get('/visited/cities');
-      final countries = await ApiClient.get('/visited/countries');
+      final results = await Future.wait([
+        ApiClient.get('/visited/places'),
+        ApiClient.get('/visited/cities'),
+        ApiClient.get('/visited/countries'),
+      ]);
+      final places = results[0];
+      final cities = results[1];
+      final countries = results[2];
       _placeIds = (places as List)
           .map((e) => (e['place_id'] as num).toInt())
           .toSet();

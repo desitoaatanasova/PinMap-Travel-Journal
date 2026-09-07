@@ -9,17 +9,33 @@ router.get('/', authenticateToken, async (req, res) => {
     const [rows] = await pool.query(
       'SELECT * FROM journals WHERE user_id = ? ORDER BY created_at DESC', [req.userId]
     );
-    for (const journal of rows) {
+    if (rows.length > 0) {
+      const journalIds = rows.map((j) => j.journal_id);
       const [pages] = await pool.query(
-        'SELECT * FROM journal_pages WHERE journal_id = ? ORDER BY page_number', [journal.journal_id]
+        `SELECT * FROM journal_pages WHERE journal_id IN (${journalIds.map(() => '?').join(',')}) ORDER BY journal_id, page_number`,
+        journalIds
       );
-      for (const page of pages) {
+      const pageIds = pages.map((p) => p.page_id);
+      let elementsByPage = new Map();
+      if (pageIds.length > 0) {
         const [elements] = await pool.query(
-          'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY z_index ASC, element_id ASC', [page.page_id]
+          `SELECT * FROM journal_elements WHERE page_id IN (${pageIds.map(() => '?').join(',')}) ORDER BY page_id, z_index ASC, element_id ASC`,
+          pageIds
         );
-        page.elements = elements;
+        for (const el of elements) {
+          if (!elementsByPage.has(el.page_id)) elementsByPage.set(el.page_id, []);
+          elementsByPage.get(el.page_id).push(el);
+        }
       }
-      journal.pages = pages;
+      const pagesByJournal = new Map();
+      for (const p of pages) {
+        p.elements = elementsByPage.get(p.page_id) || [];
+        if (!pagesByJournal.has(p.journal_id)) pagesByJournal.set(p.journal_id, []);
+        pagesByJournal.get(p.journal_id).push(p);
+      }
+      for (const journal of rows) {
+        journal.pages = pagesByJournal.get(journal.journal_id) || [];
+      }
     }
     res.json(rows);
   } catch (err) {
@@ -40,11 +56,20 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const [pages] = await pool.query(
       'SELECT * FROM journal_pages WHERE journal_id = ? ORDER BY page_number', [journal.journal_id]
     );
-    for (const page of pages) {
+    if (pages.length > 0) {
+      const pageIds = pages.map((p) => p.page_id);
       const [elements] = await pool.query(
-        'SELECT * FROM journal_elements WHERE page_id = ? ORDER BY z_index ASC, element_id ASC', [page.page_id]
+        `SELECT * FROM journal_elements WHERE page_id IN (${pageIds.map(() => '?').join(',')}) ORDER BY page_id, z_index ASC, element_id ASC`,
+        pageIds
       );
-      page.elements = elements;
+      const byPage = new Map();
+      for (const el of elements) {
+        if (!byPage.has(el.page_id)) byPage.set(el.page_id, []);
+        byPage.get(el.page_id).push(el);
+      }
+      for (const p of pages) p.elements = byPage.get(p.page_id) || [];
+    } else {
+      for (const p of pages) p.elements = [];
     }
     journal.pages = pages;
     res.json(journal);
