@@ -43,6 +43,7 @@ class TripService {
     try {
       return _trips.firstWhere((trip) => trip.tripId == id);
     } catch (e) {
+      debugPrint('TripService.getTripById not found: $e');
       return null;
     }
   }
@@ -231,16 +232,17 @@ class TripService {
   }
 
   static Map<String, dynamic> _activityToApi(TripActivity a) {
+    final j = a.toJson();
     return {
-      'place_id': a.placeId,
-      'place_name': a.placeName,
-      'place_image': a.placeImage,
-      'time_slot': a.timeSlot,
-      'notes': a.notes,
-      'latitude': a.latitude,
-      'longitude': a.longitude,
-      'category_id': a.categoryId,
-      'city_name': a.cityName,
+      'place_id': j['placeId'],
+      'place_name': j['placeName'],
+      'place_image': j['placeImage'],
+      'time_slot': j['timeSlot'],
+      'notes': j['notes'],
+      'latitude': j['latitude'],
+      'longitude': j['longitude'],
+      'category_id': j['categoryId'],
+      'city_name': j['cityName'],
     };
   }
 

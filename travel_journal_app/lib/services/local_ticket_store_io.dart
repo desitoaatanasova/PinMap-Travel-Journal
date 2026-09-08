@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<String?> saveTicketBytes(
@@ -41,6 +41,6 @@ Future<void> deleteTicketsForJournal(int journalId) async {
       await folder.delete(recursive: true);
     }
   } catch (e) {
-    // ignore: empty_catch — best-effort cleanup, folder may already be gone
+    debugPrint('deleteTicketsForJournal cleanup failed: $e');
   }
 }

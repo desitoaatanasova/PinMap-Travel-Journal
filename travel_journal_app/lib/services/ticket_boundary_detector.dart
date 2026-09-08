@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/services/ticket_image_processor.dart';
 
 import 'ticket_ml_detector_io.dart'
@@ -14,7 +14,8 @@ class TicketBoundaryDetector {
     TicketCorners? ml;
     try {
       ml = await impl.detectWithMl(bytes);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('TicketBoundaryDetector ML fallback: $e');
       ml = null;
     }
     final cv = TicketImageProcessor.detectCorners(bytes);

@@ -47,6 +47,7 @@ class JournalService {
     try {
       return _journals.firstWhere((j) => j.journalId == id);
     } catch (e) {
+      debugPrint('JournalService.getJournalById not found: $e');
       return null;
     }
   }

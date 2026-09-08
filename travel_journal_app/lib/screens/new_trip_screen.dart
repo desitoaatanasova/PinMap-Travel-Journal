@@ -9,6 +9,7 @@ import 'package:pinmap_travel_journal/services/social_service.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/utils/date_formatter.dart';
 
 class NewTripScreen extends StatefulWidget {
   final Trip? trip;
@@ -215,9 +216,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 ),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  date != null
-                      ? '${date.month}/${date.day}/${date.year}'
-                      : 'Select',
+                  date != null ? formatPickerDate(date) : 'Select',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     color: date != null ? AppTheme.darkBrown : AppTheme.warmGray,

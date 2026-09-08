@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
@@ -256,8 +257,8 @@ class EditorElement {
     try {
       final value = jsonDecode(content);
       if (value is Map<String, dynamic>) return value;
-    } catch (_) {
-      // Legacy plain-text element.
+    } catch (e) {
+      debugPrint('EditorElement legacy text parse failed: $e');
     }
     return null;
   }

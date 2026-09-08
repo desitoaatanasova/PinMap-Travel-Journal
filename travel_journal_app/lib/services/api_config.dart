@@ -34,7 +34,8 @@ class ApiConfig {
       final prefs = await SharedPreferences.getInstance();
       _override = prefs.getString(_overrideKey) ?? '';
       _override = _normalize(_override);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('ApiConfig.loadOverride failed: $e');
       _override = '';
     }
   }
