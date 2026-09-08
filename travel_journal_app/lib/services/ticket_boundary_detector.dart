@@ -1,10 +1,10 @@
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:pinmap_travel_journal/services/ticket_image_processor.dart';
 
 import 'ticket_ml_detector_io.dart'
     if (dart.library.js_interop) 'ticket_ml_detector_web.dart'
-    if (dart.library.html) 'ticket_ml_detector_web.dart' as impl;
+    if (dart.library.html) 'ticket_ml_detector_web.dart'
+    as impl;
 
 /// Combines on-device ML (mobile: Google ML Kit text detection) with the
 /// pure-Dart geometric detector. ML is a hint; the CV detector is the source

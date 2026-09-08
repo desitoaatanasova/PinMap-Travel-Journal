@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
@@ -43,9 +43,10 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
 
   Future<void> _toggleWishlist() async {
     if (_isInWishlist) {
-      final item = WishlistService.getAllItems()
-          .where((i) => i.placeId == widget.place.placeId)
-          .firstOrNull;
+      final item =
+          WishlistService.getAllItems()
+              .where((i) => i.placeId == widget.place.placeId)
+              .firstOrNull;
       if (item != null) {
         await WishlistService.removeItem(item.wishlistId);
       }
@@ -118,11 +119,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
             ),
             if (_isVisited)
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 28,
-              ),
+              const Icon(Icons.check_circle, color: Colors.green, size: 28),
           ],
         ),
         actions: [
@@ -148,21 +145,26 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
             const SizedBox(height: AppTheme.space4),
             _buildPlaceNameAndLocation(place),
             const SizedBox(height: AppTheme.space6),
-            if (place.shortDescription != null || place.fullDescription != null) ...[
+            if (place.shortDescription != null ||
+                place.fullDescription != null) ...[
               const SectionHeader(title: 'About this place'),
               const SizedBox(height: AppTheme.space3),
               Text(
                 place.fullDescription ?? place.shortDescription ?? '',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      height: 1.6,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(height: 1.6),
               ),
               const SizedBox(height: AppTheme.space6),
             ],
             if (place.address != null) ...[
               Row(
                 children: [
-                  const Icon(Icons.location_on, size: 16, color: Color(0xFF8B7355)),
+                  const Icon(
+                    Icons.location_on,
+                    size: 16,
+                    color: Color(0xFF8B7355),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -209,22 +211,21 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                child: CachedNetworkImage(
+                child: AuthenticatedCachedImage(
                   imageUrl: url,
                   fit: BoxFit.cover,
-                  memCacheWidth: 800,
-                  maxWidthDiskCache: 800,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: categoryColor.withValues(alpha: 0.3),
-                    child: Icon(
-                      Icons.place,
-                      size: 80,
-                      color: categoryColor,
-                    ),
-                  ),
+                  placeholder:
+                      (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        color: categoryColor.withValues(alpha: 0.3),
+                        child: Icon(
+                          Icons.place,
+                          size: 80,
+                          color: categoryColor,
+                        ),
+                      ),
                 ),
               ),
             );
@@ -238,16 +239,15 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         color: categoryColor.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
-      child: Icon(
-        Icons.place,
-        size: 80,
-        color: categoryColor,
-      ),
+      child: Icon(Icons.place, size: 80, color: categoryColor),
     );
   }
 
   Widget _buildCategoryBadge(
-      BuildContext context, Color color, String categoryName) {
+    BuildContext context,
+    Color color,
+    String categoryName,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.space3,
@@ -256,19 +256,12 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-        border: Border.all(
-          color: color.withValues(alpha: 0.4),
-          width: 1.5,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.category,
-            size: 16,
-            color: color,
-          ),
+          Icon(Icons.category, size: 16, color: color),
           const SizedBox(width: AppTheme.space2),
           Text(
             categoryName,
@@ -299,11 +292,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         const SizedBox(height: AppTheme.space1),
         Row(
           children: [
-            Icon(
-              Icons.location_on,
-              size: 16,
-              color: AppTheme.warmGray,
-            ),
+            Icon(Icons.location_on, size: 16, color: AppTheme.warmGray),
             const SizedBox(width: AppTheme.space1),
             Expanded(
               child: Text(
@@ -325,8 +314,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(
-            color: AppTheme.lightGray.withValues(alpha: 0.5)),
+        border: Border.all(color: AppTheme.lightGray.withValues(alpha: 0.5)),
         boxShadow: AppTheme.shadowSm,
       ),
       child: ClipRRect(
@@ -341,8 +329,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           ),
           children: [
             TileLayer(
-              urlTemplate:
-                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               subdomains: const ['a', 'b', 'c'],
             ),
             MarkerLayer(
@@ -375,9 +362,10 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         await VisitedService.togglePlace(
           widget.place.placeId,
           cityId: widget.place.cityId,
-          countryId: widget.place.cityId != 0
-              ? CountryService.countryIdForCity(widget.place.cityId)
-              : 0,
+          countryId:
+              widget.place.cityId != 0
+                  ? CountryService.countryIdForCity(widget.place.cityId)
+                  : 0,
         );
         setState(() {
           _isVisited = VisitedService.isPlaceVisited(widget.place.placeId);
@@ -403,15 +391,10 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           borderRadius: BorderRadius.circular(AppTheme.radiusFull),
         ),
       ),
-      icon: Icon(
-        _isVisited ? Icons.check_circle : Icons.check_circle_outline,
-      ),
+      icon: Icon(_isVisited ? Icons.check_circle : Icons.check_circle_outline),
       label: Text(
         _isVisited ? 'Visited' : 'Mark as Visited',
-        style: GoogleFonts.dmSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
+import 'package:pinmap_travel_journal/utils/snackbar_helper.dart';
+import 'package:pinmap_travel_journal/utils/dialog_helper.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/screens/country_page.dart';
@@ -60,7 +62,9 @@ class _WishListScreenState extends State<WishListScreen> {
                 ),
               ),
               titlePadding: const EdgeInsets.only(
-                  left: AppTheme.space4, bottom: AppTheme.space4),
+                left: AppTheme.space4,
+                bottom: AppTheme.space4,
+              ),
             ),
             actions: [
               IconButton(
@@ -110,15 +114,11 @@ class _WishListScreenState extends State<WishListScreen> {
               SliverPadding(
                 padding: const EdgeInsets.all(AppTheme.space4),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final item = _items[index];
-                      return _buildGridCard(context, item);
-                    },
-                    childCount: _items.length,
-                  ),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = _items[index];
+                    return _buildGridCard(context, item);
+                  }, childCount: _items.length),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: AppTheme.space4,
                     mainAxisSpacing: AppTheme.space4,
@@ -130,21 +130,16 @@ class _WishListScreenState extends State<WishListScreen> {
               SliverPadding(
                 padding: const EdgeInsets.all(AppTheme.space4),
                 sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final item = _items[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppTheme.space4),
-                        child: _buildListCard(context, item),
-                      );
-                    },
-                    childCount: _items.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = _items[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppTheme.space4),
+                      child: _buildListCard(context, item),
+                    );
+                  }, childCount: _items.length),
                 ),
               ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: AppTheme.space12),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
           ],
         ],
       ),
@@ -164,17 +159,17 @@ class _WishListScreenState extends State<WishListScreen> {
                 topLeft: Radius.circular(AppTheme.radiusLg),
                 topRight: Radius.circular(AppTheme.radiusLg),
               ),
-              child: item.image != null
-                  ? CachedNetworkImage(
-                      imageUrl: item.image!,
-                      fit: BoxFit.cover,
-                      memCacheWidth: 400,
-                      maxWidthDiskCache: 400,
-                      placeholder: (context, url) => _buildImageFallback(item),
-                      errorWidget: (context, url, error) =>
-                          _buildImageFallback(item),
-                    )
-                  : _buildImageFallback(item),
+              child:
+                  item.image != null
+                      ? AuthenticatedCachedImage(
+                        imageUrl: item.image!,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => _buildImageFallback(item),
+                        errorWidget:
+                            (context, url, error) => _buildImageFallback(item),
+                      )
+                      : _buildImageFallback(item),
             ),
           ),
           Padding(
@@ -260,22 +255,20 @@ class _WishListScreenState extends State<WishListScreen> {
               topLeft: Radius.circular(AppTheme.radiusLg),
               bottomLeft: Radius.circular(AppTheme.radiusLg),
             ),
-            child: item.image != null
-                ? CachedNetworkImage(
-                    imageUrl: item.image!,
-                    width: 100,
-                    height: 100,
-                    memCacheWidth: 300,
-                    memCacheHeight: 300,
-                    maxWidthDiskCache: 300,
-                    maxHeightDiskCache: 300,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        _buildListImageFallback(item),
-                    errorWidget: (context, url, error) =>
-                        _buildListImageFallback(item),
-                  )
-                : _buildListImageFallback(item),
+            child:
+                item.image != null
+                    ? AuthenticatedCachedImage(
+                      imageUrl: item.image!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => _buildListImageFallback(item),
+                      errorWidget:
+                          (context, url, error) =>
+                              _buildListImageFallback(item),
+                    )
+                    : _buildListImageFallback(item),
           ),
           Expanded(
             child: Padding(
@@ -349,9 +342,10 @@ class _WishListScreenState extends State<WishListScreen> {
 
   void _openItem(BuildContext context, WishlistItem item) {
     if (item.type == 'country' && item.countryId != null) {
-      final country = CountryService.getAllCountries()
-          .where((c) => c.countryId == item.countryId)
-          .firstOrNull;
+      final country =
+          CountryService.getAllCountries()
+              .where((c) => c.countryId == item.countryId)
+              .firstOrNull;
       if (country != null) {
         Navigator.push(
           context,
@@ -368,9 +362,7 @@ class _WishListScreenState extends State<WishListScreen> {
       color: AppTheme.primary.withValues(alpha: 0.1),
       child: Center(
         child: Text(
-          item.name.isNotEmpty
-              ? item.name[0].toUpperCase()
-              : '?',
+          item.name.isNotEmpty ? item.name[0].toUpperCase() : '?',
           style: GoogleFonts.playfairDisplay(
             fontSize: 32,
             fontWeight: FontWeight.bold,
@@ -388,9 +380,7 @@ class _WishListScreenState extends State<WishListScreen> {
       color: AppTheme.primary.withValues(alpha: 0.1),
       child: Center(
         child: Text(
-          item.name.isNotEmpty
-              ? item.name[0].toUpperCase()
-              : '?',
+          item.name.isNotEmpty ? item.name[0].toUpperCase() : '?',
           style: GoogleFonts.playfairDisplay(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -402,55 +392,18 @@ class _WishListScreenState extends State<WishListScreen> {
   }
 
   Future<void> _confirmRemove(BuildContext context, WishlistItem item) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Remove from Wishlist',
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'Remove ${item.name} from your wishlist?',
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              'Remove',
-              style: GoogleFonts.dmSans(),
-            ),
-          ),
-        ],
-      ),
+    final confirmed = await showAppConfirmDialog(
+      context,
+      title: 'Remove from Wishlist',
+      content: 'Remove ${item.name} from your wishlist?',
+      confirmText: 'Remove',
+      confirmColor: Colors.red,
     );
     if (confirmed == true) {
       await WishlistService.removeItem(item.wishlistId);
       await _refresh();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${item.name} removed from wishlist',
-              style: GoogleFonts.dmSans(),
-            ),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        showAppSnackBar(context, '${item.name} removed from wishlist');
       }
     }
   }

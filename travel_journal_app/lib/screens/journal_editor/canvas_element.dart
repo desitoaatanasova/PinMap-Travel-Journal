@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +36,8 @@ TextStyle buildElementTextStyle({
 class EditorElement {
   final String id;
   final String type; // 'text' | 'image' | 'sticker' | 'ticket'
-  final String? elementKey; // stable client id persisted to journal_elements.element_key
+  final String?
+  elementKey; // stable client id persisted to journal_elements.element_key
   double x;
   double y;
   double scale;
@@ -100,24 +99,24 @@ class EditorElement {
   }
 
   TextStyle get textStyle => buildElementTextStyle(
-        fontFamily: fontFamily,
-        fontSize: fontSize,
-        colorValue: textColorValue,
-        bold: bold,
-        italic: italic,
-        underline: underline,
-      );
+    fontFamily: fontFamily,
+    fontSize: fontSize,
+    colorValue: textColorValue,
+    bold: bold,
+    italic: italic,
+    underline: underline,
+  );
 
   /// Text style with the element scale folded into the font size, so pinching
   /// a text box visibly grows the text.
   TextStyle get scaledTextStyle => buildElementTextStyle(
-        fontFamily: fontFamily,
-        fontSize: fontSize * scale,
-        colorValue: textColorValue,
-        bold: bold,
-        italic: italic,
-        underline: underline,
-      );
+    fontFamily: fontFamily,
+    fontSize: fontSize * scale,
+    colorValue: textColorValue,
+    bold: bold,
+    italic: italic,
+    underline: underline,
+  );
 
   /// A copy with a fresh id and a small offset, used for "duplicate".
   EditorElement copyForDuplicate() {
@@ -237,7 +236,8 @@ class EditorElement {
         element.text = decoded['text'] ?? '';
         element.fontFamily = decoded['fontFamily'] ?? 'DM Sans';
         element.fontSize = (decoded['fontSize'] as num?)?.toDouble() ?? 14;
-        element.textColorValue = (decoded['color'] as num?)?.toInt() ?? 0xDD000000;
+        element.textColorValue =
+            (decoded['color'] as num?)?.toInt() ?? 0xDD000000;
         element.bold = decoded['bold'] ?? false;
         element.italic = decoded['italic'] ?? false;
         element.underline = decoded['underline'] ?? false;

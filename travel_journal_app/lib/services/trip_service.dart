@@ -50,7 +50,8 @@ class TripService {
 
   static List<Trip> getAllTrips() => List.unmodifiable(_trips);
 
-  static String _clientIdFor(Trip trip) => 'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
+  static String _clientIdFor(Trip trip) =>
+      'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
 
   static Future<void> addTrip(Trip trip) async {
     final clientId = _clientIdFor(trip);
@@ -59,17 +60,22 @@ class TripService {
     body['id'] = trip.tripId;
     try {
       final data = await ApiClient.post('/trips', body: body);
-      final serverId = data['id'] is int ? data['id'] : int.tryParse(data['id'].toString()) ?? 0;
+      final serverId =
+          data['id'] is int
+              ? data['id']
+              : int.tryParse(data['id'].toString()) ?? 0;
       final newTrip = trip.copyWith(tripId: serverId);
       _trips.add(newTrip);
     } catch (e) {
       debugPrint('TripService.addTrip offline: $e');
       _trips.add(trip);
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.addTrip,
-        data: body,
-        timestamp: DateTime.now(),
-      ));
+      await SyncQueueService.enqueue(
+        SyncAction(
+          type: SyncActionType.addTrip,
+          data: body,
+          timestamp: DateTime.now(),
+        ),
+      );
     }
   }
 
@@ -80,11 +86,13 @@ class TripService {
     } catch (e) {
       debugPrint('TripService.deleteTrip offline: $e');
       _trips.removeWhere((trip) => trip.tripId == id);
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.deleteTrip,
-        data: {'id': id},
-        timestamp: DateTime.now(),
-      ));
+      await SyncQueueService.enqueue(
+        SyncAction(
+          type: SyncActionType.deleteTrip,
+          data: {'id': id},
+          timestamp: DateTime.now(),
+        ),
+      );
     }
   }
 
@@ -101,11 +109,13 @@ class TripService {
       await ApiClient.put('/trips/${trip.tripId}', body: body);
     } catch (e) {
       debugPrint('TripService.updateTrip offline: $e');
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.updateTrip,
-        data: body,
-        timestamp: DateTime.now(),
-      ));
+      await SyncQueueService.enqueue(
+        SyncAction(
+          type: SyncActionType.updateTrip,
+          data: body,
+          timestamp: DateTime.now(),
+        ),
+      );
     }
   }
 
@@ -125,26 +135,32 @@ class TripService {
     String? departureCity,
     List<TripParticipant> participants = const [],
   }) async {
-    final data = await ApiClient.post('/ai/generate-trip', body: {
-      'countryId': countryId,
-      'countryName': countryName,
-      'numberOfDays': numberOfDays,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-      'tripType': tripType,
-      'travelStyle': travelStyle,
-      'cityIds': cityIds,
-      'cityNames': cityNames,
-      'arrivalCity': arrivalCity,
-      'departureCity': departureCity,
-      'participants': participants
-          .map((p) => {
-                'userId': p.userId,
-                'username': p.username,
-                'name': p.displayName,
-              })
-          .toList(),
-    });
+    final data = await ApiClient.post(
+      '/ai/generate-trip',
+      body: {
+        'countryId': countryId,
+        'countryName': countryName,
+        'numberOfDays': numberOfDays,
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate.toIso8601String(),
+        'tripType': tripType,
+        'travelStyle': travelStyle,
+        'cityIds': cityIds,
+        'cityNames': cityNames,
+        'arrivalCity': arrivalCity,
+        'departureCity': departureCity,
+        'participants':
+            participants
+                .map(
+                  (p) => {
+                    'userId': p.userId,
+                    'username': p.username,
+                    'name': p.displayName,
+                  },
+                )
+                .toList(),
+      },
+    );
     return Trip.fromJson(data as Map<String, dynamic>);
   }
 
@@ -152,9 +168,10 @@ class TripService {
   /// and adds the new trip to the in-memory list.
   static Future<Trip> saveDraftTrip(Trip draft) async {
     final data = await ApiClient.post('/trips', body: draft.toJson());
-    final id = data['id'] is int
-        ? data['id']
-        : int.tryParse(data['id'].toString()) ?? 0;
+    final id =
+        data['id'] is int
+            ? data['id']
+            : int.tryParse(data['id'].toString()) ?? 0;
     final saved = draft.copyWith(tripId: id);
     final idx = _trips.indexWhere((t) => t.tripId == id);
     if (idx >= 0) {
@@ -219,15 +236,18 @@ class TripService {
       'departure_city': trip.departureCity,
       'city_ids': trip.cityIds,
       'participant_ids': trip.participants.map((p) => p.userId).toList(),
-      'itinerary': trip.itinerary
-          .map((d) => {
-                'day_number': d.dayNumber,
-                'date': d.date,
-                'morning': d.morning.map(_activityToApi).toList(),
-                'afternoon': d.afternoon.map(_activityToApi).toList(),
-                'evening': d.evening.map(_activityToApi).toList(),
-              })
-          .toList(),
+      'itinerary':
+          trip.itinerary
+              .map(
+                (d) => {
+                  'day_number': d.dayNumber,
+                  'date': d.date,
+                  'morning': d.morning.map(_activityToApi).toList(),
+                  'afternoon': d.afternoon.map(_activityToApi).toList(),
+                  'evening': d.evening.map(_activityToApi).toList(),
+                },
+              )
+              .toList(),
     };
   }
 

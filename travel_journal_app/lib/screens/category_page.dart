@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/place_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
@@ -33,7 +33,9 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     super.initState();
     _placesFuture = PlaceService.getPlacesForCategory(
-        widget.categoryName, widget.cityName);
+      widget.categoryName,
+      widget.cityName,
+    );
   }
 
   void _toggleVisited(int placeId) async {
@@ -45,9 +47,8 @@ class _CategoryPageState extends State<CategoryPage> {
       final place = places.where((p) => p.placeId == placeId).firstOrNull;
       if (place != null) {
         cityId = place.cityId != 0 ? place.cityId : null;
-        countryId = cityId != null
-            ? CountryService.countryIdForCity(cityId)
-            : null;
+        countryId =
+            cityId != null ? CountryService.countryIdForCity(cityId) : null;
       }
     }
     await VisitedService.togglePlace(
@@ -82,7 +83,11 @@ class _CategoryPageState extends State<CategoryPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppTheme.space4, AppTheme.space4, AppTheme.space4, AppTheme.space2),
+              AppTheme.space4,
+              AppTheme.space4,
+              AppTheme.space4,
+              AppTheme.space2,
+            ),
             child: Text(
               '${widget.cityName}, ${widget.countryName}',
               style: GoogleFonts.dancingScript(
@@ -109,10 +114,15 @@ class _CategoryPageState extends State<CategoryPage> {
                   itemCount: places.length,
                   itemBuilder: (context, index) {
                     final place = places[index];
-                    final isVisited =
-                        VisitedService.isPlaceVisited(place.placeId);
+                    final isVisited = VisitedService.isPlaceVisited(
+                      place.placeId,
+                    );
                     return _buildPlaceCard(
-                        context, place, isVisited, categoryColor);
+                      context,
+                      place,
+                      isVisited,
+                      categoryColor,
+                    );
                   },
                 );
               },
@@ -143,7 +153,11 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   Widget _buildPlaceCard(
-      BuildContext context, Place place, bool isVisited, Color categoryColor) {
+    BuildContext context,
+    Place place,
+    bool isVisited,
+    Color categoryColor,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
       decoration: BoxDecoration(
@@ -159,12 +173,13 @@ class _CategoryPageState extends State<CategoryPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PlaceDetailsPage(
-                  place: place,
-                  categoryName: widget.categoryName,
-                  cityName: widget.cityName,
-                  countryName: widget.countryName,
-                ),
+                builder:
+                    (context) => PlaceDetailsPage(
+                      place: place,
+                      categoryName: widget.categoryName,
+                      cityName: widget.cityName,
+                      countryName: widget.countryName,
+                    ),
               ),
             );
           },
@@ -204,15 +219,20 @@ class _CategoryPageState extends State<CategoryPage> {
                               size: 20,
                             ),
                             onPressed: () async {
-                              final inWish =
-                                  WishlistService.isInWishlist(place.placeId);
+                              final inWish = WishlistService.isInWishlist(
+                                place.placeId,
+                              );
                               if (inWish) {
-                                final item = WishlistService.getAllItems()
-                                    .where((i) => i.placeId == place.placeId)
-                                    .firstOrNull;
+                                final item =
+                                    WishlistService.getAllItems()
+                                        .where(
+                                          (i) => i.placeId == place.placeId,
+                                        )
+                                        .firstOrNull;
                                 if (item != null) {
                                   await WishlistService.removeItem(
-                                      item.wishlistId);
+                                    item.wishlistId,
+                                  );
                                 }
                               } else {
                                 await WishlistService.addItem(place.placeId);
@@ -243,8 +263,9 @@ class _CategoryPageState extends State<CategoryPage> {
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.green.withValues(alpha: 0.15),
-                                borderRadius:
-                                    BorderRadius.circular(AppTheme.radiusFull),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusFull,
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -288,15 +309,18 @@ class _CategoryPageState extends State<CategoryPage> {
                             vertical: AppTheme.space1,
                           ),
                           decoration: BoxDecoration(
-                            color: isVisited
-                                ? Colors.green.withValues(alpha: 0.1)
-                                : categoryColor.withValues(alpha: 0.1),
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.radiusFull),
+                            color:
+                                isVisited
+                                    ? Colors.green.withValues(alpha: 0.1)
+                                    : categoryColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.radiusFull,
+                            ),
                             border: Border.all(
-                              color: isVisited
-                                  ? Colors.green.withValues(alpha: 0.3)
-                                  : categoryColor.withValues(alpha: 0.3),
+                              color:
+                                  isVisited
+                                      ? Colors.green.withValues(alpha: 0.3)
+                                      : categoryColor.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
@@ -305,8 +329,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color:
-                                  isVisited ? Colors.green : categoryColor,
+                              color: isVisited ? Colors.green : categoryColor,
                             ),
                           ),
                         ),
@@ -323,23 +346,21 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   Widget _buildThumbnail(Place place, Color categoryColor) {
-    final imageUrl = place.imageCover ??
+    final imageUrl =
+        place.imageCover ??
         (place.photos.isNotEmpty ? place.photos.first.imageUrl : null);
     if (imageUrl != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        child: CachedNetworkImage(
+        child: AuthenticatedCachedImage(
           imageUrl: imageUrl,
           width: 80,
           height: 80,
-          memCacheWidth: 240,
-          memCacheHeight: 240,
-          maxWidthDiskCache: 240,
-          maxHeightDiskCache: 240,
           fit: BoxFit.cover,
-          placeholder: (context, url) => _buildPlaceholder(categoryColor, place),
-          errorWidget: (context, url, error) =>
-              _buildPlaceholder(categoryColor, place),
+          placeholder:
+              (context, url) => _buildPlaceholder(categoryColor, place),
+          errorWidget:
+              (context, url, error) => _buildPlaceholder(categoryColor, place),
         ),
       );
     }

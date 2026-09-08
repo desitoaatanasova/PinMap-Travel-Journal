@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -27,7 +26,8 @@ Future<String?> saveTicketBytes(
     n++;
   }
 
-  final name = 'ticket_${n.toString().padLeft(3, '0')}${original ? '_original' : ''}.png';
+  final name =
+      'ticket_${n.toString().padLeft(3, '0')}${original ? '_original' : ''}.png';
   final file = File('${folder.path}/$name');
   await file.writeAsBytes(bytes, flush: true);
   return file.path;

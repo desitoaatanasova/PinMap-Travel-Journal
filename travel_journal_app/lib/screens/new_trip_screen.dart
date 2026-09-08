@@ -153,9 +153,10 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   Future<void> _pickDate({required bool isStart}) async {
-    final initial = isStart
-        ? (_startDate ?? DateTime.now())
-        : (_endDate ?? _startDate ?? DateTime.now());
+    final initial =
+        isStart
+            ? (_startDate ?? DateTime.now())
+            : (_endDate ?? _startDate ?? DateTime.now());
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
@@ -201,25 +202,19 @@ class _NewTripScreenState extends State<NewTripScreen> {
           children: [
             Text(
               label,
-              style: GoogleFonts.dmSans(
-                fontSize: 12,
-                color: AppTheme.warmGray,
-              ),
+              style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
             ),
             const SizedBox(height: AppTheme.space1),
             Row(
               children: [
-                Icon(
-                  Icons.calendar_today,
-                  size: 18,
-                  color: AppTheme.primary,
-                ),
+                Icon(Icons.calendar_today, size: 18, color: AppTheme.primary),
                 const SizedBox(width: AppTheme.space2),
                 Text(
                   date != null ? formatPickerDate(date) : 'Select',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: date != null ? AppTheme.darkBrown : AppTheme.warmGray,
+                    color:
+                        date != null ? AppTheme.darkBrown : AppTheme.warmGray,
                   ),
                 ),
               ],
@@ -268,7 +263,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
                       color:
-                          value == label ? AppTheme.warmGray : AppTheme.darkBrown,
+                          value == label
+                              ? AppTheme.warmGray
+                              : AppTheme.darkBrown,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -303,7 +300,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
       isScrollControlled: true,
       backgroundColor: AppTheme.bg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.radiusLg),
+        ),
       ),
       builder: (context) {
         final current = Set<int>.of(_selectedCityIds);
@@ -318,7 +317,11 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
-                          AppTheme.space4, AppTheme.space4, AppTheme.space4, 0),
+                        AppTheme.space4,
+                        AppTheme.space4,
+                        AppTheme.space4,
+                        0,
+                      ),
                       child: Row(
                         children: [
                           Expanded(
@@ -349,13 +352,19 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           if (_countryCities.isNotEmpty) ...[
                             _buildCityGroupTitle('Cities in ${country.name}'),
                             ..._countryCities.map(
-                              (city) => _buildCityCheckTile(city, current, setSheetState, country.name),
+                              (city) => _buildCityCheckTile(
+                                city,
+                                current,
+                                setSheetState,
+                                country.name,
+                              ),
                             ),
                           ],
                           if (_nearbyCities.isNotEmpty) ...[
                             const SizedBox(height: AppTheme.space4),
                             _buildCityGroupTitle(
-                                'Nearby in neighbouring countries'),
+                              'Nearby in neighbouring countries',
+                            ),
                             ..._nearbyCities.map(
                               (city) => _buildCityCheckTile(
                                 city,
@@ -455,15 +464,16 @@ class _NewTripScreenState extends State<NewTripScreen> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      subtitle: countryName.isEmpty
-          ? null
-          : Text(
-              countryName,
-              style: GoogleFonts.dmSans(
-                fontSize: 11,
-                color: AppTheme.warmGray,
+      subtitle:
+          countryName.isEmpty
+              ? null
+              : Text(
+                countryName,
+                style: GoogleFonts.dmSans(
+                  fontSize: 11,
+                  color: AppTheme.warmGray,
+                ),
               ),
-            ),
     );
   }
 
@@ -474,17 +484,22 @@ class _NewTripScreenState extends State<NewTripScreen> {
       isScrollControlled: true,
       backgroundColor: AppTheme.bg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.radiusLg),
+        ),
       ),
       builder: (context) {
         final controller = TextEditingController();
         var filter = '';
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            final list = _availableCities
-                .where((c) =>
-                    c.name.toLowerCase().contains(filter.toLowerCase()))
-                .toList();
+            final list =
+                _availableCities
+                    .where(
+                      (c) =>
+                          c.name.toLowerCase().contains(filter.toLowerCase()),
+                    )
+                    .toList();
             return DraggableScrollableSheet(
               expand: false,
               initialChildSize: 0.7,
@@ -494,11 +509,16 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
-                          AppTheme.space4, AppTheme.space4, AppTheme.space4, 0),
+                        AppTheme.space4,
+                        AppTheme.space4,
+                        AppTheme.space4,
+                        0,
+                      ),
                       child: TextField(
                         controller: controller,
                         autofocus: true,
-                        onChanged: (value) => setSheetState(() => filter = value),
+                        onChanged:
+                            (value) => setSheetState(() => filter = value),
                         decoration: const InputDecoration(
                           hintText: 'Search cities',
                           prefixIcon: Icon(Icons.search),
@@ -509,28 +529,34 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       child: ListView(
                         controller: scrollController,
                         padding: const EdgeInsets.all(AppTheme.space4),
-                        children: list
-                            .map((city) => ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: const Icon(Icons.location_city,
-                                      color: AppTheme.primary),
-                                  title: Text(
-                                    city.name,
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 14,
-                                      color: AppTheme.darkBrown,
+                        children:
+                            list
+                                .map(
+                                  (city) => ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: const Icon(
+                                      Icons.location_city,
+                                      color: AppTheme.primary,
                                     ),
-                                  ),
-                                  subtitle: Text(
-                                    _nearbyCountryName(city),
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 11,
-                                      color: AppTheme.warmGray,
+                                    title: Text(
+                                      city.name,
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 14,
+                                        color: AppTheme.darkBrown,
+                                      ),
                                     ),
+                                    subtitle: Text(
+                                      _nearbyCountryName(city),
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 11,
+                                        color: AppTheme.warmGray,
+                                      ),
+                                    ),
+                                    onTap:
+                                        () => Navigator.pop(context, city.name),
                                   ),
-                                  onTap: () => Navigator.pop(context, city.name),
-                                ))
-                            .toList(),
+                                )
+                                .toList(),
                       ),
                     ),
                   ],
@@ -575,10 +601,11 @@ class _NewTripScreenState extends State<NewTripScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TripPlanScreen(
-            tripId: aiTrip.tripId.toString(),
-            trip: aiTrip,
-          ),
+          builder:
+              (context) => TripPlanScreen(
+                tripId: aiTrip.tripId.toString(),
+                trip: aiTrip,
+              ),
         ),
       );
     } catch (e) {
@@ -592,45 +619,56 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   Future<void> _showGenerationError(
-      BuildContext context, Object error, String countryName) async {
-    final message = error is ApiException
-        ? error.message
-        : 'Something went wrong generating your trip.';
+    BuildContext context,
+    Object error,
+    String countryName,
+  ) async {
+    final message =
+        error is ApiException
+            ? error.message
+            : 'Something went wrong generating your trip.';
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          "Couldn't Generate Trip",
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              "Couldn't Generate Trip",
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(message, style: GoogleFonts.dmSans()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _generateTripPlan();
+                },
+                child: Text(
+                  'Retry',
+                  style: GoogleFonts.dmSans(color: AppTheme.primary),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _createBasicItinerary(countryName);
+                },
+                child: Text(
+                  'Create basic itinerary without AI',
+                  style: GoogleFonts.dmSans(color: AppTheme.primary),
+                ),
+              ),
+            ],
           ),
-        ),
-        content: Text(
-          message,
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: GoogleFonts.dmSans(color: AppTheme.warmGray)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _generateTripPlan();
-            },
-            child: Text('Retry', style: GoogleFonts.dmSans(color: AppTheme.primary)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _createBasicItinerary(countryName);
-            },
-            child: Text('Create basic itinerary without AI', style: GoogleFonts.dmSans(color: AppTheme.primary)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -654,8 +692,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            TripPlanScreen(tripId: trip.tripId.toString(), trip: trip),
+        builder:
+            (context) =>
+                TripPlanScreen(tripId: trip.tripId.toString(), trip: trip),
       ),
     );
   }
@@ -754,18 +793,18 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 hintText: 'Choose a country',
                 prefixIcon: Icon(Icons.public),
               ),
-              items: countries.map((c) {
-                return DropdownMenuItem(
-                  value: c.countryId,
-                  child: Text(c.name),
-                );
-              }).toList(),
+              items:
+                  countries.map((c) {
+                    return DropdownMenuItem(
+                      value: c.countryId,
+                      child: Text(c.name),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 setState(() {
                   _selectedCountryId = value;
-                  _selectedCountryName = countries
-                      .firstWhere((c) => c.countryId == value)
-                      .name;
+                  _selectedCountryName =
+                      countries.firstWhere((c) => c.countryId == value).name;
                   _selectedCityIds.clear();
                   _arrivalCity = null;
                   _departureCity = null;
@@ -777,21 +816,23 @@ class _NewTripScreenState extends State<NewTripScreen> {
             _buildPickerField(
               icon: Icons.location_city,
               label: 'Choose cities to visit (optional)',
-              value: _selectedCityNames.isEmpty
-                  ? 'Choose cities to visit (optional)'
-                  : _selectedCityNames.join(', '),
-              onTap: _selectedCountry == null
-                  ? () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Choose a country first',
-                            style: GoogleFonts.dmSans(),
+              value:
+                  _selectedCityNames.isEmpty
+                      ? 'Choose cities to visit (optional)'
+                      : _selectedCityNames.join(', '),
+              onTap:
+                  _selectedCountry == null
+                      ? () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Choose a country first',
+                              style: GoogleFonts.dmSans(),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  : _openCityMultiSelect,
+                        );
+                      }
+                      : _openCityMultiSelect,
             ),
             const SizedBox(height: AppTheme.space3),
             Row(
@@ -855,12 +896,15 @@ class _NewTripScreenState extends State<NewTripScreen> {
             _buildSectionTitle('Type of Vacation'),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<String>(
-              segments: _vacationTypes
-                  .map((type) => ButtonSegment<String>(
-                        value: type,
-                        label: Text(type),
-                      ))
-                  .toList(),
+              segments:
+                  _vacationTypes
+                      .map(
+                        (type) => ButtonSegment<String>(
+                          value: type,
+                          label: Text(type),
+                        ),
+                      )
+                      .toList(),
               selected: {_vacationType},
               onSelectionChanged: (selection) {
                 setState(() {
@@ -928,27 +972,28 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ],
             const SizedBox(height: AppTheme.space8),
             ElevatedButton.icon(
-              onPressed: (_canGenerate && !_generating)
-                  ? (_isEditing ? _saveTrip : _generateTripPlan)
-                  : null,
-              icon: _generating
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Icon(_isEditing ? Icons.save : Icons.auto_awesome),
+              onPressed:
+                  (_canGenerate && !_generating)
+                      ? (_isEditing ? _saveTrip : _generateTripPlan)
+                      : null,
+              icon:
+                  _generating
+                      ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                      : Icon(_isEditing ? Icons.save : Icons.auto_awesome),
               label: Text(
                 _generating
                     ? 'Generating...'
                     : (_isEditing ? 'Save Trip' : 'Generate Trip Plan'),
               ),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: AppTheme.space3),
+                padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
               ),
             ),
             const SizedBox(height: AppTheme.space4),
@@ -975,10 +1020,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
         ),
         child: Text(
           'No friends found yet. Follow other travellers (and let them follow you back) and they will appear here to add as trip companions.',
-          style: GoogleFonts.dmSans(
-            fontSize: 13,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.warmGray),
         ),
       );
     }
@@ -989,41 +1031,41 @@ class _NewTripScreenState extends State<NewTripScreen> {
         border: Border.all(color: AppTheme.lightGray),
       ),
       child: Column(
-        children: _mutualFriends.map((friend) {
-          final checked = _selectedParticipantIds.contains(friend.userId);
-          return CheckboxListTile(
-            value: checked,
-            onChanged: (value) {
-              setState(() {
-                if (value == true) {
-                  _selectedParticipantIds.add(friend.userId);
-                } else {
-                  _selectedParticipantIds.remove(friend.userId);
-                }
-              });
-            },
-            controlAffinity: ListTileControlAffinity.leading,
-            activeColor: AppTheme.primary,
-            dense: true,
-            title: Text(
-              friend.displayName,
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                color: AppTheme.darkBrown,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            subtitle: Text(
-              '@${friend.username}',
-              style: GoogleFonts.dmSans(
-                fontSize: 11,
-                color: AppTheme.warmGray,
-              ),
-            ),
-          );
-        }).toList(),
+        children:
+            _mutualFriends.map((friend) {
+              final checked = _selectedParticipantIds.contains(friend.userId);
+              return CheckboxListTile(
+                value: checked,
+                onChanged: (value) {
+                  setState(() {
+                    if (value == true) {
+                      _selectedParticipantIds.add(friend.userId);
+                    } else {
+                      _selectedParticipantIds.remove(friend.userId);
+                    }
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: AppTheme.primary,
+                dense: true,
+                title: Text(
+                  friend.displayName,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: AppTheme.darkBrown,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                subtitle: Text(
+                  '@${friend.username}',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 11,
+                    color: AppTheme.warmGray,
+                  ),
+                ),
+              );
+            }).toList(),
       ),
     );
   }
 }
-

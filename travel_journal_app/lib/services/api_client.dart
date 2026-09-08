@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -75,23 +74,57 @@ class ApiClient {
   }
 
   static Future<dynamic> get(String path, {bool auth = true}) async {
-    return _send(() async => http.get(_uri(path), headers: await _headers(auth: auth)));
+    return _send(
+      () async => http.get(_uri(path), headers: await _headers(auth: auth)),
+    );
   }
 
-  static Future<dynamic> post(String path, {Map<String, dynamic>? body, bool auth = true}) async {
-    return _send(() async => http.post(_uri(path), headers: await _headers(auth: auth), body: body != null ? jsonEncode(body) : null));
+  static Future<dynamic> post(
+    String path, {
+    Map<String, dynamic>? body,
+    bool auth = true,
+  }) async {
+    return _send(
+      () async => http.post(
+        _uri(path),
+        headers: await _headers(auth: auth),
+        body: body != null ? jsonEncode(body) : null,
+      ),
+    );
   }
 
-  static Future<dynamic> put(String path, {Map<String, dynamic>? body, bool auth = true}) async {
-    return _send(() async => http.put(_uri(path), headers: await _headers(auth: auth), body: body != null ? jsonEncode(body) : null));
+  static Future<dynamic> put(
+    String path, {
+    Map<String, dynamic>? body,
+    bool auth = true,
+  }) async {
+    return _send(
+      () async => http.put(
+        _uri(path),
+        headers: await _headers(auth: auth),
+        body: body != null ? jsonEncode(body) : null,
+      ),
+    );
   }
 
-  static Future<dynamic> patch(String path, {Map<String, dynamic>? body, bool auth = true}) async {
-    return _send(() async => http.patch(_uri(path), headers: await _headers(auth: auth), body: body != null ? jsonEncode(body) : null));
+  static Future<dynamic> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    bool auth = true,
+  }) async {
+    return _send(
+      () async => http.patch(
+        _uri(path),
+        headers: await _headers(auth: auth),
+        body: body != null ? jsonEncode(body) : null,
+      ),
+    );
   }
 
   static Future<dynamic> delete(String path, {bool auth = true}) async {
-    return _send(() async => http.delete(_uri(path), headers: await _headers(auth: auth)));
+    return _send(
+      () async => http.delete(_uri(path), headers: await _headers(auth: auth)),
+    );
   }
 
   static Future<dynamic> uploadMultipart(
@@ -104,12 +137,17 @@ class ApiClient {
     request.fields.addAll(fields);
     for (final file in files) {
       final parts = file.contentType.split('/');
-      request.files.add(http.MultipartFile.fromBytes(
-        file.field,
-        file.bytes,
-        filename: file.filename,
-        contentType: MediaType(parts.length == 2 ? parts[0] : 'application', parts.length == 2 ? parts[1] : 'octet-stream'),
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          file.field,
+          file.bytes,
+          filename: file.filename,
+          contentType: MediaType(
+            parts.length == 2 ? parts[0] : 'application',
+            parts.length == 2 ? parts[1] : 'octet-stream',
+          ),
+        ),
+      );
     }
     if (auth) {
       final authHeaders = await _headers(auth: true);

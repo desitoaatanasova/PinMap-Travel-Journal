@@ -56,9 +56,10 @@ class JournalService {
     final body = journal.toJson();
     try {
       final data = await ApiClient.post('/journal/save', body: body);
-      final serverId = data['id'] is int
-          ? data['id'] as int
-          : int.tryParse(data['id'].toString()) ?? journal.journalId;
+      final serverId =
+          data['id'] is int
+              ? data['id'] as int
+              : int.tryParse(data['id'].toString()) ?? journal.journalId;
       final savedPages = <SavedPage>[
         for (final page in (data['pages'] as List?) ?? <dynamic>[])
           SavedPage(
@@ -73,7 +74,9 @@ class JournalService {
         coverImage: journal.coverImage,
         pages: journal.pages,
       );
-      final index = _journals.indexWhere((j) => j.journalId == journal.journalId);
+      final index = _journals.indexWhere(
+        (j) => j.journalId == journal.journalId,
+      );
       if (index >= 0) {
         _journals[index] = saved;
       } else {
@@ -83,11 +86,13 @@ class JournalService {
     } catch (e) {
       final isRetryable = _isRetryableError(e);
       if (isRetryable) {
-        await SyncQueueService.enqueue(SyncAction(
-          type: SyncActionType.saveDraft,
-          data: body,
-          timestamp: DateTime.now(),
-        ));
+        await SyncQueueService.enqueue(
+          SyncAction(
+            type: SyncActionType.saveDraft,
+            data: body,
+            timestamp: DateTime.now(),
+          ),
+        );
         final optimistic = Journal(
           journalId: journal.journalId,
           title: journal.title,
@@ -95,7 +100,9 @@ class JournalService {
           coverImage: journal.coverImage,
           pages: journal.pages,
         );
-        final idx = _journals.indexWhere((j) => j.journalId == journal.journalId);
+        final idx = _journals.indexWhere(
+          (j) => j.journalId == journal.journalId,
+        );
         if (idx >= 0) {
           _journals[idx] = optimistic;
         } else {
@@ -110,11 +117,15 @@ class JournalService {
   static bool _isRetryableError(Object e) {
     if (e is ApiException) {
       final c = e.statusCode;
-      if (c == 401 || c == 403 || c == 400 || c == 404 || c == 422) return false;
+      if (c == 401 || c == 403 || c == 400 || c == 404 || c == 422)
+        return false;
       return true;
     }
     final s = e.toString().toLowerCase();
-    return s.contains('socketexception') || s.contains('timeout') || s.contains('failed host lookup') || s.contains('connection');
+    return s.contains('socketexception') ||
+        s.contains('timeout') ||
+        s.contains('failed host lookup') ||
+        s.contains('connection');
   }
 
   static Future<void> deleteJournal(int id) async {
@@ -132,42 +143,62 @@ class JournalService {
         if (c >= 200 && c < 300) return;
         if (c == 404 || c == 409) return;
         if (c == 400 || c == 422) {
-          await SyncQueueService.enqueue(SyncAction(
-            type: SyncActionType.deleteJournal,
-            data: {'id': id},
-            timestamp: DateTime.now(),
-          ));
-          final q = SyncQueueService.allActions.lastWhere((a) => a.type == SyncActionType.deleteJournal && a.data['id'] == id, orElse: () => SyncAction(type: SyncActionType.deleteJournal, data: {'id': id}, timestamp: DateTime.now()));
+          await SyncQueueService.enqueue(
+            SyncAction(
+              type: SyncActionType.deleteJournal,
+              data: {'id': id},
+              timestamp: DateTime.now(),
+            ),
+          );
+          final q = SyncQueueService.allActions.lastWhere(
+            (a) => a.type == SyncActionType.deleteJournal && a.data['id'] == id,
+            orElse:
+                () => SyncAction(
+                  type: SyncActionType.deleteJournal,
+                  data: {'id': id},
+                  timestamp: DateTime.now(),
+                ),
+          );
           q.isDeadLetter = true;
           q.lastError = e.toString();
           q.lastAttempt = DateTime.now();
           return;
         }
         if (c == 401 || c == 403 || c == 429 || (c >= 500 && c <= 599)) {
-          await SyncQueueService.enqueue(SyncAction(
-            type: SyncActionType.deleteJournal,
-            data: {'id': id},
-            timestamp: DateTime.now(),
-          ));
+          await SyncQueueService.enqueue(
+            SyncAction(
+              type: SyncActionType.deleteJournal,
+              data: {'id': id},
+              timestamp: DateTime.now(),
+            ),
+          );
           return;
         }
       }
       final s = e.toString().toLowerCase();
-      final isNetwork = s.contains('socketexception') || s.contains('timeout') || s.contains('failed host lookup') || s.contains('connection');
+      final isNetwork =
+          s.contains('socketexception') ||
+          s.contains('timeout') ||
+          s.contains('failed host lookup') ||
+          s.contains('connection');
       if (isNetwork) {
-        await SyncQueueService.enqueue(SyncAction(
-          type: SyncActionType.deleteJournal,
-          data: {'id': id},
-          timestamp: DateTime.now(),
-        ));
+        await SyncQueueService.enqueue(
+          SyncAction(
+            type: SyncActionType.deleteJournal,
+            data: {'id': id},
+            timestamp: DateTime.now(),
+          ),
+        );
         return;
       }
       debugPrint('JournalService.deleteJournal error: $e');
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.deleteJournal,
-        data: {'id': id},
-        timestamp: DateTime.now(),
-      ));
+      await SyncQueueService.enqueue(
+        SyncAction(
+          type: SyncActionType.deleteJournal,
+          data: {'id': id},
+          timestamp: DateTime.now(),
+        ),
+      );
     }
   }
 

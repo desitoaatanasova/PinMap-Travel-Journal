@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/social_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
@@ -72,15 +72,14 @@ class _UserPageScreenState extends State<UserPageScreen> {
                 fit: StackFit.expand,
                 children: [
                   if (_user.travelPhotos.isNotEmpty)
-                    CachedNetworkImage(
+                    AuthenticatedCachedImage(
                       imageUrl: _user.travelPhotos[0],
                       fit: BoxFit.cover,
-                      memCacheWidth: 800,
-                      maxWidthDiskCache: 800,
-                      placeholder: (context, url) =>
-                          Container(color: AppTheme.primary),
-                      errorWidget: (context, url, error) =>
-                          Container(color: AppTheme.primary),
+                      placeholder:
+                          (context, url) => Container(color: AppTheme.primary),
+                      errorWidget:
+                          (context, url, error) =>
+                              Container(color: AppTheme.primary),
                     )
                   else
                     Container(color: AppTheme.primary),
@@ -117,7 +116,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              if (_user.bio != null && _user.bio!.isNotEmpty) ...[
+                              if (_user.bio != null &&
+                                  _user.bio!.isNotEmpty) ...[
                                 const SizedBox(height: 4),
                                 Text(
                                   _user.bio!,
@@ -149,35 +149,37 @@ class _UserPageScreenState extends State<UserPageScreen> {
                   const SizedBox(height: AppTheme.space4),
                   ElevatedButton.icon(
                     onPressed: _busy ? null : _toggleFollow,
-                    icon: _busy
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(
-                            _user.isFollowing
-                                ? Icons.person_remove
-                                : Icons.person_add,
-                            size: 20,
-                          ),
+                    icon:
+                        _busy
+                            ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : Icon(
+                              _user.isFollowing
+                                  ? Icons.person_remove
+                                  : Icons.person_add,
+                              size: 20,
+                            ),
                     label: Text(
                       _user.isFollowing ? 'Unfollow' : 'Follow',
                       style: GoogleFonts.dmSans(),
                     ),
-                    style: _user.isFollowing
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.card,
-                            foregroundColor: AppTheme.primary,
-                            side: BorderSide(
-                              color: AppTheme.primary,
-                              width: 2,
+                    style:
+                        _user.isFollowing
+                            ? ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.card,
+                              foregroundColor: AppTheme.primary,
+                              side: BorderSide(
+                                color: AppTheme.primary,
+                                width: 2,
+                              ),
+                              minimumSize: const Size(double.infinity, 48),
+                            )
+                            : ElevatedButton.styleFrom(
+                              minimumSize: const Size(double.infinity, 48),
                             ),
-                            minimumSize: const Size(double.infinity, 48),
-                          )
-                        : ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 48),
-                          ),
                   ),
                   const SizedBox(height: AppTheme.space4),
                   if (_user.isPrivate) ...[
@@ -204,15 +206,58 @@ class _UserPageScreenState extends State<UserPageScreen> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: AppTheme.space12),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
         ],
       ),
     );
   }
 
   Widget _buildAvatar() {
+    final pic = _user.profilePicture;
+    if (pic != null) {
+      return Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+          boxShadow: AppTheme.shadowMd,
+        ),
+        child: ClipOval(
+          child: AuthenticatedCachedImage(
+            imageUrl: pic,
+            width: 72,
+            height: 72,
+            fit: BoxFit.cover,
+            placeholder:
+                (context, url) => Container(
+                  width: 72,
+                  height: 72,
+                  color: AppTheme.card,
+                  child: const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+            errorWidget:
+                (context, url, error) => Container(
+                  width: 72,
+                  height: 72,
+                  color: AppTheme.card,
+                  child: Center(
+                    child: Text(
+                      _user.username.isNotEmpty
+                          ? _user.username[0].toUpperCase()
+                          : '?',
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -222,21 +267,14 @@ class _UserPageScreenState extends State<UserPageScreen> {
       child: CircleAvatar(
         radius: 36,
         backgroundColor: AppTheme.card,
-        backgroundImage: _user.profilePicture != null
-            ? NetworkImage(_user.profilePicture!)
-            : null,
-        child: _user.profilePicture == null
-            ? Text(
-                _user.username.isNotEmpty
-                    ? _user.username[0].toUpperCase()
-                    : '?',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primary,
-                ),
-              )
-            : null,
+        child: Text(
+          _user.username.isNotEmpty ? _user.username[0].toUpperCase() : '?',
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primary,
+          ),
+        ),
       ),
     );
   }
@@ -276,10 +314,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
         ),
         Text(
           label,
-          style: GoogleFonts.dmSans(
-            fontSize: 11,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 11, color: AppTheme.warmGray),
         ),
       ],
     );
@@ -310,17 +345,17 @@ class _UserPageScreenState extends State<UserPageScreen> {
           itemBuilder: (context, index) {
             return ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              child: CachedNetworkImage(
+              child: AuthenticatedCachedImage(
                 imageUrl: _user.travelPhotos[index],
                 fit: BoxFit.cover,
-                memCacheWidth: 300,
-                maxWidthDiskCache: 300,
-                placeholder: (context, url) => Container(
-                  color: AppTheme.lightGray,
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-                errorWidget: (context, url, error) =>
-                    Container(color: AppTheme.lightGray),
+                placeholder:
+                    (context, url) => Container(
+                      color: AppTheme.lightGray,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                errorWidget:
+                    (context, url, error) =>
+                        Container(color: AppTheme.lightGray),
               ),
             );
           },
