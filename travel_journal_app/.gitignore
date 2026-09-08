@@ -46,6 +46,15 @@ app.*.map.json
 /android/build/
 /android/app/build/
 
+# Generated platform artifacts
+ios/Pods/
+ios/Flutter/Generated.xcconfig
+macos/Pods/
+.gradle/
+*.apk
+*.aab
+.env
+
 # Node.js modules
 node_modules/
 package-lock.json

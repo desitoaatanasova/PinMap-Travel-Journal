@@ -23,3 +23,12 @@ tmp.txt
 
 # Ignore PinMap directory (if not part of travel_journal_app)
 /PinMap/
+
+# Build / generated
+build/
+dist/
+coverage/
+*.db
+*.sqlite
+pinmap_import_*.sql
+backend/uploads/

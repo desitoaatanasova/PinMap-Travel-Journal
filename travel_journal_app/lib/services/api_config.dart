@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiConfig {
   static const String _overrideKey = 'server_base_url';
   static String _override = '';
-  static const String physicalDeviceBaseUrlOverride = '';
 
   /// Server address chosen in the app, or '' when not set.
   static String get serverOverride => _override;
@@ -19,9 +18,6 @@ class ApiConfig {
   static String get baseUrl {
     if (_override.isNotEmpty) {
       return _override;
-    }
-    if (physicalDeviceBaseUrlOverride.isNotEmpty) {
-      return physicalDeviceBaseUrlOverride;
     }
     // Android emulator reaches the host machine via 10.0.2.2
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
