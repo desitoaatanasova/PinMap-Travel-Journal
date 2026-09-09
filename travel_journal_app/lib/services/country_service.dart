@@ -7,6 +7,9 @@ class CountryService {
   static List<Country> _countries = [];
   static bool _loaded = false;
   static String? _lastError;
+  static final ValueNotifier<int> version = ValueNotifier(0);
+
+  static void _bump() => version.value++;
 
   static String? get lastError => _lastError;
   static bool get hasError => _lastError != null;
@@ -31,6 +34,7 @@ class CountryService {
         }
       }
       _loaded = true;
+      _bump();
     } catch (e) {
       debugPrint('CountryService.loadCountries error: $e');
       _lastError = e.toString();
@@ -93,5 +97,7 @@ class CountryService {
   static void reset() {
     _countries = [];
     _loaded = false;
+    _lastError = null;
+    _bump();
   }
 }

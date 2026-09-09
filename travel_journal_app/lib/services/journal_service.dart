@@ -21,13 +21,30 @@ class SavedPage {
 class JournalService {
   static List<Journal> _journals = [];
   static bool _loaded = false;
+  static int? _ownerId;
+  static final ValueNotifier<int> version = ValueNotifier(0);
+
+  static void _bump() => version.value++;
+
+  static void _ensureOwner() {
+    final uid = SyncQueueService.activeUserId;
+    if (_ownerId != uid) {
+      _journals = [];
+      _loaded = false;
+      _ownerId = uid;
+      _bump();
+    }
+  }
 
   static Future<void> loadJournals() async {
+    _ensureOwner();
     if (_loaded) return;
     try {
       final data = await ApiClient.get('/journal');
+      _ensureOwner();
       _journals = (data as List).map((json) => Journal.fromJson(json)).toList();
       _loaded = true;
+      _bump();
     } catch (e) {
       debugPrint('JournalService.loadJournals error: $e');
       _loaded = false;
@@ -35,15 +52,19 @@ class JournalService {
   }
 
   static Future<void> reloadJournals() async {
+    _ensureOwner();
     try {
       final data = await ApiClient.get('/journal');
+      _ensureOwner();
       _journals = (data as List).map((json) => Journal.fromJson(json)).toList();
+      _bump();
     } catch (e) {
       debugPrint('JournalService.reloadJournals error: $e');
     }
   }
 
   static Journal? getJournalById(int id) {
+    _ensureOwner();
     try {
       return _journals.firstWhere((j) => j.journalId == id);
     } catch (e) {
@@ -53,6 +74,7 @@ class JournalService {
   }
 
   static Future<JournalSaveResult> saveJournal(Journal journal) async {
+    _ensureOwner();
     final body = journal.toJson();
     try {
       final data = await ApiClient.post('/journal/save', body: body);
@@ -82,6 +104,7 @@ class JournalService {
       } else {
         _journals.add(saved);
       }
+      _bump();
       return JournalSaveResult(journalId: serverId, pages: savedPages);
     } catch (e) {
       final isRetryable = _isRetryableError(e);
@@ -108,6 +131,7 @@ class JournalService {
         } else {
           _journals.add(optimistic);
         }
+        _bump();
         return JournalSaveResult(journalId: journal.journalId, pages: []);
       }
       rethrow;
@@ -129,7 +153,9 @@ class JournalService {
   }
 
   static Future<void> deleteJournal(int id) async {
+    _ensureOwner();
     _journals.removeWhere((j) => j.journalId == id);
+    _bump();
     try {
       await LocalTicketStore.deleteTicketsForJournal(id);
     } catch (e) {
@@ -202,10 +228,15 @@ class JournalService {
     }
   }
 
-  static List<Journal> getAllJournals() => List.unmodifiable(_journals);
+  static List<Journal> getAllJournals() {
+    _ensureOwner();
+    return List.unmodifiable(_journals);
+  }
 
   static void reset() {
     _journals = [];
     _loaded = false;
+    _ownerId = null;
+    _bump();
   }
 }

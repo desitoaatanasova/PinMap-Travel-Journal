@@ -17,6 +17,13 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  bool _navigated = false;
+
+  void _goHomeOnce() {
+    if (_navigated || !mounted) return;
+    _navigated = true;
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+  }
 
   @override
   void initState() {
@@ -41,12 +48,11 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _checkAuth() async {
     final loggedIn = await AuthService.checkLoggedIn();
-    if (loggedIn && mounted) {
-      await DataLoader.loadAll();
-      if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-      }
-    }
+    if (!loggedIn || !mounted) return;
+    final result = await DataLoader.loadInitialData();
+    if (!mounted) return;
+    if (!result.allowHome) return;
+    _goHomeOnce();
   }
 
   @override
@@ -126,6 +132,7 @@ class _SplashScreenState extends State<SplashScreen>
                     // Get Started button
                   ElevatedButton(
                     onPressed: () {
+                      _navigated = true;
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => const LoginScreen(),

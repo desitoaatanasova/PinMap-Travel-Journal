@@ -35,33 +35,57 @@ class _HomeScreenState extends State<HomeScreen> {
       DraggableScrollableController();
 
   static final LatLng _initialCenter = const LatLng(20.0, 0.0);
+  int _loadGen = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    CountryService.version.addListener(_onExternalData);
+    VisitedService.version.addListener(_onExternalData);
     _loadData();
   }
 
+  void _onExternalData() {
+    if (!mounted) return;
+    setState(() {
+      _countries = CountryService.getAllCountries();
+      _cachedMarkers = null;
+    });
+  }
+
   Future<void> _loadData() async {
+    if (_isLoading) return;
+    _isLoading = true;
+    final gen = ++_loadGen;
     await CountryService.reloadCountries();
     await VisitedService.reloadVisited();
-    if (mounted) {
-      setState(() {
-        _countries = CountryService.getAllCountries();
-      });
-    }
+    _isLoading = false;
+    if (!mounted || gen != _loadGen) return;
+    setState(() {
+      _countries = CountryService.getAllCountries();
+      _cachedMarkers = null;
+    });
   }
 
   void _retryLoad() {
+    if (_isLoading) return;
     setState(() {
       _countries = [];
+      _cachedMarkers = null;
     });
     _loadData();
   }
 
   List<Marker> get _mapMarkers {
-    final hash = _countries.length * 31 + VisitedService.visitedCityIds.length;
-    if (_cachedMarkers != null && _cachedMarkerHash == hash) return _cachedMarkers!;
+    final visitedIds = VisitedService.visitedCityIds;
+    final hash = Object.hashAll([
+      ..._countries.map((c) => c.countryId),
+      ...visitedIds,
+    ]);
+    if (_cachedMarkers != null && _cachedMarkerHash == hash) {
+      return _cachedMarkers!;
+    }
     final markers = _countries.expand((country) {
       return country.cityPins.map((city) {
         return Marker(
@@ -395,6 +419,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    CountryService.version.removeListener(_onExternalData);
+    VisitedService.version.removeListener(_onExternalData);
     _searchDebounce?.cancel();
     _mapController.dispose();
     _searchController.dispose();

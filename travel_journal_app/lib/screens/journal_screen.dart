@@ -21,6 +21,20 @@ class JournalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: JournalService.version,
+      builder: (context, _, __) {
+        return ValueListenableBuilder<int>(
+          valueListenable: CountryService.version,
+          builder: (context, _, __) {
+            return _buildScaffold(context);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     final journals = JournalService.getAllJournals();
 
     final grouped = <String, List<Journal>>{};
@@ -77,7 +91,6 @@ class JournalScreen extends StatelessWidget {
           else
             ...grouped.entries.map((entry) {
               final country = entry.key;
-              final countryJournals = entry.value;
               return SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
                 sliver: SliverToBoxAdapter(

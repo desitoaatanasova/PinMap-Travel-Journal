@@ -30,13 +30,15 @@ class _TripsScreenState extends State<TripsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final trips = TripService.getAllTrips();
-
     return Scaffold(
       backgroundColor: AppTheme.bg,
       extendBody: true,
-      body: CustomScrollView(
-        slivers: [
+      body: ValueListenableBuilder<int>(
+        valueListenable: TripService.version,
+        builder: (context, _, __) {
+          final trips = TripService.getAllTrips();
+          return CustomScrollView(
+            slivers: [
           SliverAppBar(
             expandedHeight: 120,
             pinned: true,
@@ -132,7 +134,9 @@ class _TripsScreenState extends State<TripsScreen> {
           const SliverToBoxAdapter(
             child: SizedBox(height: AppTheme.space12),
           ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

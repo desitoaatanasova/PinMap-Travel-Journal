@@ -37,6 +37,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   String? _editingElementId;
   Timer? _autosaveTimer;
   bool _saving = false;
+  bool _dirty = false;
 
   // Format defaults used for the next text block when no text is selected.
   bool _defBold = false;
@@ -143,7 +144,8 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   Future<bool> _persistJournal() async {
     if (_journal == null) return false;
     final journal = _buildJournalForSave();
-    setState(() => _saving = true);
+    _dirty = false;
+    if (mounted) setState(() => _saving = true);
     try {
       final result = await JournalService.saveJournal(journal);
       if (!mounted) return false;
@@ -159,10 +161,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
           _pages[saved.pageNumber - 1].pageId = saved.pageId;
         }
       }
-      setState(() => _saving = false);
+      if (mounted) setState(() => _saving = false);
       return false;
     } catch (e) {
       debugPrint('Journal save failed, queueing offline: $e');
+      if (!mounted) return true;
       setState(() => _saving = false);
       await SyncQueueService.enqueue(SyncAction(
         type: SyncActionType.saveDraft,
@@ -174,11 +177,28 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   }
 
   void _scheduleAutosave() {
+    _dirty = true;
     _autosaveTimer?.cancel();
     _autosaveTimer = Timer(const Duration(milliseconds: 700), () {
       _autosaveTimer = null;
       _persistJournal();
     });
+  }
+
+  /// Best-effort flush of unsaved edits before leaving the editor.
+  /// Returns true when it is safe to navigate away.
+  Future<bool> _flushIfDirty() async {
+    if (!_dirty || _journal == null) return true;
+    _autosaveTimer?.cancel();
+    _autosaveTimer = null;
+    try {
+      await _persistJournal();
+      return true;
+    } catch (e) {
+      debugPrint('Journal flush failed: $e');
+      if (mounted) _showSnack('Could not save: $e');
+      return false;
+    }
   }
 
   Future<void> _saveNow() async {
@@ -227,7 +247,16 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   @override
   Widget build(BuildContext context) {
     final selected = _selectedElement;
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final navigator = Navigator.of(context);
+        final ok = await _flushIfDirty();
+        if (!mounted) return;
+        if (ok) navigator.pop();
+      },
+      child: Scaffold(
       backgroundColor: const Color(0xFFFFFEF6),
       extendBody: true,
       appBar: AppBar(
@@ -319,6 +348,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
             onPickSticker: _showStickerPicker,
           ),
         ],
+      ),
       ),
     );
   }
@@ -446,6 +476,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     try {
       await _persistJournal();
       if (!mounted) return;
+      if (_pages.isEmpty ||
+          _currentIndex < 0 ||
+          _currentIndex >= _pages.length) {
+        return;
+      }
       final page = _pages[_currentIndex];
       final n = page.elements.length;
       final el = EditorElement(
@@ -581,6 +616,13 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     bool backgroundRemoved,
   ) async {
     await _persistJournal();
+    if (!mounted) throw TicketScanException('Journal editor was closed.');
+    if (_journal == null ||
+        _pages.isEmpty ||
+        _currentIndex < 0 ||
+        _currentIndex >= _pages.length) {
+      throw TicketScanException('Journal page is no longer available.');
+    }
     final page = _pages[_currentIndex];
     final n = page.elements.length;
     final elementKey = 'ticket_${DateTime.now().microsecondsSinceEpoch}';
@@ -1149,25 +1191,8 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   @override
   void dispose() {
     _autosaveTimer?.cancel();
-    if (_journal != null) {
-      // Fire-and-forget final save (no setState from dispose).
-      final journal = _buildJournalForSave();
-      unawaited(_saveJournalOnDispose(journal));
-    }
+    _autosaveTimer = null;
     _pageController.dispose();
     super.dispose();
-  }
-
-  Future<void> _saveJournalOnDispose(Journal journal) async {
-    try {
-      await JournalService.saveJournal(journal);
-    } catch (e) {
-      debugPrint('Final journal save failed, queueing offline: $e');
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.saveDraft,
-        data: journal.toJson(),
-        timestamp: DateTime.now(),
-      ));
-    }
   }
 }

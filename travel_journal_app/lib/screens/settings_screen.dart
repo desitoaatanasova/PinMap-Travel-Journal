@@ -4,7 +4,6 @@ import 'package:pinmap_travel_journal/screens/trips_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
-import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/services/settings_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -598,7 +597,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () async {
               Navigator.pop(context);
               await AuthService.logout();
-              await DataLoader.resetAll();
               if (context.mounted) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,

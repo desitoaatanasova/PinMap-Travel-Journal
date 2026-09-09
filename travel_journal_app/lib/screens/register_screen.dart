@@ -17,6 +17,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   String _selectedGender = 'Prefer not to say';
+  bool _busy = false;
+
+  Future<void> _handleRegister() async {
+    if (_busy) return;
+    final name = _nameController.text;
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    if (name.isEmpty || !email.contains('@') || password.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all required fields')),
+      );
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final success = await AuthService.register(name, email, password);
+      if (!mounted) return;
+      if (!success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration failed')),
+        );
+        return;
+      }
+      final result = await DataLoader.loadInitialData();
+      if (!mounted) return;
+      if (!result.allowHome) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not start session. Try again.')),
+        );
+        return;
+      }
+      if (result.hasPartial) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Some data failed to load (${result.failed.join(', ')}). Pull to retry.',
+            ),
+          ),
+        );
+      }
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home',
+          (route) => false,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   final List<String> _genderOptions = [
     'Male',
@@ -160,37 +211,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          final name = _nameController.text;
-                          final email = _emailController.text;
-                          final password = _passwordController.text;
-                          if (name.isNotEmpty &&
-                              email.contains('@') &&
-                              password.isNotEmpty) {
-                            final success = await AuthService.register(
-                                name, email, password);
-                            if (success && mounted) {
-                              await DataLoader.loadAll();
-                              if (mounted) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/home',
-                                  (route) => false,
-                                );
-                              }
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Registration failed')),
-                              );
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Please fill all required fields')),
-                            );
-                          }
-                        },
-                        child: const Text('Sign Up'),
+                        onPressed: _busy ? null : _handleRegister,
+                        child: _busy
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Sign Up'),
                       ),
                     ),
                   ],

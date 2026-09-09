@@ -12,13 +12,31 @@ class VisitedService {
   static Set<int> _cityIds = {};
   static Set<int> _countryIds = {};
   static bool _loaded = false;
+  static int? _ownerId;
+  static final ValueNotifier<int> version = ValueNotifier(0);
+
+  static void _bump() => version.value++;
+
+  static void _ensureOwner() {
+    final uid = SyncQueueService.activeUserId;
+    if (_ownerId != uid) {
+      _placeIds = {};
+      _cityIds = {};
+      _countryIds = {};
+      _loaded = false;
+      _ownerId = uid;
+      _bump();
+    }
+  }
 
   static Future<void> loadVisited() async {
+    _ensureOwner();
     if (_loaded) return;
     await _fetchAll();
   }
 
   static Future<void> reloadVisited() async {
+    _ensureOwner();
     _loaded = false;
     await _fetchAll();
   }
@@ -30,6 +48,7 @@ class VisitedService {
         ApiClient.get('/visited/cities'),
         ApiClient.get('/visited/countries'),
       ]);
+      _ensureOwner();
       final places = results[0];
       final cities = results[1];
       final countries = results[2];
@@ -42,6 +61,7 @@ class VisitedService {
           .map((e) => (e['country_id'] as num).toInt())
           .toSet();
       _loaded = true;
+      _bump();
     } catch (e) {
       debugPrint('VisitedService._fetchAll error: $e');
       _loaded = false;
@@ -53,15 +73,39 @@ class VisitedService {
     _cityIds = {};
     _countryIds = {};
     _loaded = false;
+    _ownerId = null;
+    _bump();
   }
 
-  static bool isPlaceVisited(int placeId) => _placeIds.contains(placeId);
-  static bool isCityVisited(int cityId) => _cityIds.contains(cityId);
-  static bool isCountryVisited(int countryId) => _countryIds.contains(countryId);
+  static bool isPlaceVisited(int placeId) {
+    _ensureOwner();
+    return _placeIds.contains(placeId);
+  }
 
-  static Set<int> get visitedPlaceIds => Set.unmodifiable(_placeIds);
-  static Set<int> get visitedCityIds => Set.unmodifiable(_cityIds);
-  static Set<int> get visitedCountryIds => Set.unmodifiable(_countryIds);
+  static bool isCityVisited(int cityId) {
+    _ensureOwner();
+    return _cityIds.contains(cityId);
+  }
+
+  static bool isCountryVisited(int countryId) {
+    _ensureOwner();
+    return _countryIds.contains(countryId);
+  }
+
+  static Set<int> get visitedPlaceIds {
+    _ensureOwner();
+    return Set.unmodifiable(_placeIds);
+  }
+
+  static Set<int> get visitedCityIds {
+    _ensureOwner();
+    return Set.unmodifiable(_cityIds);
+  }
+
+  static Set<int> get visitedCountryIds {
+    _ensureOwner();
+    return Set.unmodifiable(_countryIds);
+  }
 
   static void _addIfValid(Set<int> set, dynamic raw) {
     final id = raw == null ? 0 : (raw as num).toInt();
@@ -75,6 +119,7 @@ class VisitedService {
     String? visitDate,
     String? notes,
   }) async {
+    _ensureOwner();
     final nowVisited = !_placeIds.contains(placeId);
     if (nowVisited) {
       _placeIds.add(placeId);
@@ -84,6 +129,7 @@ class VisitedService {
       // Unmarking removes only the place level.
       _placeIds.remove(placeId);
     }
+    _bump();
     try {
       final data = await ApiClient.post('/visited/places/toggle', body: {
         'placeId': placeId,
@@ -98,6 +144,7 @@ class VisitedService {
       } else {
         _placeIds.remove(placeId);
       }
+      _bump();
     } catch (e) {
       debugPrint('VisitedService.togglePlace offline: $e');
       await SyncQueueService.enqueue(SyncAction(
@@ -119,6 +166,7 @@ class VisitedService {
     String? visitDate,
     String? notes,
   }) async {
+    _ensureOwner();
     final nowVisited = !_cityIds.contains(cityId);
     if (nowVisited) {
       _cityIds.add(cityId);
@@ -126,6 +174,7 @@ class VisitedService {
     } else {
       _cityIds.remove(cityId);
     }
+    _bump();
     try {
       final data = await ApiClient.post('/visited/cities/toggle', body: {
         'cityId': cityId,
@@ -139,6 +188,7 @@ class VisitedService {
       } else {
         _cityIds.remove(cityId);
       }
+      _bump();
     } catch (e) {
       debugPrint('VisitedService.toggleCity offline: $e');
       await SyncQueueService.enqueue(SyncAction(
@@ -159,12 +209,14 @@ class VisitedService {
     String? visitDate,
     String? notes,
   }) async {
+    _ensureOwner();
     final nowVisited = !_countryIds.contains(countryId);
     if (nowVisited) {
       _countryIds.add(countryId);
     } else {
       _countryIds.remove(countryId);
     }
+    _bump();
     try {
       final data = await ApiClient.post('/visited/countries/toggle', body: {
         'countryId': countryId,
@@ -177,6 +229,7 @@ class VisitedService {
       } else {
         _countryIds.remove(countryId);
       }
+      _bump();
     } catch (e) {
       debugPrint('VisitedService.toggleCountry offline: $e');
       await SyncQueueService.enqueue(SyncAction(

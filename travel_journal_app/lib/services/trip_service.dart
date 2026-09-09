@@ -8,7 +8,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TripService {
   static List<Trip> _trips = [];
   static bool _loaded = false;
+  static int? _ownerId;
   static const String _legacyDraftKey = 'ai_trip_draft';
+  static final ValueNotifier<int> version = ValueNotifier(0);
+
+  static void _bump() => version.value++;
+
+  static void _ensureOwner() {
+    final uid = SyncQueueService.activeUserId;
+    if (_ownerId != uid) {
+      _trips = [];
+      _loaded = false;
+      _ownerId = uid;
+      _bump();
+    }
+  }
 
   static String _draftKey() {
     final uid = SyncQueueService.activeUserId;
@@ -19,11 +33,14 @@ class TripService {
   static String _scopedDraftKey() => _draftKey();
 
   static Future<void> loadTrips() async {
+    _ensureOwner();
     if (_loaded) return;
     try {
       final data = await ApiClient.get('/trips');
+      _ensureOwner();
       _trips = (data as List).map((json) => Trip.fromJson(json)).toList();
       _loaded = true;
+      _bump();
     } catch (e) {
       debugPrint('TripService.loadTrips error: $e');
       _loaded = false;
@@ -31,15 +48,19 @@ class TripService {
   }
 
   static Future<void> reloadTrips() async {
+    _ensureOwner();
     try {
       final data = await ApiClient.get('/trips');
+      _ensureOwner();
       _trips = (data as List).map((json) => Trip.fromJson(json)).toList();
+      _bump();
     } catch (e) {
       debugPrint('TripService.reloadTrips error: $e');
     }
   }
 
   static Trip? getTripById(int id) {
+    _ensureOwner();
     try {
       return _trips.firstWhere((trip) => trip.tripId == id);
     } catch (e) {
@@ -48,12 +69,16 @@ class TripService {
     }
   }
 
-  static List<Trip> getAllTrips() => List.unmodifiable(_trips);
+  static List<Trip> getAllTrips() {
+    _ensureOwner();
+    return List.unmodifiable(_trips);
+  }
 
   static String _clientIdFor(Trip trip) =>
       'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
 
   static Future<void> addTrip(Trip trip) async {
+    _ensureOwner();
     final clientId = _clientIdFor(trip);
     final body = trip.toJson();
     body['clientId'] = clientId;
@@ -66,9 +91,11 @@ class TripService {
               : int.tryParse(data['id'].toString()) ?? 0;
       final newTrip = trip.copyWith(tripId: serverId);
       _trips.add(newTrip);
+      _bump();
     } catch (e) {
       debugPrint('TripService.addTrip offline: $e');
       _trips.add(trip);
+      _bump();
       await SyncQueueService.enqueue(
         SyncAction(
           type: SyncActionType.addTrip,
@@ -80,12 +107,15 @@ class TripService {
   }
 
   static Future<void> deleteTrip(int id) async {
+    _ensureOwner();
     try {
       await ApiClient.delete('/trips/$id');
       _trips.removeWhere((trip) => trip.tripId == id);
+      _bump();
     } catch (e) {
       debugPrint('TripService.deleteTrip offline: $e');
       _trips.removeWhere((trip) => trip.tripId == id);
+      _bump();
       await SyncQueueService.enqueue(
         SyncAction(
           type: SyncActionType.deleteTrip,
@@ -97,12 +127,14 @@ class TripService {
   }
 
   static Future<void> updateTrip(Trip trip) async {
+    _ensureOwner();
     final idx = _trips.indexWhere((t) => t.tripId == trip.tripId);
     if (idx >= 0) {
       _trips[idx] = trip;
     } else {
       _trips.add(trip);
     }
+    _bump();
     final body = trip.toJson();
     body['id'] = trip.tripId;
     try {
@@ -167,6 +199,7 @@ class TripService {
   /// Persists a generated draft to the database, clears the stored draft,
   /// and adds the new trip to the in-memory list.
   static Future<Trip> saveDraftTrip(Trip draft) async {
+    _ensureOwner();
     final data = await ApiClient.post('/trips', body: draft.toJson());
     final id =
         data['id'] is int
@@ -179,6 +212,7 @@ class TripService {
     } else {
       _trips.add(saved);
     }
+    _bump();
     await clearDraft();
     return saved;
   }
@@ -269,5 +303,7 @@ class TripService {
   static void reset() {
     _trips = [];
     _loaded = false;
+    _ownerId = null;
+    _bump();
   }
 }

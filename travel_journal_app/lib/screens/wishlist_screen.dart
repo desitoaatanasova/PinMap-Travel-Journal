@@ -19,7 +19,6 @@ class WishListScreen extends StatefulWidget {
 
 class _WishListScreenState extends State<WishListScreen> {
   bool _isGridView = true;
-  List<WishlistItem> _items = [];
 
   @override
   void initState() {
@@ -29,15 +28,7 @@ class _WishListScreenState extends State<WishListScreen> {
 
   Future<void> _load() async {
     await WishlistService.loadItems();
-    setState(() {
-      _items = WishlistService.getAllItems();
-    });
-  }
-
-  Future<void> _refresh() async {
-    setState(() {
-      _items = WishlistService.getAllItems();
-    });
+    if (mounted) setState(() {});
   }
 
   @override
@@ -45,8 +36,12 @@ class _WishListScreenState extends State<WishListScreen> {
     return Scaffold(
       backgroundColor: AppTheme.bg,
       extendBody: true,
-      body: CustomScrollView(
-        slivers: [
+      body: ValueListenableBuilder<int>(
+        valueListenable: WishlistService.version,
+        builder: (context, _, __) {
+          final items = WishlistService.getAllItems();
+          return CustomScrollView(
+            slivers: [
           SliverAppBar(
             expandedHeight: 120,
             pinned: true,
@@ -78,7 +73,7 @@ class _WishListScreenState extends State<WishListScreen> {
               ),
             ],
           ),
-          if (_items.isEmpty)
+          if (items.isEmpty)
             SliverFillRemaining(
               child: Center(
                 child: Column(
@@ -115,9 +110,9 @@ class _WishListScreenState extends State<WishListScreen> {
                 padding: const EdgeInsets.all(AppTheme.space4),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = _items[index];
+                    final item = items[index];
                     return _buildGridCard(context, item);
-                  }, childCount: _items.length),
+                  }, childCount: items.length),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: AppTheme.space4,
@@ -131,17 +126,19 @@ class _WishListScreenState extends State<WishListScreen> {
                 padding: const EdgeInsets.all(AppTheme.space4),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = _items[index];
+                    final item = items[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppTheme.space4),
                       child: _buildListCard(context, item),
                     );
-                  }, childCount: _items.length),
+                  }, childCount: items.length),
                 ),
               ),
             const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
+            ],
           ],
-        ],
+          );
+        },
       ),
     );
   }
@@ -401,7 +398,7 @@ class _WishListScreenState extends State<WishListScreen> {
     );
     if (confirmed == true) {
       await WishlistService.removeItem(item.wishlistId);
-      await _refresh();
+      if (!mounted) return;
       if (context.mounted) {
         showAppSnackBar(context, '${item.name} removed from wishlist');
       }

@@ -26,17 +26,33 @@ class RatingSummary {
 class RatingsService {
   static final Map<int, RatingSummary> _placeCache = {};
   static final Map<int, RatingSummary> _countryCache = {};
+  static int? _ownerId;
+  static final ValueNotifier<int> version = ValueNotifier(0);
+
+  static void _bump() => version.value++;
+
+  static void _ensureOwner() {
+    final uid = SyncQueueService.activeUserId;
+    if (_ownerId != uid) {
+      _placeCache.clear();
+      _countryCache.clear();
+      _ownerId = uid;
+      _bump();
+    }
+  }
 
   static Future<void> ratePlace(
     int placeId,
     int rating, {
     String? reviewText,
   }) async {
+    _ensureOwner();
     _placeCache[placeId] = RatingSummary(
       average: _placeCache[placeId]?.average ?? rating.toDouble(),
       count: (_placeCache[placeId]?.count ?? 0) + 1,
       myRating: rating,
     );
+    _bump();
     try {
       final data = await ApiClient.post('/ratings', body: {
         'placeId': placeId,
@@ -48,6 +64,7 @@ class RatingsService {
         count: (data['count'] as num).toInt(),
         myRating: (data['myRating'] as num?)?.toInt() ?? rating,
       );
+      _bump();
     } catch (e) {
       debugPrint('RatingsService.ratePlace offline: $e');
       await SyncQueueService.enqueue(SyncAction(
@@ -67,11 +84,13 @@ class RatingsService {
     int rating, {
     String? reviewText,
   }) async {
+    _ensureOwner();
     _countryCache[countryId] = RatingSummary(
       average: _countryCache[countryId]?.average ?? rating.toDouble(),
       count: (_countryCache[countryId]?.count ?? 0) + 1,
       myRating: rating,
     );
+    _bump();
     try {
       final data = await ApiClient.post('/ratings', body: {
         'countryId': countryId,
@@ -83,6 +102,7 @@ class RatingsService {
         count: (data['count'] as num).toInt(),
         myRating: (data['myRating'] as num?)?.toInt() ?? rating,
       );
+      _bump();
     } catch (e) {
       debugPrint('RatingsService.rateCountry offline: $e');
       await SyncQueueService.enqueue(SyncAction(
@@ -98,6 +118,7 @@ class RatingsService {
   }
 
   static Future<RatingSummary?> getPlaceRating(int placeId) async {
+    _ensureOwner();
     if (_placeCache.containsKey(placeId)) return _placeCache[placeId];
     try {
       final data = await ApiClient.get('/ratings/place/$placeId');
@@ -111,6 +132,7 @@ class RatingsService {
   }
 
   static Future<RatingSummary?> getCountryRating(int countryId) async {
+    _ensureOwner();
     if (_countryCache.containsKey(countryId)) {
       return _countryCache[countryId];
     }
@@ -126,7 +148,9 @@ class RatingsService {
   }
 
   static Future<void> removePlaceRating(int placeId) async {
+    _ensureOwner();
     _placeCache.remove(placeId);
+    _bump();
     try {
       await ApiClient.delete('/ratings/place/$placeId');
     } catch (e) {
@@ -140,7 +164,9 @@ class RatingsService {
   }
 
   static Future<void> removeCountryRating(int countryId) async {
+    _ensureOwner();
     _countryCache.remove(countryId);
+    _bump();
     try {
       await ApiClient.delete('/ratings/country/$countryId');
     } catch (e) {
@@ -156,5 +182,7 @@ class RatingsService {
   static void reset() {
     _placeCache.clear();
     _countryCache.clear();
+    _ownerId = null;
+    _bump();
   }
 }

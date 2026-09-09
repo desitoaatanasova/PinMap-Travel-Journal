@@ -25,9 +25,7 @@ class AuthService {
       await ApiClient.setToken(data['token']);
       final u = data['user'];
       final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
-      await DataLoader.resetUserData();
-      SyncQueueService.clearAuthPause();
-      await SyncQueueService.activateUser(userId);
+      await DataLoader.activateUser(userId);
       _currentUser = UserProfile(
         userId: userId,
         username: u['username'] ?? '',
@@ -57,9 +55,7 @@ class AuthService {
       await ApiClient.setToken(data['token']);
       final u = data['user'];
       final userId = _userIdFrom(u['userId']) ?? _userIdFrom(u['user_id']) ?? 0;
-      await DataLoader.resetUserData();
-      SyncQueueService.clearAuthPause();
-      await SyncQueueService.activateUser(userId);
+      await DataLoader.activateUser(userId);
       _currentUser = UserProfile(
         userId: userId,
         username: u['username'] ?? '',
@@ -79,8 +75,7 @@ class AuthService {
 
   static Future<void> logout() async {
     await ApiClient.clearToken();
-    await SyncQueueService.deactivateUser();
-    await DataLoader.resetUserData();
+    await DataLoader.deactivateUser();
     _currentUser = null;
     _isLoggedIn = false;
   }
@@ -90,10 +85,11 @@ class AuthService {
       final data = await ApiClient.get('/auth/me');
       final userId = _userIdFrom(data['user_id']) ?? _userIdFrom(data['userId']) ?? 0;
       if (SyncQueueService.activeUserId != userId) {
-        await DataLoader.resetUserData();
+        await DataLoader.activateUser(userId);
+      } else {
+        SyncQueueService.clearAuthPause();
+        await SyncQueueService.activateUser(userId);
       }
-      SyncQueueService.clearAuthPause();
-      await SyncQueueService.activateUser(userId);
       _currentUser = UserProfile(
         userId: userId,
         username: data['username'] ?? '',

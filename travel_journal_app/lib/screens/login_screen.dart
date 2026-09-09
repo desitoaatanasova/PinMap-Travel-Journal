@@ -16,6 +16,56 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _busy = false;
+
+  Future<void> _handleLogin() async {
+    if (_busy) return;
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter valid credentials')),
+      );
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final success = await AuthService.login(email, password);
+      if (!mounted) return;
+      if (!success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid credentials')),
+        );
+        return;
+      }
+      final result = await DataLoader.loadInitialData();
+      if (!mounted) return;
+      if (!result.allowHome) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not start session. Try again.')),
+        );
+        return;
+      }
+      if (result.hasPartial) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Some data failed to load (${result.failed.join(', ')}). Pull to retry.',
+            ),
+          ),
+        );
+      }
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home',
+          (route) => false,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,33 +174,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          final email = _emailController.text;
-                          final password = _passwordController.text;
-                          if (email.isNotEmpty && password.isNotEmpty) {
-                            final success = await AuthService.login(email, password);
-                            if (success && mounted) {
-                              await DataLoader.loadAll();
-                              if (mounted) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/home',
-                                  (route) => false,
-                                );
-                              }
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Invalid credentials')),
-                              );
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Please enter valid credentials')),
-                            );
-                          }
-                        },
-                        child: const Text('Log In'),
+                        onPressed: _busy ? null : _handleLogin,
+                        child: _busy
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Log In'),
                       ),
                     ),
                   ],
