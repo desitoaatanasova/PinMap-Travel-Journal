@@ -8,6 +8,7 @@ if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || 
   process.exit(1);
 }
 
+const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -30,7 +31,12 @@ const uploadsRoutes = require('./routes/uploads');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(helmet());
+const allowedOrigin = process.env.CORS_ORIGIN;
+app.use(cors({
+  origin: allowedOrigin || '*',
+  credentials: true,
+}));
 app.use(express.json({ limit: '2mb' }));
 app.use('/api', (req, res, next) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
