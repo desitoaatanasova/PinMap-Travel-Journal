@@ -20,6 +20,7 @@ class MultipartFileSpec {
 }
 
 class ApiClient {
+  static const Duration _requestTimeout = Duration(seconds: 30);
   static String get baseUrl => ApiConfig.apiBaseUrl;
   static const String _tokenKey = 'auth_token';
 
@@ -69,7 +70,9 @@ class ApiClient {
   static Uri _uri(String path) => Uri.parse('$baseUrl$path');
 
   static Future<dynamic> _send(Future<http.Response> Function() request) async {
-    final response = await request();
+    final response = await request.timeout(_requestTimeout, onTimeout: () {
+      throw ApiException(504, 'Request timed out after ${_requestTimeout.inSeconds}s');
+    });
     return _handleResponse(response);
   }
 
@@ -168,9 +171,13 @@ class ApiException implements Exception {
   ApiException(this.statusCode, this.body);
 
   String get message {
+    if (body.isEmpty) return 'Server error ($statusCode)';
     try {
       final json = jsonDecode(body);
-      return json['error'] ?? 'Unknown error';
+      if (json is Map<String, dynamic> && json.containsKey('error')) {
+        return json['error'];
+      }
+      return json['message'] ?? 'Unknown error';
     } catch (e) {
       debugPrint('ApiException body not JSON: $e');
       return 'Server error ($statusCode)';
