@@ -6,7 +6,9 @@ import 'package:pinmap_travel_journal/utils/snackbar_helper.dart';
 import 'package:pinmap_travel_journal/utils/dialog_helper.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/place_service.dart';
 import 'package:pinmap_travel_journal/screens/country_page.dart';
+import 'package:pinmap_travel_journal/screens/place_details_page.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
@@ -42,101 +44,106 @@ class _WishListScreenState extends State<WishListScreen> {
           final items = WishlistService.getAllItems();
           return CustomScrollView(
             slivers: [
-          SliverAppBar(
-            expandedHeight: 120,
-            pinned: true,
-            backgroundColor: AppTheme.bg,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                'Wish List',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.darkBrown,
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(
-                left: AppTheme.space4,
-                bottom: AppTheme.space4,
-              ),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(_isGridView ? Icons.view_list : Icons.grid_view),
-                color: AppTheme.warmGray,
-                onPressed: () {
-                  setState(() {
-                    _isGridView = !_isGridView;
-                  });
-                },
-              ),
-            ],
-          ),
-          if (items.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.favorite_border,
-                      size: 64,
-                      color: AppTheme.warmGray.withValues(alpha: 0.5),
+              SliverAppBar(
+                expandedHeight: 120,
+                pinned: true,
+                backgroundColor: AppTheme.bg,
+                elevation: 0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    'Wish List',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.darkBrown,
                     ),
-                    const SizedBox(height: AppTheme.space4),
-                    Text(
-                      'No saved destinations',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 20,
-                        color: AppTheme.warmGray,
-                      ),
-                    ),
-                    const SizedBox(height: AppTheme.space2),
-                    Text(
-                      'Tap the heart icon on places or countries to save them',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        color: AppTheme.warmGray,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else ...[
-            if (_isGridView)
-              SliverPadding(
-                padding: const EdgeInsets.all(AppTheme.space4),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = items[index];
-                    return _buildGridCard(context, item);
-                  }, childCount: items.length),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: AppTheme.space4,
-                    mainAxisSpacing: AppTheme.space4,
-                    childAspectRatio: 0.75,
+                  ),
+                  titlePadding: const EdgeInsets.only(
+                    left: AppTheme.space4,
+                    bottom: AppTheme.space4,
                   ),
                 ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.all(AppTheme.space4),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = items[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppTheme.space4),
-                      child: _buildListCard(context, item),
-                    );
-                  }, childCount: items.length),
-                ),
+                actions: [
+                  IconButton(
+                    icon: Icon(_isGridView ? Icons.view_list : Icons.grid_view),
+                    color: AppTheme.warmGray,
+                    onPressed: () {
+                      setState(() {
+                        _isGridView = !_isGridView;
+                      });
+                    },
+                  ),
+                ],
               ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
+              if (items.isEmpty)
+                SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite_border,
+                          size: 64,
+                          color: AppTheme.warmGray.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: AppTheme.space4),
+                        Text(
+                          'No saved destinations',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 20,
+                            color: AppTheme.warmGray,
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.space2),
+                        Text(
+                          'Tap the heart icon on places or countries to save them',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            color: AppTheme.warmGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else ...[
+                if (_isGridView)
+                  SliverPadding(
+                    padding: const EdgeInsets.all(AppTheme.space4),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = items[index];
+                        return _buildGridCard(context, item);
+                      }, childCount: items.length),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: AppTheme.space4,
+                            mainAxisSpacing: AppTheme.space4,
+                            childAspectRatio: 0.75,
+                          ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.all(AppTheme.space4),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = items[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: AppTheme.space4,
+                          ),
+                          child: _buildListCard(context, item),
+                        );
+                      }, childCount: items.length),
+                    ),
+                  ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppTheme.space12),
+                ),
+              ],
             ],
-          ],
           );
         },
       ),
@@ -337,7 +344,7 @@ class _WishListScreenState extends State<WishListScreen> {
     );
   }
 
-  void _openItem(BuildContext context, WishlistItem item) {
+  Future<void> _openItem(BuildContext context, WishlistItem item) async {
     if (item.type == 'country' && item.countryId != null) {
       final country =
           CountryService.getAllCountries()
@@ -351,6 +358,45 @@ class _WishListScreenState extends State<WishListScreen> {
           ),
         );
       }
+      return;
+    }
+    if (item.type == 'place' && item.placeId != null) {
+      final place = await PlaceService.getPlaceById(item.placeId!);
+      if (!context.mounted) return;
+      if (place == null) {
+        showAppSnackBar(context, 'Place not available');
+        return;
+      }
+      if (CountryService.getAllCountries().isEmpty) {
+        await CountryService.loadCountries();
+      }
+      String cityName = CountryService.cityName(place.cityId) ?? '';
+      String countryName = '';
+      for (final c in CountryService.getAllCountries()) {
+        if (c.cityPins.any((p) => p.cityId == place.cityId)) {
+          countryName = c.name;
+          if (cityName.isEmpty) {
+            final pin =
+                c.cityPins.where((p) => p.cityId == place.cityId).firstOrNull;
+            if (pin != null) cityName = pin.name;
+          }
+          break;
+        }
+      }
+      final categoryName = item.categoryName ?? place.categoryName ?? '';
+      if (!context.mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => PlaceDetailsPage(
+                place: place,
+                categoryName: categoryName,
+                cityName: cityName,
+                countryName: countryName,
+              ),
+        ),
+      );
     }
   }
 
