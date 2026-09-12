@@ -47,11 +47,22 @@ router.get('/:userId/:journalId/:filename', authenticateToken, async (req, res) 
     if (!Number.isInteger(userId) || !Number.isInteger(journalId) || !isSafeFilename(filename)) {
       return res.status(400).json({ error: 'Invalid path' });
     }
-    if (req.userId !== userId) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-    const [journals] = await pool.query('SELECT journal_id FROM journals WHERE journal_id = ? AND user_id = ?', [journalId, userId]);
+    const [journals] = await pool.query('SELECT journal_id, user_id, visibility FROM journals WHERE journal_id = ?', [journalId]);
     if (journals.length === 0) return res.status(404).json({ error: 'Journal not found' });
+    const journal = journals[0];
+    if (String(journal.user_id) !== String(userId)) {
+      return res.status(404).json({ error: 'Journal not found' });
+    }
+    if (req.userId !== journal.user_id) {
+      if ((journal.visibility || 'private') !== 'public') {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+      const profile = await buildUserProfile(journal.user_id, { viewerId: req.userId });
+      if (!profile) return res.status(404).json({ error: 'User not found' });
+      if (profile.profile_status === 'private' && !profile.isFollowing) {
+        return res.status(403).json({ error: 'Profile is private' });
+      }
+    }
     const filePath = path.join(UPLOADS_ROOT, String(userId), String(journalId), filename);
     const resolved = path.resolve(filePath);
     if (!resolved.startsWith(path.resolve(UPLOADS_ROOT))) return res.status(403).json({ error: 'Invalid path' });

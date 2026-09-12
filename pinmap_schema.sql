@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS journals (
   title VARCHAR(200) NOT NULL,
   country_id INT DEFAULT NULL,
   cover_image VARCHAR(500) DEFAULT NULL,
+  visibility ENUM('private','public') NOT NULL DEFAULT 'private',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
   FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
@@ -223,6 +224,7 @@ CREATE INDEX idx_trips_user ON trips(user_id);
 CREATE INDEX idx_trip_days_trip ON trip_days(trip_id);
 CREATE INDEX idx_trip_activities_day ON trip_activities(day_id);
 CREATE INDEX idx_journals_user ON journals(user_id);
+CREATE INDEX idx_journals_user_visibility ON journals(user_id, visibility);
 CREATE INDEX idx_journal_pages_journal ON journal_pages(journal_id);
 CREATE INDEX idx_journal_elements_page ON journal_elements(page_id);
 CREATE INDEX idx_wishlist_user ON wishlist(user_id);

@@ -23,6 +23,7 @@ class JournalService {
   static bool _loaded = false;
   static int? _ownerId;
   static final ValueNotifier<int> version = ValueNotifier(0);
+  static final Map<int, Journal> _publicCache = {};
 
   static void _bump() => version.value++;
 
@@ -94,6 +95,7 @@ class JournalService {
         title: journal.title,
         countryId: journal.countryId,
         coverImage: journal.coverImage,
+        visibility: journal.visibility,
         pages: journal.pages,
       );
       final index = _journals.indexWhere(
@@ -121,6 +123,7 @@ class JournalService {
           title: journal.title,
           countryId: journal.countryId,
           coverImage: journal.coverImage,
+          visibility: journal.visibility,
           pages: journal.pages,
         );
         final idx = _journals.indexWhere(
@@ -233,10 +236,52 @@ class JournalService {
     return List.unmodifiable(_journals);
   }
 
+  static Future<String> updateVisibility(int id, String visibility) async {
+    _ensureOwner();
+    if (visibility != 'public' && visibility != 'private') {
+      throw ArgumentError('visibility must be public or private');
+    }
+    final data = await ApiClient.patch(
+      '/journal/$id/visibility',
+      body: {'visibility': visibility},
+    );
+    final newVis = (data['visibility'] as String?) ?? visibility;
+    final idx = _journals.indexWhere((j) => j.journalId == id);
+    if (idx >= 0) {
+      _journals[idx] = _journals[idx].copyWith(visibility: newVis);
+      _bump();
+    }
+    _publicCache.remove(id);
+    return newVis;
+  }
+
+  static Future<List<Journal>> getPublicJournals(int userId) async {
+    final data = await ApiClient.get('/users/$userId/journals');
+    final list =
+        (data as List)
+            .map((e) => Journal.fromJson(e as Map<String, dynamic>))
+            .toList();
+    for (final j in list) {
+      _publicCache[j.journalId] = j;
+    }
+    return list;
+  }
+
+  static Future<Journal> getPublicJournal(int id) async {
+    if (_publicCache.containsKey(id) && _publicCache[id]!.pages.isNotEmpty) {
+      return _publicCache[id]!;
+    }
+    final data = await ApiClient.get('/journal/$id/public');
+    final journal = Journal.fromJson(data as Map<String, dynamic>);
+    _publicCache[id] = journal;
+    return journal;
+  }
+
   static void reset() {
     _journals = [];
     _loaded = false;
     _ownerId = null;
+    _publicCache.clear();
     _bump();
   }
 }

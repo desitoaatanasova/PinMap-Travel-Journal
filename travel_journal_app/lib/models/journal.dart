@@ -3,6 +3,7 @@ class Journal {
   final String title;
   final int countryId;
   final String? coverImage;
+  final String visibility;
   final List<JournalPage> pages;
 
   const Journal({
@@ -10,6 +11,7 @@ class Journal {
     required this.title,
     required this.countryId,
     this.coverImage,
+    this.visibility = 'private',
     this.pages = const [],
   });
 
@@ -25,14 +27,37 @@ class Journal {
 
   factory Journal.fromJson(Map<String, dynamic> json) {
     return Journal(
-      journalId: json['journal_id'] ?? int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      journalId:
+          json['journal_id'] ??
+          int.tryParse(json['id']?.toString() ?? '0') ??
+          0,
       title: json['title'] ?? '',
       countryId: json['country_id'] ?? 0,
       coverImage: json['cover_image'] ?? json['coverImage'],
-      pages: (json['pages'] as List?)
+      visibility: json['visibility'] ?? 'private',
+      pages:
+          (json['pages'] as List?)
               ?.map((p) => JournalPage.fromJson(p))
               .toList() ??
           [],
+    );
+  }
+
+  Journal copyWith({
+    int? journalId,
+    String? title,
+    int? countryId,
+    String? coverImage,
+    String? visibility,
+    List<JournalPage>? pages,
+  }) {
+    return Journal(
+      journalId: journalId ?? this.journalId,
+      title: title ?? this.title,
+      countryId: countryId ?? this.countryId,
+      coverImage: coverImage ?? this.coverImage,
+      visibility: visibility ?? this.visibility,
+      pages: pages ?? this.pages,
     );
   }
 }
@@ -63,7 +88,8 @@ class JournalPage {
       pageId: json['page_id'] ?? 0,
       pageNumber: json['page_number'] ?? 0,
       backgroundColor: json['background_color'],
-      elements: (json['elements'] as List?)
+      elements:
+          (json['elements'] as List?)
               ?.map((e) => JournalElement.fromJson(e))
               .toList() ??
           [],

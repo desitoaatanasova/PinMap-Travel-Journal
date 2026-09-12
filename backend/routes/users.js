@@ -67,6 +67,54 @@ router.get('/mutual', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/users/:id/journals
+router.get('/:id/journals', authenticateToken, async (req, res) => {
+  try {
+    const targetId = parseInt(req.params.id, 10);
+    if (!targetId) return res.status(400).json({ error: 'Invalid user id' });
+    const profile = await buildUserProfile(targetId, { viewerId: req.userId });
+    if (!profile) return res.status(404).json({ error: 'User not found' });
+    const isOwner = targetId === req.userId;
+    const isPrivate = profile.profile_status === 'private';
+    const isFollowing = !!profile.isFollowing;
+    if (!isOwner && isPrivate && !isFollowing) {
+      return res.status(403).json({ error: 'Profile is private' });
+    }
+    let rows;
+    if (isOwner) {
+      [rows] = await pool.query(
+        'SELECT journal_id, title, country_id, cover_image, visibility, created_at FROM journals WHERE user_id = ? ORDER BY created_at DESC',
+        [targetId]
+      );
+    } else {
+      [rows] = await pool.query(
+        "SELECT journal_id, title, country_id, cover_image, visibility, created_at FROM journals WHERE user_id = ? AND visibility = 'public' ORDER BY created_at DESC",
+        [targetId]
+      );
+    }
+    if (rows.length === 0) return res.json([]);
+    const journalIds = rows.map((r) => r.journal_id);
+    const [pages] = await pool.query(
+      `SELECT journal_id, COUNT(*) AS page_count FROM journal_pages WHERE journal_id IN (${journalIds.map(() => '?').join(',')}) GROUP BY journal_id`,
+      journalIds
+    );
+    const countByJournal = new Map(pages.map((p) => [p.journal_id, p.page_count]));
+    const result = rows.map((r) => ({
+      journal_id: r.journal_id,
+      title: r.title,
+      country_id: r.country_id,
+      cover_image: r.cover_image,
+      visibility: r.visibility || 'private',
+      created_at: r.created_at,
+      page_count: countByJournal.get(r.journal_id) || 0,
+    }));
+    res.json(result);
+  } catch (err) {
+    console.error('Get user journals error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // GET /api/users/:id
 router.get('/:id', authenticateToken, async (req, res) => {
   try {

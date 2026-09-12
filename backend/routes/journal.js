@@ -79,6 +79,80 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/:id/public', authenticateToken, async (req, res) => {
+  try {
+    const journalId = parseInt(req.params.id, 10);
+    if (!journalId) return res.status(400).json({ error: 'Invalid journal id' });
+    const [rows] = await pool.query('SELECT * FROM journals WHERE journal_id = ?', [journalId]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Journal not found' });
+    const journal = rows[0];
+    if ((journal.visibility || 'private') !== 'public') {
+      return res.status(403).json({ error: 'Journal is private' });
+    }
+    const ownerId = journal.user_id;
+    if (ownerId !== req.userId) {
+      const { buildUserProfile } = require('../services/profileQueries');
+      const profile = await buildUserProfile(ownerId, { viewerId: req.userId });
+      if (!profile) return res.status(404).json({ error: 'User not found' });
+      if (profile.profile_status === 'private' && !profile.isFollowing) {
+        return res.status(403).json({ error: 'Profile is private' });
+      }
+    }
+    const [pages] = await pool.query(
+      'SELECT * FROM journal_pages WHERE journal_id = ? ORDER BY page_number', [journal.journal_id]
+    );
+    if (pages.length > 0) {
+      const pageIds = pages.map((p) => p.page_id);
+      const [elements] = await pool.query(
+        `SELECT * FROM journal_elements WHERE page_id IN (${pageIds.map(() => '?').join(',')}) ORDER BY page_id, z_index ASC, element_id ASC`,
+        pageIds
+      );
+      const byPage = new Map();
+      for (const el of elements) {
+        if (!byPage.has(el.page_id)) byPage.set(el.page_id, []);
+        byPage.get(el.page_id).push(el);
+      }
+      for (const p of pages) p.elements = byPage.get(p.page_id) || [];
+    } else {
+      for (const p of pages) p.elements = [];
+    }
+    journal.pages = pages;
+    const safe = {
+      journal_id: journal.journal_id,
+      user_id: journal.user_id,
+      title: journal.title,
+      country_id: journal.country_id,
+      cover_image: journal.cover_image,
+      visibility: journal.visibility,
+      created_at: journal.created_at,
+      pages: journal.pages,
+    };
+    res.json(safe);
+  } catch (err) {
+    console.error('Get public journal error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.patch('/:id/visibility', authenticateToken, async (req, res) => {
+  try {
+    const journalId = parseInt(req.params.id, 10);
+    const { visibility } = req.body || {};
+    if (!journalId) return res.status(400).json({ error: 'Invalid journal id' });
+    if (visibility !== 'public' && visibility !== 'private') {
+      return res.status(400).json({ error: 'visibility must be public or private' });
+    }
+    const [rows] = await pool.query('SELECT user_id FROM journals WHERE journal_id = ?', [journalId]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Journal not found' });
+    if (rows[0].user_id !== req.userId) return res.status(403).json({ error: 'Forbidden' });
+    await pool.query('UPDATE journals SET visibility = ? WHERE journal_id = ?', [visibility, journalId]);
+    res.json({ journal_id: journalId, visibility });
+  } catch (err) {
+    console.error('Patch visibility error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.post('/save', authenticateToken, async (req, res) => {
   const conn = await pool.getConnection();
   try {
