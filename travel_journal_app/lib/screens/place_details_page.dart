@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
@@ -68,6 +69,41 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           duration: const Duration(seconds: 2),
         ),
       );
+    }
+  }
+
+  Future<void> _launchWebsite(String raw) async {
+    var url = raw.trim();
+    if (url.isEmpty) return;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://$url';
+    }
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Could not open website',
+              style: GoogleFonts.dmSans(),
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Could not open website',
+              style: GoogleFonts.dmSans(),
+            ),
+          ),
+        );
+      }
     }
   }
 
@@ -172,6 +208,60 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         color: AppTheme.darkBrown,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.space4),
+            ],
+            if (place.website != null && place.website!.trim().isNotEmpty) ...[
+              InkWell(
+                onTap: () => _launchWebsite(place.website!),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.language,
+                      size: 16,
+                      color: Color(0xFF8B7355),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        place.website!.trim(),
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          color: AppTheme.primary,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppTheme.primary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppTheme.space3),
+            ],
+            if (place.openingHours != null &&
+                place.openingHours!.trim().isNotEmpty) ...[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: Color(0xFF8B7355),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      place.openingHours!.trim(),
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        color: AppTheme.darkBrown,
+                        height: 1.4,
                       ),
                     ),
                   ),
