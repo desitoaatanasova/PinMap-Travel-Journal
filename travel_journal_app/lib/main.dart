@@ -15,12 +15,14 @@ import 'package:pinmap_travel_journal/screens/profile_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/sync_queue_service.dart';
 import 'package:pinmap_travel_journal/services/connectivity_service.dart';
+import 'package:pinmap_travel_journal/services/theme_service.dart';
 import 'package:pinmap_travel_journal/widgets/offline_banner.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ApiConfig.loadOverride();
+  await ThemeService.init();
   runApp(const TravelJournalApp());
 }
 
@@ -29,25 +31,33 @@ class TravelJournalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'PinMap: Travel journal',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/home': (context) => const MainScreen(),
-        '/new-trip': (context) => const NewTripScreen(),
-        '/trip-plan': (context) => TripPlanScreen(
-              tripId: ModalRoute.of(context)!.settings.arguments as String,
-            ),
-        '/journal-editor': (context) => JournalEditorScreen(
-              chapterId: ModalRoute.of(context)?.settings.arguments as String?,
-            ),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeService.notifier,
+      builder: (context, mode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'PinMap: Travel journal',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: mode,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/register': (context) => const RegisterScreen(),
+            '/home': (context) => const MainScreen(),
+            '/new-trip': (context) => const NewTripScreen(),
+            '/trip-plan':
+                (context) => TripPlanScreen(
+                  tripId: ModalRoute.of(context)!.settings.arguments as String,
+                ),
+            '/journal-editor':
+                (context) => JournalEditorScreen(
+                  chapterId:
+                      ModalRoute.of(context)?.settings.arguments as String?,
+                ),
+          },
+        );
       },
     );
   }
@@ -78,12 +88,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _onlineSub = _connectivity.isOnline.listen((online) {
-      if (online && SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
+      if (online &&
+          SyncQueueService.activeUserId != null &&
+          !SyncQueueService.isAuthPaused) {
         SyncQueueService.processQueue();
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
+      if (SyncQueueService.activeUserId != null &&
+          !SyncQueueService.isAuthPaused) {
         final online = await _connectivity.isCurrentlyOnline;
         if (online) SyncQueueService.processQueue();
       }
@@ -93,7 +106,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (SyncQueueService.activeUserId != null && !SyncQueueService.isAuthPaused) {
+      if (SyncQueueService.activeUserId != null &&
+          !SyncQueueService.isAuthPaused) {
         SyncQueueService.processQueue();
       }
     }
@@ -119,7 +133,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.fromLTRB(
-            AppTheme.space4, 0, AppTheme.space4, AppTheme.space4),
+          AppTheme.space4,
+          0,
+          AppTheme.space4,
+          AppTheme.space4,
+        ),
         decoration: BoxDecoration(
           color: AppTheme.card.withValues(alpha: 0.95),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
@@ -147,38 +165,68 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             ),
             destinations: [
               NavigationDestination(
-                icon: Icon(Icons.home_outlined,
-                    color: AppTheme.warmGray, size: 24),
-                selectedIcon:
-                    Icon(Icons.home, color: AppTheme.primary, size: 24),
+                icon: Icon(
+                  Icons.home_outlined,
+                  color: AppTheme.warmGray,
+                  size: 24,
+                ),
+                selectedIcon: Icon(
+                  Icons.home,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(Icons.work_outline,
-                    color: AppTheme.warmGray, size: 24),
-                selectedIcon:
-                    Icon(Icons.luggage, color: AppTheme.primary, size: 24),
+                icon: Icon(
+                  Icons.work_outline,
+                  color: AppTheme.warmGray,
+                  size: 24,
+                ),
+                selectedIcon: Icon(
+                  Icons.luggage,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
                 label: 'Trips',
               ),
               NavigationDestination(
-                icon: Icon(Icons.menu_book_outlined,
-                    color: AppTheme.warmGray, size: 24),
-                selectedIcon:
-                    Icon(Icons.book, color: AppTheme.primary, size: 24),
+                icon: Icon(
+                  Icons.menu_book_outlined,
+                  color: AppTheme.warmGray,
+                  size: 24,
+                ),
+                selectedIcon: Icon(
+                  Icons.book,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
                 label: 'Journal',
               ),
               NavigationDestination(
-                icon: Icon(Icons.bookmark_border_outlined,
-                    color: AppTheme.warmGray, size: 24),
-                selectedIcon: Icon(Icons.bookmark,
-                    color: AppTheme.primary, size: 24),
+                icon: Icon(
+                  Icons.bookmark_border_outlined,
+                  color: AppTheme.warmGray,
+                  size: 24,
+                ),
+                selectedIcon: Icon(
+                  Icons.bookmark,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
                 label: 'Wish List',
               ),
               NavigationDestination(
-                icon: Icon(Icons.person_outline,
-                    color: AppTheme.warmGray, size: 24),
-                selectedIcon:
-                    Icon(Icons.person, color: AppTheme.primary, size: 24),
+                icon: Icon(
+                  Icons.person_outline,
+                  color: AppTheme.warmGray,
+                  size: 24,
+                ),
+                selectedIcon: Icon(
+                  Icons.person,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
                 label: 'Profile',
               ),
             ],

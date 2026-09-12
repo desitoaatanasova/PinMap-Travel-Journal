@@ -6,6 +6,7 @@ import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/services/settings_service.dart';
+import 'package:pinmap_travel_journal/services/theme_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _offlineModeEnabled = false;
   bool _isProfilePrivate = false;
+  ThemeMode _themeMode = ThemeMode.system;
   String _selectedLanguage = 'English';
   final List<String> _languages = const [
     'English',
@@ -46,6 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _offlineModeEnabled = settings.offlineModeEnabled;
         _selectedLanguage = settings.language;
         _isProfilePrivate = profile.profileStatus == 'private';
+        _themeMode = ThemeService.mode;
       });
     }
   }
@@ -68,9 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _isProfilePrivate = value;
     });
-    ProfileService.updateProfile(
-      profileStatus: value ? 'private' : 'public',
-    );
+    ProfileService.updateProfile(profileStatus: value ? 'private' : 'public');
   }
 
   @override
@@ -104,9 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const TripsScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const TripsScreen()),
                 );
               },
             ),
@@ -136,18 +135,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildToggleRow(
               icon: Icons.cloud_off_outlined,
               title: 'Available Offline',
-              subtitle: _offlineModeEnabled
-                  ? 'Offline access enabled'
-                  : 'Offline access disabled',
+              subtitle:
+                  _offlineModeEnabled
+                      ? 'Offline access enabled'
+                      : 'Offline access disabled',
               value: _offlineModeEnabled,
               onChanged: _onOfflineChanged,
             ),
             _buildToggleRow(
               icon: Icons.lock_outlined,
               title: 'Profile Status',
-              subtitle: _isProfilePrivate
-                  ? 'Private - Only followers can see your activity'
-                  : 'Public - Anyone can see your activity',
+              subtitle:
+                  _isProfilePrivate
+                      ? 'Private - Only followers can see your activity'
+                      : 'Public - Anyone can see your activity',
               value: _isProfilePrivate,
               onChanged: _onProfileStatusChanged,
             ),
@@ -158,18 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSettingsRow(
               icon: Icons.palette_outlined,
               title: 'Theme',
-              subtitle: 'Light mode',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Theme selection coming soon!',
-                      style: GoogleFonts.dmSans(),
-                    ),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
+              subtitle: ThemeService.label(_themeMode),
+              onTap: _showThemePicker,
             ),
             _buildServerAddressRow(),
             _buildSettingsRow(
@@ -242,10 +233,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         subtitle: Text(
           subtitle,
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
         value: value,
         onChanged: onChanged,
@@ -254,7 +242,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
@@ -279,21 +269,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         subtitle: Text(
           _selectedLanguage,
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: AppTheme.warmGray,
-        ),
+        trailing: Icon(Icons.chevron_right, color: AppTheme.warmGray),
         onTap: () => _showLanguagePicker(),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
@@ -323,21 +309,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         subtitle: Text(
           subtitle,
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: AppTheme.warmGray,
-        ),
+        trailing: Icon(Icons.chevron_right, color: AppTheme.warmGray),
         onTap: onTap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
@@ -362,150 +344,201 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         subtitle: Text(
-          override.isEmpty
-              ? 'Default (${ApiConfig.baseUrl})'
-              : override,
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: AppTheme.warmGray,
-          ),
+          override.isEmpty ? 'Default (${ApiConfig.baseUrl})' : override,
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: AppTheme.warmGray,
-        ),
+        trailing: Icon(Icons.chevron_right, color: AppTheme.warmGray),
         onTap: () => _showServerAddressDialog(),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
 
   void _showServerAddressDialog() {
-    final controller =
-        TextEditingController(text: ApiConfig.serverOverride);
+    final controller = TextEditingController(text: ApiConfig.serverOverride);
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Server address',
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Where the backend runs. Examples:\n'
-              '• Home Wi-Fi:  http://192.168.1.50:3001\n'
-              '• Anywhere:    https://your-tunnel-url\n\n'
-              'Leave empty to use the default server.',
-              style: GoogleFonts.dmSans(
-                fontSize: 13,
-                color: AppTheme.warmGray,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text(
+              'Server address',
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: AppTheme.space3),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.url,
-              autocorrect: false,
-              decoration: InputDecoration(
-                hintText: 'http://192.168.1.50:3001',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Where the backend runs. Examples:\n'
+                  '• Home Wi-Fi:  http://192.168.1.50:3001\n'
+                  '• Anywhere:    https://your-tunnel-url\n\n'
+                  'Leave empty to use the default server.',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    color: AppTheme.warmGray,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.space3),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.url,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    hintText: 'http://192.168.1.50:3001',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  controller.dispose();
+                  Navigator.pop(dialogContext);
+                },
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              controller.dispose();
-              Navigator.pop(dialogContext);
-            },
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
-            ),
+              ElevatedButton(
+                onPressed: () async {
+                  final text = controller.text;
+                  controller.dispose();
+                  await ApiConfig.setOverride(text);
+                  if (mounted) {
+                    Navigator.pop(dialogContext);
+                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Server address updated',
+                          style: GoogleFonts.dmSans(),
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Save', style: GoogleFonts.dmSans()),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final text = controller.text;
-              controller.dispose();
-              await ApiConfig.setOverride(text);
-              if (mounted) {
-                Navigator.pop(dialogContext);
-                setState(() {});
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Server address updated',
-                      style: GoogleFonts.dmSans(),
-                    ),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-            child: Text('Save', style: GoogleFonts.dmSans()),
-          ),
-        ],
-      ),
     ).whenComplete(() => controller.dispose());
+  }
+
+  void _showThemePicker() {
+    const options = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Select Theme',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.space4),
+                ...options.map((mode) {
+                  return ListTile(
+                    title: Text(
+                      ThemeService.label(mode),
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        fontWeight:
+                            _themeMode == mode
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                        color:
+                            _themeMode == mode
+                                ? AppTheme.primary
+                                : AppTheme.darkBrown,
+                      ),
+                    ),
+                    trailing:
+                        _themeMode == mode
+                            ? Icon(Icons.check, color: AppTheme.primary)
+                            : null,
+                    onTap: () {
+                      setState(() {
+                        _themeMode = mode;
+                      });
+                      ThemeService.setMode(mode);
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+    );
   }
 
   void _showLanguagePicker() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppTheme.space4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Select Language',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-            ..._languages.map((lang) {
-              return ListTile(
-                title: Text(
-                  lang,
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Select Language',
                   style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    fontWeight: _selectedLanguage == lang
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                    color: _selectedLanguage == lang
-                        ? AppTheme.primary
-                        : AppTheme.darkBrown,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                trailing: _selectedLanguage == lang
-                    ? Icon(Icons.check, color: AppTheme.primary)
-                    : null,
-                onTap: () {
-                  setState(() {
-                    _selectedLanguage = lang;
-                  });
-                  SettingsService.updateSettings(language: lang);
-                  Navigator.pop(context);
-                },
-              );
-            }),
-          ],
-        ),
-      ),
+                const SizedBox(height: AppTheme.space4),
+                ..._languages.map((lang) {
+                  return ListTile(
+                    title: Text(
+                      lang,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        fontWeight:
+                            _selectedLanguage == lang
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                        color:
+                            _selectedLanguage == lang
+                                ? AppTheme.primary
+                                : AppTheme.darkBrown,
+                      ),
+                    ),
+                    trailing:
+                        _selectedLanguage == lang
+                            ? Icon(Icons.check, color: AppTheme.primary)
+                            : null,
+                    onTap: () {
+                      setState(() {
+                        _selectedLanguage = lang;
+                      });
+                      SettingsService.updateSettings(language: lang);
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
     );
   }
 
@@ -531,7 +564,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
@@ -555,17 +590,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         subtitle: Text(
           'Permanently delete your account and all data',
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: AppTheme.warmGray,
-          ),
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
         onTap: () => _confirmDeleteAccount(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space4, vertical: AppTheme.space2),
+          horizontal: AppTheme.space4,
+          vertical: AppTheme.space2,
+        ),
       ),
     );
   }
@@ -573,99 +607,95 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _confirmLogout(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Logout?',
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Logout?',
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await AuthService.logout();
-              if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              'Logout',
+            content: Text(
+              'Are you sure you want to logout?',
               style: GoogleFonts.dmSans(),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await AuthService.logout();
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/login',
+                      (route) => false,
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Logout', style: GoogleFonts.dmSans()),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _confirmDeleteAccount(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Delete Account?',
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.red,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'This action cannot be undone. All your data will be permanently deleted.',
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Delete Account?',
+              style: GoogleFonts.playfairDisplay(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Delete account coming soon!',
-                    style: GoogleFonts.dmSans(),
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              'Delete',
+            content: Text(
+              'This action cannot be undone. All your data will be permanently deleted.',
               style: GoogleFonts.dmSans(),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Delete account coming soon!',
+                        style: GoogleFonts.dmSans(),
+                      ),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Delete', style: GoogleFonts.dmSans()),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

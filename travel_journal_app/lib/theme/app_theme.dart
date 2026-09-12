@@ -32,26 +32,26 @@ class AppTheme {
 
   // Shadows
   static List<BoxShadow> get shadowSm => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.05),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+    ),
+  ];
   static List<BoxShadow> get shadowMd => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.08),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
   static List<BoxShadow> get shadowLg => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.12),
-          blurRadius: 32,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.12),
+      blurRadius: 32,
+      offset: const Offset(0, 8),
+    ),
+  ];
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -144,7 +144,9 @@ class AppTheme {
             borderRadius: BorderRadius.circular(radiusFull),
           ),
           padding: const EdgeInsets.symmetric(
-              vertical: space3, horizontal: space6),
+            vertical: space3,
+            horizontal: space6,
+          ),
           textStyle: GoogleFonts.dmSans(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -159,7 +161,9 @@ class AppTheme {
             borderRadius: BorderRadius.circular(radiusFull),
           ),
           padding: const EdgeInsets.symmetric(
-              vertical: space3, horizontal: space6),
+            vertical: space3,
+            horizontal: space6,
+          ),
           textStyle: GoogleFonts.dmSans(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -194,11 +198,10 @@ class AppTheme {
           borderSide: const BorderSide(color: primary, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: space4, vertical: space3),
-        hintStyle: GoogleFonts.dmSans(
-          color: warmGray,
-          fontSize: 14,
+          horizontal: space4,
+          vertical: space3,
         ),
+        hintStyle: GoogleFonts.dmSans(color: warmGray, fontSize: 14),
       ),
       dividerTheme: DividerThemeData(
         color: lightGray,
@@ -217,7 +220,9 @@ class AppTheme {
         ),
         side: BorderSide.none,
         padding: const EdgeInsets.symmetric(
-            horizontal: space3, vertical: space1),
+          horizontal: space3,
+          vertical: space1,
+        ),
       ),
     );
   }
@@ -225,9 +230,173 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primary,
+      colorScheme: const ColorScheme.dark(
         brightness: Brightness.dark,
+        primary: Color(0xFFD7CCC8),
+        onPrimary: Color(0xFF2D1810),
+        surface: Color(0xFF1E1A17),
+        onSurface: Color(0xFFF5EFE8),
+        secondary: warmGray,
+        onSecondary: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF12100F),
+      textTheme: TextTheme(
+        displayLarge: GoogleFonts.playfairDisplay(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+        ),
+        displayMedium: GoogleFonts.playfairDisplay(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+        ),
+        displaySmall: GoogleFonts.playfairDisplay(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          height: 1.3,
+        ),
+        titleLarge: GoogleFonts.dancingScript(
+          color: const Color(0xFFD7CCC8),
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
+        titleMedium: GoogleFonts.dancingScript(
+          color: const Color(0xFFD7CCC8),
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        bodyLarge: GoogleFonts.dmSans(
+          color: const Color(0xFFB0A090),
+          fontSize: 16,
+          height: 1.6,
+        ),
+        bodyMedium: GoogleFonts.dmSans(
+          color: const Color(0xFFB0A090),
+          fontSize: 14,
+          height: 1.6,
+        ),
+        bodySmall: GoogleFonts.dmSans(
+          color: const Color(0xFFB0A090),
+          fontSize: 12,
+          height: 1.5,
+        ),
+        labelLarge: GoogleFonts.dmSans(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: const Color(0xFF12100F),
+        foregroundColor: const Color(0xFFF5EFE8),
+        elevation: 0,
+        titleTextStyle: GoogleFonts.playfairDisplay(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+        iconTheme: const IconThemeData(color: Color(0xFFF5EFE8)),
+      ),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF2D2420),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        margin: const EdgeInsets.only(bottom: space4),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFD7CCC8),
+          foregroundColor: const Color(0xFF2D1810),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusFull),
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: space3,
+            horizontal: space6,
+          ),
+          textStyle: GoogleFonts.dmSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xFFD7CCC8),
+          side: const BorderSide(color: Color(0xFFD7CCC8), width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusFull),
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: space3,
+            horizontal: space6,
+          ),
+          textStyle: GoogleFonts.dmSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: const Color(0xFFD7CCC8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusFull),
+          ),
+          textStyle: GoogleFonts.dmSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF2D2420),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: Color(0xFF3E352F)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: Color(0xFFD7CCC8), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: space4,
+          vertical: space3,
+        ),
+        hintStyle: GoogleFonts.dmSans(color: warmGray, fontSize: 14),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF3E352F),
+        thickness: 1,
+        space: space4,
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: const Color(0xFF2D2420),
+        labelStyle: GoogleFonts.dmSans(
+          color: const Color(0xFFD7CCC8),
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusFull),
+        ),
+        side: BorderSide.none,
+        padding: const EdgeInsets.symmetric(
+          horizontal: space3,
+          vertical: space1,
+        ),
       ),
     );
   }
