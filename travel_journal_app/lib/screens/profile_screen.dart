@@ -2,18 +2,22 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/image_compressor.dart';
+import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
+import 'package:pinmap_travel_journal/screens/journal_view_screen.dart';
 import 'package:pinmap_travel_journal/screens/settings_screen.dart';
 import 'package:pinmap_travel_journal/screens/user_search_screen.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/utils/snackbar_helper.dart';
 import 'package:pinmap_travel_journal/utils/dialog_helper.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,6 +29,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserProfile? _profile;
   bool _uploadingPhoto = false;
+  List<Journal> _journals = [];
 
   @override
   void initState() {
@@ -35,6 +40,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadProfile() async {
     final p = await ProfileService.getProfile();
     if (mounted) setState(() => _profile = p);
+    _loadJournals(p.userId);
+  }
+
+  Future<void> _loadJournals(int userId) async {
+    try {
+      final js = await JournalService.getPublicJournals(userId);
+      if (mounted) setState(() => _journals = js);
+    } catch (_) {
+      if (mounted) setState(() => _journals = []);
+    }
   }
 
   Future<void> _uploadPhoto() async {
@@ -243,6 +258,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                     ),
                   ),
+                  if (_journals.isNotEmpty) ...[
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space4,
+                        ),
+                        child: const SectionHeader(title: 'Journals'),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(AppTheme.space4),
+                      sliver: SliverGrid(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          return _buildJournalCard(_journals[index]);
+                        }, childCount: _journals.length),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: AppTheme.space4,
+                              mainAxisSpacing: AppTheme.space4,
+                              childAspectRatio: 0.75,
+                            ),
+                      ),
+                    ),
+                  ],
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.space4),
@@ -454,6 +494,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
           errorWidget:
               (context, url, error) => Container(color: AppTheme.lightGray),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildJournalCard(Journal journal) {
+    final cover = journal.coverImage;
+    Widget coverWidget;
+    if (cover != null && cover.isNotEmpty) {
+      final isUpload = cover.startsWith('/uploads/');
+      coverWidget =
+          isUpload
+              ? AuthenticatedCachedImage(
+                imageUrl: cover,
+                fit: BoxFit.cover,
+                errorWidget: (c, u, e) => _buildCoverFallback(),
+              )
+              : CachedNetworkImage(
+                imageUrl: cover,
+                fit: BoxFit.cover,
+                errorWidget: (c, u, e) => _buildCoverFallback(),
+              );
+    } else {
+      coverWidget = _buildCoverFallback();
+    }
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => JournalViewScreen(
+                  journalId: journal.journalId,
+                  isPublic: true,
+                ),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.card,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          boxShadow: AppTheme.shadowSm,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(AppTheme.radiusLg),
+                        topRight: Radius.circular(AppTheme.radiusLg),
+                      ),
+                      child: coverWidget,
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Public',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppTheme.space3),
+              child: Text(
+                journal.title,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.darkBrown,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCoverFallback() {
+    return Container(
+      color: AppTheme.primary.withValues(alpha: 0.15),
+      child: Center(
+        child: Icon(
+          Icons.book,
+          size: 36,
+          color: AppTheme.primary.withValues(alpha: 0.5),
         ),
       ),
     );

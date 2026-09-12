@@ -1,0 +1,276 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/services/journal_service.dart';
+import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
+import 'package:pinmap_travel_journal/widgets/section_header.dart';
+import 'package:pinmap_travel_journal/services/api_config.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pinmap_travel_journal/theme/app_theme.dart';
+
+class JournalViewScreen extends StatefulWidget {
+  final int journalId;
+  final bool isPublic;
+
+  const JournalViewScreen({
+    super.key,
+    required this.journalId,
+    this.isPublic = true,
+  });
+
+  @override
+  State<JournalViewScreen> createState() => _JournalViewScreenState();
+}
+
+class _JournalViewScreenState extends State<JournalViewScreen> {
+  Journal? _journal;
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      Journal journal;
+      if (widget.isPublic) {
+        journal = await JournalService.getPublicJournal(widget.journalId);
+      } else {
+        final j = JournalService.getJournalById(widget.journalId);
+        if (j == null) throw Exception('Journal not found');
+        journal = j;
+      }
+      if (mounted)
+        setState(() {
+          _journal = journal;
+          _loading = false;
+        });
+    } catch (e) {
+      if (mounted)
+        setState(() {
+          _error = e.toString();
+          _loading = false;
+        });
+    }
+  }
+
+  Color _pageColor(String? hex) {
+    if (hex == null || hex.isEmpty) return const Color(0xFFFFFEF6);
+    try {
+      var v = hex.replaceAll('#', '');
+      if (v.length == 6) v = 'FF$v';
+      return Color(int.parse(v, radix: 16));
+    } catch (_) {
+      return const Color(0xFFFFFEF6);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.bg,
+      appBar: AppBar(
+        backgroundColor: AppTheme.bg,
+        elevation: 0,
+        title: Text(
+          _journal?.title ?? 'Journal',
+          style: GoogleFonts.playfairDisplay(
+            color: AppTheme.darkBrown,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body:
+          _loading
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null
+              ? Center(
+                child: Text(
+                  _error!,
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              )
+              : _journal == null
+              ? Center(child: Text('Not found', style: GoogleFonts.dmSans()))
+              : _buildContent(_journal!),
+    );
+  }
+
+  Widget _buildContent(Journal journal) {
+    if (journal.pages.isEmpty) {
+      return Center(
+        child: Text(
+          'No pages',
+          style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+        ),
+      );
+    }
+    return PageView.builder(
+      itemCount: journal.pages.length,
+      itemBuilder: (context, index) {
+        final page = journal.pages[index];
+        return Padding(
+          padding: const EdgeInsets.all(AppTheme.space4),
+          child: Column(
+            children: [
+              SectionHeader(title: 'Page ${page.pageNumber}'),
+              const SizedBox(height: AppTheme.space3),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: _pageColor(page.backgroundColor),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                    boxShadow: AppTheme.shadowSm,
+                    border: Border.all(
+                      color: AppTheme.lightGray.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Stack(
+                    children: [
+                      for (final el in (List<JournalElement>.from(page.elements)
+                        ..sort((a, b) => a.zIndex.compareTo(b.zIndex))))
+                        _buildElement(el),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildElement(JournalElement el) {
+    final left = el.xPosition.toDouble();
+    final top = el.yPosition.toDouble();
+    final w = el.width.toDouble();
+    final h = el.height.toDouble();
+    Widget child;
+    if (el.elementType == 'text') {
+      String text = '';
+      String fontFamily = 'DM Sans';
+      double fontSize = 14;
+      Color color = const Color(0xDD000000);
+      bool bold = false;
+      bool italic = false;
+      bool underline = false;
+      TextAlign align = TextAlign.left;
+      try {
+        if (el.content != null) {
+          final m = jsonDecode(el.content!) as Map<String, dynamic>;
+          text = m['text'] ?? '';
+          fontFamily = m['fontFamily'] ?? 'DM Sans';
+          fontSize = (m['fontSize'] as num?)?.toDouble() ?? 14;
+          final c = m['color'];
+          if (c is int) color = Color(c);
+          if (c is String) color = Color(int.tryParse(c) ?? 0xDD000000);
+          bold = m['bold'] ?? false;
+          italic = m['italic'] ?? false;
+          underline = m['underline'] ?? false;
+          final a = m['align'] ?? m['textAlign'];
+          if (a == 'center') align = TextAlign.center;
+          if (a == 'right') align = TextAlign.right;
+          if (a == 'justify') align = TextAlign.justify;
+        } else {
+          text = '';
+        }
+      } catch (_) {
+        text = el.content ?? '';
+      }
+      TextStyle style;
+      switch (fontFamily) {
+        case 'Playfair Display':
+          style = GoogleFonts.playfairDisplay(
+            fontSize: fontSize,
+            color: color,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+            decoration:
+                underline ? TextDecoration.underline : TextDecoration.none,
+          );
+          break;
+        case 'Dancing Script':
+          style = GoogleFonts.dancingScript(
+            fontSize: fontSize,
+            color: color,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+          );
+          break;
+        default:
+          style = GoogleFonts.dmSans(
+            fontSize: fontSize,
+            color: color,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+            decoration:
+                underline ? TextDecoration.underline : TextDecoration.none,
+          );
+      }
+      child = SizedBox(
+        width: w,
+        child: Text(text, style: style, textAlign: align),
+      );
+    } else if (el.elementType == 'image' || el.elementType == 'ticket') {
+      final url = el.imageUrl;
+      if (url == null || url.isEmpty) {
+        child = Container(
+          width: w,
+          height: h,
+          color: AppTheme.lightGray,
+          child: Icon(Icons.image, color: AppTheme.warmGray),
+        );
+      } else {
+        final isUpload = url.startsWith('/uploads/');
+        child = SizedBox(
+          width: w,
+          height: h,
+          child:
+              isUpload
+                  ? AuthenticatedCachedImage(imageUrl: url, fit: BoxFit.cover)
+                  : CachedNetworkImage(
+                    imageUrl: ApiConfig.assetUrl(url),
+                    fit: BoxFit.cover,
+                    placeholder: (c, u) => Container(color: AppTheme.lightGray),
+                    errorWidget:
+                        (c, u, e) => Container(
+                          color: AppTheme.lightGray,
+                          child: Icon(
+                            Icons.broken_image,
+                            color: AppTheme.warmGray,
+                          ),
+                        ),
+                  ),
+        );
+      }
+    } else if (el.elementType == 'sticker') {
+      final emoji = el.content ?? '⭐';
+      child = SizedBox(
+        width: w,
+        height: h,
+        child: Center(child: Text(emoji, style: TextStyle(fontSize: h * 0.6))),
+      );
+    } else {
+      child = const SizedBox();
+    }
+    return Positioned(
+      left: left,
+      top: top,
+      width: w,
+      height: el.elementType == 'text' ? null : h,
+      child: Transform.rotate(
+        angle: el.rotation * 3.1415926535 / 180,
+        child: Transform.scale(
+          scale: el.scale,
+          alignment: Alignment.topLeft,
+          child: child,
+        ),
+      ),
+    );
+  }
+}

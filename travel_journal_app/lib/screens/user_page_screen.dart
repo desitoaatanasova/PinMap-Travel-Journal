@@ -1,8 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
+import 'package:pinmap_travel_journal/screens/journal_view_screen.dart';
+import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/social_service.dart';
+import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class UserPageScreen extends StatefulWidget {
@@ -17,16 +22,32 @@ class UserPageScreen extends StatefulWidget {
 class _UserPageScreenState extends State<UserPageScreen> {
   late UserProfile _user;
   bool _busy = false;
+  List<Journal> _journals = [];
 
   @override
   void initState() {
     super.initState();
     _user = widget.user;
+    _loadJournals();
   }
 
   Future<void> _refresh() async {
     final u = await SocialService.getUserProfile(_user.userId);
     if (mounted) setState(() => _user = u);
+    await _loadJournals();
+  }
+
+  Future<void> _loadJournals() async {
+    if (_user.isPrivate) {
+      if (mounted) setState(() => _journals = []);
+      return;
+    }
+    try {
+      final js = await JournalService.getPublicJournals(_user.userId);
+      if (mounted) setState(() => _journals = js);
+    } catch (_) {
+      if (mounted) setState(() => _journals = []);
+    }
   }
 
   Future<void> _toggleFollow() async {
@@ -202,6 +223,10 @@ class _UserPageScreenState extends State<UserPageScreen> {
                   ] else if (_user.travelPhotos.isNotEmpty) ...[
                     _buildPhotosGrid(),
                   ],
+                  if (!_user.isPrivate && _journals.isNotEmpty) ...[
+                    const SizedBox(height: AppTheme.space6),
+                    _buildJournalsGrid(),
+                  ],
                 ],
               ),
             ),
@@ -361,6 +386,111 @@ class _UserPageScreenState extends State<UserPageScreen> {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildJournalsGrid() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(title: 'Journals'),
+        const SizedBox(height: AppTheme.space3),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _journals.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: AppTheme.space4,
+            mainAxisSpacing: AppTheme.space4,
+            childAspectRatio: 0.75,
+          ),
+          itemBuilder: (context, index) {
+            final journal = _journals[index];
+            final cover = journal.coverImage;
+            Widget coverWidget;
+            if (cover != null && cover.isNotEmpty) {
+              final isUpload = cover.startsWith('/uploads/');
+              coverWidget =
+                  isUpload
+                      ? AuthenticatedCachedImage(
+                        imageUrl: cover,
+                        fit: BoxFit.cover,
+                        errorWidget: (c, u, e) => _buildCoverFallback(),
+                      )
+                      : CachedNetworkImage(
+                        imageUrl: cover,
+                        fit: BoxFit.cover,
+                        errorWidget: (c, u, e) => _buildCoverFallback(),
+                      );
+            } else {
+              coverWidget = _buildCoverFallback();
+            }
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => JournalViewScreen(
+                          journalId: journal.journalId,
+                          isPublic: true,
+                        ),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.card,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                  boxShadow: AppTheme.shadowSm,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(AppTheme.radiusLg),
+                          topRight: Radius.circular(AppTheme.radiusLg),
+                        ),
+                        child: coverWidget,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppTheme.space3),
+                      child: Text(
+                        journal.title,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.darkBrown,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCoverFallback() {
+    return Container(
+      color: AppTheme.primary.withValues(alpha: 0.15),
+      child: Center(
+        child: Icon(
+          Icons.book,
+          size: 36,
+          color: AppTheme.primary.withValues(alpha: 0.5),
+        ),
+      ),
     );
   }
 }

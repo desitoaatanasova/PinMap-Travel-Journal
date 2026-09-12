@@ -86,9 +86,10 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       journal = JournalService.getJournalById(id);
     }
     if (journal == null) {
-      final countryId = widget.countryName != null
-          ? CountryService.countryIdByName(widget.countryName!)
-          : 0;
+      final countryId =
+          widget.countryName != null
+              ? CountryService.countryIdByName(widget.countryName!)
+              : 0;
       journal = Journal(
         journalId: DateTime.now().millisecondsSinceEpoch,
         title: widget.countryName ?? 'My Travel Journal',
@@ -101,14 +102,17 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     } else {
       for (var i = 0; i < journal.pages.length; i++) {
         final page = journal.pages[i];
-        _pages.add(EditorPageState(
-          pageId: page.pageId == 0 ? null : page.pageId,
-          pageNumber: i + 1,
-          backgroundColor: page.backgroundColor,
-          elements: [
-            for (final el in page.elements) EditorElement.fromJournalElement(el),
-          ],
-        ));
+        _pages.add(
+          EditorPageState(
+            pageId: page.pageId == 0 ? null : page.pageId,
+            pageNumber: i + 1,
+            backgroundColor: page.backgroundColor,
+            elements: [
+              for (final el in page.elements)
+                EditorElement.fromJournalElement(el),
+            ],
+          ),
+        );
       }
     }
   }
@@ -121,20 +125,21 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     for (var i = 0; i < _pages.length; i++) {
       final page = _pages[i];
       page.pageNumber = i + 1;
-      pages.add(JournalPage(
-        pageId: page.pageId ?? 0,
-        pageNumber: i + 1,
-        backgroundColor: page.backgroundColor,
-        elements: [
-          for (final el in page.elements) el.toJournalElement(),
-        ],
-      ));
+      pages.add(
+        JournalPage(
+          pageId: page.pageId ?? 0,
+          pageNumber: i + 1,
+          backgroundColor: page.backgroundColor,
+          elements: [for (final el in page.elements) el.toJournalElement()],
+        ),
+      );
     }
     return Journal(
       journalId: journal.journalId,
       title: journal.title,
       countryId: journal.countryId,
       coverImage: journal.coverImage,
+      visibility: journal.visibility,
       pages: pages,
     );
   }
@@ -154,6 +159,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         title: journal.title,
         countryId: journal.countryId,
         coverImage: journal.coverImage,
+        visibility: journal.visibility,
         pages: journal.pages,
       );
       for (final saved in result.pages) {
@@ -167,11 +173,13 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       debugPrint('Journal save failed, queueing offline: $e');
       if (!mounted) return true;
       setState(() => _saving = false);
-      await SyncQueueService.enqueue(SyncAction(
-        type: SyncActionType.saveDraft,
-        data: journal.toJson(),
-        timestamp: DateTime.now(),
-      ));
+      await SyncQueueService.enqueue(
+        SyncAction(
+          type: SyncActionType.saveDraft,
+          data: journal.toJson(),
+          timestamp: DateTime.now(),
+        ),
+      );
       return true;
     }
   }
@@ -198,6 +206,60 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       debugPrint('Journal flush failed: $e');
       if (mounted) _showSnack('Could not save: $e');
       return false;
+    }
+  }
+
+  Future<void> _toggleEditorVisibility() async {
+    final j = _journal;
+    if (j == null) return;
+    final isPublic = j.visibility == 'public';
+    final target = isPublic ? 'private' : 'public';
+    final title = isPublic ? 'Remove from Profile?' : 'Post to Profile?';
+    final content =
+        isPublic
+            ? 'This will make your journal private and hide it from your profile.'
+            : 'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              title,
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(content, style: GoogleFonts.dmSans()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  isPublic ? 'Remove' : 'Post',
+                  style: GoogleFonts.dmSans(),
+                ),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true) return;
+    try {
+      final newVis = await JournalService.updateVisibility(j.journalId, target);
+      if (mounted) {
+        setState(() => _journal = j.copyWith(visibility: newVis));
+        _showSnack(
+          newVis == 'public' ? 'Posted to profile' : 'Removed from profile',
+        );
+      }
+    } catch (e) {
+      if (mounted) _showSnack('Could not update visibility: $e');
     }
   }
 
@@ -257,98 +319,111 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         if (ok) navigator.pop();
       },
       child: Scaffold(
-      backgroundColor: const Color(0xFFFFFEF6),
-      extendBody: true,
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        backgroundColor: const Color(0xFFFFFEF6),
+        extendBody: true,
+        appBar: AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _journal?.title ?? 'New Journal',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.darkBrown,
+                ),
+              ),
+              Text(
+                '${_pages.length} page${_pages.length == 1 ? '' : 's'}',
+                style: GoogleFonts.dmSans(
+                  fontSize: 11,
+                  color: AppTheme.warmGray,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: const Color(0xFFFFFEF6),
+          elevation: 0,
+          actions: [
+            if (_journal != null)
+              IconButton(
+                icon: Icon(
+                  _journal!.visibility == 'public'
+                      ? Icons.public
+                      : Icons.lock_outline,
+                ),
+                tooltip:
+                    _journal!.visibility == 'public'
+                        ? 'Remove from Profile'
+                        : 'Post to Profile',
+                onPressed: _toggleEditorVisibility,
+              ),
+            if (_saving)
+              const Padding(
+                padding: EdgeInsets.only(right: 16),
+                child: Center(
+                  child: SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.save_outlined),
+                tooltip: 'Save',
+                onPressed: _journal == null ? null : _saveNow,
+              ),
+          ],
+        ),
+        body: Column(
           children: [
-            Text(
-              _journal?.title ?? 'New Journal',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.darkBrown,
-              ),
+            EditorPageStrip(
+              pageCount: _pages.length,
+              currentIndex: _currentIndex,
+              onPageSelected: (index) => _animateTo(index),
+              onPageLongPress: _showPageMenu,
+              onAddPage: _addPage,
+              onBackground: _pickPageBackground,
             ),
-            Text(
-              '${_pages.length} page${_pages.length == 1 ? '' : 's'}',
-              style: GoogleFonts.dmSans(
-                fontSize: 11,
-                color: AppTheme.warmGray,
+            EditorFormatToolbar(
+              bold: _isBold,
+              italic: _isItalic,
+              underline: _isUnderline,
+              fontSize: _fontSize,
+              onToggleBold: _toggleBold,
+              onToggleItalic: _toggleItalic,
+              onToggleUnderline: _toggleUnderline,
+              onPickColor: _showColorPicker,
+              onPickFont: _showFontPicker,
+              onFontSize: _setFontSize,
+            ),
+            Expanded(child: _buildPagesView()),
+            if (selected != null)
+              EditorSelectionToolbar(
+                canEdit: selected.type == 'text',
+                onEdit: () => setState(() => _editingElementId = selected.id),
+                onRotateLeft: () => _adjust(selected, rotation: -15),
+                onRotateRight: () => _adjust(selected, rotation: 15),
+                onSmaller: () => _adjust(selected, scaleDelta: -0.15),
+                onBigger: () => _adjust(selected, scaleDelta: 0.15),
+                onBringForward: () => _bringForward(selected),
+                onSendBackward: () => _sendBackward(selected),
+                onDuplicate: () => _duplicateElement(selected),
+                onDelete: () => _deleteElement(selected),
               ),
+            EditorBottomPanel(
+              onAddPage: _addPage,
+              onAddText: _addTextBlock,
+              onPickImage: _pickImage,
+              onScanTicket: _scanTicket,
+              onPickSticker: _showStickerPicker,
             ),
           ],
         ),
-        backgroundColor: const Color(0xFFFFFEF6),
-        elevation: 0,
-        actions: [
-          if (_saving)
-            const Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Center(
-                child: SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.save_outlined),
-              tooltip: 'Save',
-              onPressed: _journal == null ? null : _saveNow,
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          EditorPageStrip(
-            pageCount: _pages.length,
-            currentIndex: _currentIndex,
-            onPageSelected: (index) => _animateTo(index),
-            onPageLongPress: _showPageMenu,
-            onAddPage: _addPage,
-            onBackground: _pickPageBackground,
-          ),
-          EditorFormatToolbar(
-            bold: _isBold,
-            italic: _isItalic,
-            underline: _isUnderline,
-            fontSize: _fontSize,
-            onToggleBold: _toggleBold,
-            onToggleItalic: _toggleItalic,
-            onToggleUnderline: _toggleUnderline,
-            onPickColor: _showColorPicker,
-            onPickFont: _showFontPicker,
-            onFontSize: _setFontSize,
-          ),
-          Expanded(child: _buildPagesView()),
-          if (selected != null)
-            EditorSelectionToolbar(
-              canEdit: selected.type == 'text',
-              onEdit: () => setState(() => _editingElementId = selected.id),
-              onRotateLeft: () => _adjust(selected, rotation: -15),
-              onRotateRight: () => _adjust(selected, rotation: 15),
-              onSmaller: () => _adjust(selected, scaleDelta: -0.15),
-              onBigger: () => _adjust(selected, scaleDelta: 0.15),
-              onBringForward: () => _bringForward(selected),
-              onSendBackward: () => _sendBackward(selected),
-              onDuplicate: () => _duplicateElement(selected),
-              onDelete: () => _deleteElement(selected),
-            ),
-          EditorBottomPanel(
-            onAddPage: _addPage,
-            onAddText: _addTextBlock,
-            onPickImage: _pickImage,
-            onScanTicket: _scanTicket,
-            onPickSticker: _showStickerPicker,
-          ),
-        ],
-      ),
       ),
     );
   }
@@ -431,33 +506,34 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   Future<void> _pickImage() async {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.space4),
-              child: Text(
-                'Add a picture',
-                style: GoogleFonts.dmSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+      builder:
+          (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: Text(
+                    'Add a picture',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined),
+                  title: const Text('From gallery'),
+                  onTap: () => Navigator.pop(context, ImageSource.gallery),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera_outlined),
+                  title: const Text('Take a photo'),
+                  onTap: () => Navigator.pop(context, ImageSource.camera),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('From gallery'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: const Text('Take a photo'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
     if (source == null) return;
     final picked = await ImagePicker().pickImage(
@@ -547,18 +623,20 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       final originalBytes = captured.bytes;
 
       final corners = await TicketScanService.detect(originalBytes);
-      Uint8List? cropped = corners != null
-          ? await TicketScanService.crop(originalBytes, corners)
-          : null;
+      Uint8List? cropped =
+          corners != null
+              ? await TicketScanService.crop(originalBytes, corners)
+              : null;
 
       if (cropped == null) {
         if (!mounted) return;
         final manual = await Navigator.of(context).push<ManualCropResult>(
           MaterialPageRoute(
-            builder: (_) => ManualCropScreen(
-              imageBytes: originalBytes,
-              initialCorners: corners,
-            ),
+            builder:
+                (_) => ManualCropScreen(
+                  imageBytes: originalBytes,
+                  initialCorners: corners,
+                ),
           ),
         );
         if (manual == null || manual.action == ManualCropAction.cancelled) {
@@ -575,12 +653,17 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       if (!mounted) return;
       final preview = await Navigator.of(context).push<TicketPreviewResult>(
         MaterialPageRoute(
-          builder: (_) => TicketPreviewScreen(
-            originalBytes: originalBytes,
-            croppedBytes: cropped!,
-            onSave: (processed, backgroundRemoved) =>
-                _saveTicket(originalBytes, processed, backgroundRemoved),
-          ),
+          builder:
+              (_) => TicketPreviewScreen(
+                originalBytes: originalBytes,
+                croppedBytes: cropped!,
+                onSave:
+                    (processed, backgroundRemoved) => _saveTicket(
+                      originalBytes,
+                      processed,
+                      backgroundRemoved,
+                    ),
+              ),
         ),
       );
       if (preview == null) return;
@@ -660,7 +743,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       );
     }
     final el = EditorElement(
-      id: result.elementKey ?? 'ticket_${DateTime.now().microsecondsSinceEpoch}',
+      id:
+          result.elementKey ??
+          'ticket_${DateTime.now().microsecondsSinceEpoch}',
       type: 'ticket',
       elementKey: result.elementKey,
       x: 40 + (n % 5) * 14,
@@ -685,15 +770,17 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     final page = _pages[_currentIndex];
     final n = page.elements.length;
     setState(() {
-      page.elements.add(EditorElement(
-        id: 'sticker_${DateTime.now().microsecondsSinceEpoch}',
-        type: 'sticker',
-        x: 40 + (n % 5) * 20,
-        y: 100 + (n % 5) * 30,
-        zIndex: 2,
-        emoji: emoji,
-        stickerSize: 40,
-      ));
+      page.elements.add(
+        EditorElement(
+          id: 'sticker_${DateTime.now().microsecondsSinceEpoch}',
+          type: 'sticker',
+          x: 40 + (n % 5) * 20,
+          y: 100 + (n % 5) * 30,
+          zIndex: 2,
+          emoji: emoji,
+          stickerSize: 40,
+        ),
+      );
     });
     _scheduleAutosave();
   }
@@ -711,53 +798,57 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     ];
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppTheme.space4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Add Sticker',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-            Wrap(
-              spacing: AppTheme.space3,
-              runSpacing: AppTheme.space3,
-              children: stickers.map((sticker) {
-                return GestureDetector(
-                  onTap: () {
-                    _addStickerToCanvas(sticker['emoji'] as String);
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(AppTheme.space2),
-                    decoration: BoxDecoration(
-                      color: AppTheme.bg,
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          sticker['emoji'] as String,
-                          style: const TextStyle(fontSize: 32),
-                        ),
-                        Text(
-                          sticker['name'] as String,
-                          style: GoogleFonts.dmSans(fontSize: 11),
-                        ),
-                      ],
-                    ),
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Add Sticker',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
-              }).toList(),
+                ),
+                const SizedBox(height: AppTheme.space4),
+                Wrap(
+                  spacing: AppTheme.space3,
+                  runSpacing: AppTheme.space3,
+                  children:
+                      stickers.map((sticker) {
+                        return GestureDetector(
+                          onTap: () {
+                            _addStickerToCanvas(sticker['emoji'] as String);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(AppTheme.space2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.bg,
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusMd,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  sticker['emoji'] as String,
+                                  style: const TextStyle(fontSize: 32),
+                                ),
+                                Text(
+                                  sticker['name'] as String,
+                                  style: GoogleFonts.dmSans(fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -774,59 +865,62 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     setState(() => _selectedElementId = el.id);
     showModalBottomSheet(
       context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (el.type == 'text')
-              ListTile(
-                leading: const Icon(Icons.edit),
-                title: const Text('Edit text'),
-                onTap: () {
-                  Navigator.pop(context);
-                  setState(() => _editingElementId = el.id);
-                },
-              ),
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('Duplicate'),
-              onTap: () {
-                Navigator.pop(context);
-                _duplicateElement(el);
-              },
+      builder:
+          (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (el.type == 'text')
+                  ListTile(
+                    leading: const Icon(Icons.edit),
+                    title: const Text('Edit text'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      setState(() => _editingElementId = el.id);
+                    },
+                  ),
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: const Text('Duplicate'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _duplicateElement(el);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.layers_clear),
+                  title: const Text('Bring forward'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _bringForward(el);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.layers),
+                  title: const Text('Send backward'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _sendBackward(el);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete_outline, color: Colors.red),
+                  title: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _deleteElement(el);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.layers_clear),
-              title: const Text('Bring forward'),
-              onTap: () {
-                Navigator.pop(context);
-                _bringForward(el);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.layers),
-              title: const Text('Send backward'),
-              onTap: () {
-                Navigator.pop(context);
-                _sendBackward(el);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Delete', style: TextStyle(color: Colors.red)),
-              onTap: () {
-                Navigator.pop(context);
-                _deleteElement(el);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
-  void _adjust(EditorElement el,
-      {double rotation = 0, double scaleDelta = 0}) {
+  void _adjust(EditorElement el, {double rotation = 0, double scaleDelta = 0}) {
     setState(() {
       if (rotation != 0) {
         el.rotation = (el.rotation + rotation) % 360;
@@ -892,7 +986,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
 
   void _toggleUnderline() {
     if (_formattingText) {
-      setState(() => _selectedElement!.underline = !_selectedElement!.underline);
+      setState(
+        () => _selectedElement!.underline = !_selectedElement!.underline,
+      );
       _scheduleAutosave();
     } else {
       setState(() => _defUnderline = !_defUnderline);
@@ -911,96 +1007,101 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   void _showColorPicker() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppTheme.space4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Text Color',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-            Wrap(
-              spacing: AppTheme.space3,
-              children: _textColors.map((color) {
-                final active = _colorValue == color.toARGB32();
-                return GestureDetector(
-                  onTap: () {
-                    if (_formattingText) {
-                      setState(
-                        () =>
-                            _selectedElement!.textColorValue = color.toARGB32(),
-                      );
-                      _scheduleAutosave();
-                    } else {
-                      setState(() => _defColorValue = color.toARGB32());
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: active ? AppTheme.darkBrown : Colors.transparent,
-                        width: 3,
-                      ),
-                    ),
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Text Color',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
-              }).toList(),
+                ),
+                const SizedBox(height: AppTheme.space4),
+                Wrap(
+                  spacing: AppTheme.space3,
+                  children:
+                      _textColors.map((color) {
+                        final active = _colorValue == color.toARGB32();
+                        return GestureDetector(
+                          onTap: () {
+                            if (_formattingText) {
+                              setState(
+                                () =>
+                                    _selectedElement!.textColorValue =
+                                        color.toARGB32(),
+                              );
+                              _scheduleAutosave();
+                            } else {
+                              setState(() => _defColorValue = color.toARGB32());
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color:
+                                    active
+                                        ? AppTheme.darkBrown
+                                        : Colors.transparent,
+                                width: 3,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
   void _showFontPicker() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppTheme.space4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Font Family',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-            ..._availableFonts.map((font) {
-              return ListTile(
-                title: Text(
-                  font,
-                  style: _fontPreviewStyle(font),
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Font Family',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                trailing: _currentFont == font
-                    ? Icon(Icons.check, color: AppTheme.primary)
-                    : null,
-                onTap: () {
-                  if (_formattingText) {
-                    setState(() => _selectedElement!.fontFamily = font);
-                    _scheduleAutosave();
-                  } else {
-                    setState(() => _defFont = font);
-                  }
-                  Navigator.pop(context);
-                },
-              );
-            }),
-          ],
-        ),
-      ),
+                const SizedBox(height: AppTheme.space4),
+                ..._availableFonts.map((font) {
+                  return ListTile(
+                    title: Text(font, style: _fontPreviewStyle(font)),
+                    trailing:
+                        _currentFont == font
+                            ? Icon(Icons.check, color: AppTheme.primary)
+                            : null,
+                    onTap: () {
+                      if (_formattingText) {
+                        setState(() => _selectedElement!.fontFamily = font);
+                        _scheduleAutosave();
+                      } else {
+                        setState(() => _defFont = font);
+                      }
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
     );
   }
 
@@ -1032,9 +1133,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     final copy = EditorPageState(
       pageNumber: index + 1,
       backgroundColor: _pages[index].backgroundColor,
-      elements: [
-        for (final el in _pages[index].elements) el.copyForPage(),
-      ],
+      elements: [for (final el in _pages[index].elements) el.copyForPage()],
     );
     setState(() => _pages.insert(index + 1, copy));
     _animateTo(index + 1);
@@ -1083,49 +1182,52 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   void _showPageMenu(int index) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('Duplicate page'),
-              onTap: () {
-                Navigator.pop(context);
-                _duplicatePage(index);
-              },
+      builder:
+          (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: const Text('Duplicate page'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _duplicatePage(index);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.chevron_left),
+                  title: const Text('Move left'),
+                  enabled: index > 0,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _movePage(index, -1);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.chevron_right),
+                  title: const Text('Move right'),
+                  enabled: index < _pages.length - 1,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _movePage(index, 1);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete_outline, color: Colors.red),
+                  title: const Text(
+                    'Delete page',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  enabled: _pages.length > 1,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _deletePage(index);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.chevron_left),
-              title: const Text('Move left'),
-              enabled: index > 0,
-              onTap: () {
-                Navigator.pop(context);
-                _movePage(index, -1);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.chevron_right),
-              title: const Text('Move right'),
-              enabled: index < _pages.length - 1,
-              onTap: () {
-                Navigator.pop(context);
-                _movePage(index, 1);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Delete page',
-                  style: TextStyle(color: Colors.red)),
-              enabled: _pages.length > 1,
-              onTap: () {
-                Navigator.pop(context);
-                _deletePage(index);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -1133,58 +1235,63 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     final page = _pages[_currentIndex];
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppTheme.space4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Page background',
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppTheme.space4),
-            Wrap(
-              spacing: AppTheme.space3,
-              runSpacing: AppTheme.space3,
-              children: _pageBackgrounds.entries.map((entry) {
-                final active = page.backgroundColor == entry.key;
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => page.backgroundColor = entry.key);
-                    Navigator.pop(context);
-                    _scheduleAutosave();
-                  },
-                  child: Container(
-                    width: 72,
-                    padding: const EdgeInsets.all(AppTheme.space2),
-                    decoration: BoxDecoration(
-                      color: journalPageColor(entry.key),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      border: Border.all(
-                        color: active
-                            ? AppTheme.primary
-                            : AppTheme.lightGray,
-                        width: active ? 2 : 1,
-                      ),
-                    ),
-                    child: Text(
-                      entry.value,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 11,
-                        color: AppTheme.darkBrown,
-                      ),
-                    ),
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Page background',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
-              }).toList(),
+                ),
+                const SizedBox(height: AppTheme.space4),
+                Wrap(
+                  spacing: AppTheme.space3,
+                  runSpacing: AppTheme.space3,
+                  children:
+                      _pageBackgrounds.entries.map((entry) {
+                        final active = page.backgroundColor == entry.key;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() => page.backgroundColor = entry.key);
+                            Navigator.pop(context);
+                            _scheduleAutosave();
+                          },
+                          child: Container(
+                            width: 72,
+                            padding: const EdgeInsets.all(AppTheme.space2),
+                            decoration: BoxDecoration(
+                              color: journalPageColor(entry.key),
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusMd,
+                              ),
+                              border: Border.all(
+                                color:
+                                    active
+                                        ? AppTheme.primary
+                                        : AppTheme.lightGray,
+                                width: active ? 2 : 1,
+                              ),
+                            ),
+                            child: Text(
+                              entry.value,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 11,
+                                color: AppTheme.darkBrown,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
