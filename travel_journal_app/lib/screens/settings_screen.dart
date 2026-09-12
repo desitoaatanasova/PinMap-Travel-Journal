@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/screens/trips_screen.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
+import 'package:pinmap_travel_journal/screens/storage_manager_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
@@ -168,13 +169,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: 'Storage',
               subtitle: 'Manage downloaded content',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Storage manager coming soon!',
-                      style: GoogleFonts.dmSans(),
-                    ),
-                    duration: const Duration(seconds: 2),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StorageManagerScreen(),
                   ),
                 );
               },

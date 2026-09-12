@@ -248,6 +248,21 @@ class TripService {
     }
   }
 
+  static Future<int> getDraftBytes() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_scopedDraftKey());
+      if (raw != null) return raw.length;
+      if (_scopedDraftKey() != _legacyDraftKey) {
+        final legacy = prefs.getString(_legacyDraftKey);
+        if (legacy != null) return legacy.length;
+      }
+      return 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   static Future<void> clearDraft() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_scopedDraftKey());

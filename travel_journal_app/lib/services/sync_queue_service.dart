@@ -43,7 +43,9 @@ class SyncAction {
     this.lastAttempt,
     this.lastError,
     this.isDeadLetter = false,
-  }) : id = id ?? '${DateTime.now().millisecondsSinceEpoch}_${type.name}_${data['id'] ?? data['journalId'] ?? data['placeId'] ?? data['cityId'] ?? data['countryId'] ?? ''}_${_nextSeq++}';
+  }) : id =
+           id ??
+           '${DateTime.now().millisecondsSinceEpoch}_${type.name}_${data['id'] ?? data['journalId'] ?? data['placeId'] ?? data['cityId'] ?? data['countryId'] ?? ''}_${_nextSeq++}';
 
   static int _nextSeq = 0;
 
@@ -51,34 +53,43 @@ class SyncAction {
     final t = json['timestamp'] as String? ?? DateTime.now().toIso8601String();
     final type = json['type'] as String? ?? 'saveDraft';
     final data = json['data'] as Map<String, dynamic>? ?? {};
-    final ent = data['id'] ?? data['journalId'] ?? data['placeId'] ?? data['cityId'] ?? data['countryId'] ?? '';
+    final ent =
+        data['id'] ??
+        data['journalId'] ??
+        data['placeId'] ??
+        data['cityId'] ??
+        data['countryId'] ??
+        '';
     return 'legacy_${t}_${type}_$ent';
   }
 
   factory SyncAction.fromJson(Map<String, dynamic> json) => SyncAction(
-        id: json['id'] as String? ?? _synthId(json),
-        type: SyncActionType.values.firstWhere(
-          (e) => e.name == json['type'],
-          orElse: () => SyncActionType.saveDraft,
-        ),
-        data: json['data'] as Map<String, dynamic>,
-        timestamp: DateTime.parse(json['timestamp'] as String),
-        retryCount: (json['retryCount'] as num?)?.toInt() ?? 0,
-        lastAttempt: json['lastAttempt'] != null ? DateTime.tryParse(json['lastAttempt'] as String) : null,
-        lastError: json['lastError'] as String?,
-        isDeadLetter: json['isDeadLetter'] as bool? ?? false,
-      );
+    id: json['id'] as String? ?? _synthId(json),
+    type: SyncActionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => SyncActionType.saveDraft,
+    ),
+    data: json['data'] as Map<String, dynamic>,
+    timestamp: DateTime.parse(json['timestamp'] as String),
+    retryCount: (json['retryCount'] as num?)?.toInt() ?? 0,
+    lastAttempt:
+        json['lastAttempt'] != null
+            ? DateTime.tryParse(json['lastAttempt'] as String)
+            : null,
+    lastError: json['lastError'] as String?,
+    isDeadLetter: json['isDeadLetter'] as bool? ?? false,
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': type.name,
-        'data': data,
-        'timestamp': timestamp.toIso8601String(),
-        'retryCount': retryCount,
-        'lastAttempt': lastAttempt?.toIso8601String(),
-        'lastError': lastError,
-        'isDeadLetter': isDeadLetter,
-      };
+    'id': id,
+    'type': type.name,
+    'data': data,
+    'timestamp': timestamp.toIso8601String(),
+    'retryCount': retryCount,
+    'lastAttempt': lastAttempt?.toIso8601String(),
+    'lastError': lastError,
+    'isDeadLetter': isDeadLetter,
+  };
 }
 
 class SyncQueueService {
@@ -170,24 +181,47 @@ class SyncQueueService {
       queue.removeWhere(
         (a) => a.type == SyncActionType.saveDraft && a.data['id'] == journalId,
       );
-      queue.removeWhere((a) => a.type == SyncActionType.deleteJournal && a.data['id'] == journalId);
+      queue.removeWhere(
+        (a) =>
+            a.type == SyncActionType.deleteJournal && a.data['id'] == journalId,
+      );
     }
     if (action.type == SyncActionType.deleteJournal) {
       final jid = action.data['id'];
-      queue.removeWhere((a) => (a.type == SyncActionType.saveDraft && a.data['id'] == jid) || (a.type == SyncActionType.deleteJournal && a.data['id'] == jid));
-      queue.removeWhere((a) => a.type == SyncActionType.addTicketScan && (a.data['journalId'] == jid || a.data['journalId']?.toString() == jid.toString()));
+      queue.removeWhere(
+        (a) =>
+            (a.type == SyncActionType.saveDraft && a.data['id'] == jid) ||
+            (a.type == SyncActionType.deleteJournal && a.data['id'] == jid),
+      );
+      queue.removeWhere(
+        (a) =>
+            a.type == SyncActionType.addTicketScan &&
+            (a.data['journalId'] == jid ||
+                a.data['journalId']?.toString() == jid.toString()),
+      );
     }
     if (action.type == SyncActionType.toggleVisited) {
       final id = action.data['placeId'];
-      queue.removeWhere((a) => a.type == SyncActionType.toggleVisited && a.data['placeId'] == id);
+      queue.removeWhere(
+        (a) =>
+            a.type == SyncActionType.toggleVisited && a.data['placeId'] == id,
+      );
     }
     if (action.type == SyncActionType.toggleCityVisited) {
       final id = action.data['cityId'];
-      queue.removeWhere((a) => a.type == SyncActionType.toggleCityVisited && a.data['cityId'] == id);
+      queue.removeWhere(
+        (a) =>
+            a.type == SyncActionType.toggleCityVisited &&
+            a.data['cityId'] == id,
+      );
     }
     if (action.type == SyncActionType.toggleCountryVisited) {
       final id = action.data['countryId'];
-      queue.removeWhere((a) => a.type == SyncActionType.toggleCountryVisited && a.data['countryId'] == id);
+      queue.removeWhere(
+        (a) =>
+            a.type == SyncActionType.toggleCountryVisited &&
+            a.data['countryId'] == id,
+      );
     }
     queue.add(action);
     await _saveQueue();
@@ -196,7 +230,10 @@ class SyncQueueService {
 
   static bool _isNetworkError(Object e) {
     final s = e.toString().toLowerCase();
-    return s.contains('socketexception') || s.contains('timeoutexception') || s.contains('failed host lookup') || s.contains('connection');
+    return s.contains('socketexception') ||
+        s.contains('timeoutexception') ||
+        s.contains('failed host lookup') ||
+        s.contains('connection');
   }
 
   static String _classifyFailure(Object e) {
@@ -238,7 +275,9 @@ class SyncQueueService {
           await _saveQueue();
           continue;
         } catch (e) {
-          if (action.type == SyncActionType.deleteJournal && e is ApiException && e.statusCode == 404) {
+          if (action.type == SyncActionType.deleteJournal &&
+              e is ApiException &&
+              e.statusCode == 404) {
             processed.add(action);
             continue;
           }
@@ -351,22 +390,26 @@ class SyncQueueService {
           contentType: 'image/png',
         ),
     ];
-    await ApiClient.uploadMultipart('/tickets', fields: {
-      'journalId': data['journalId'].toString(),
-      'journalTitle': (data['journalTitle'] ?? '').toString(),
-      'countryId': data['countryId'].toString(),
-      'pageId': data['pageId'] == null ? '' : data['pageId'].toString(),
-      'backgroundRemoved': (data['backgroundRemoved'] ?? false).toString(),
-      'xPosition': data['xPosition'].toString(),
-      'yPosition': data['yPosition'].toString(),
-      'width': data['width'].toString(),
-      'height': data['height'].toString(),
-      'scale': (data['scale'] ?? 1).toString(),
-      'rotation': (data['rotation'] ?? 0).toString(),
-      'zIndex': (data['zIndex'] ?? 0).toString(),
-      'elementType': (data['elementType'] ?? 'ticket').toString(),
-      'elementKey': (data['elementKey'] ?? '').toString(),
-    }, files: files);
+    await ApiClient.uploadMultipart(
+      '/tickets',
+      fields: {
+        'journalId': data['journalId'].toString(),
+        'journalTitle': (data['journalTitle'] ?? '').toString(),
+        'countryId': data['countryId'].toString(),
+        'pageId': data['pageId'] == null ? '' : data['pageId'].toString(),
+        'backgroundRemoved': (data['backgroundRemoved'] ?? false).toString(),
+        'xPosition': data['xPosition'].toString(),
+        'yPosition': data['yPosition'].toString(),
+        'width': data['width'].toString(),
+        'height': data['height'].toString(),
+        'scale': (data['scale'] ?? 1).toString(),
+        'rotation': (data['rotation'] ?? 0).toString(),
+        'zIndex': (data['zIndex'] ?? 0).toString(),
+        'elementType': (data['elementType'] ?? 'ticket').toString(),
+        'elementKey': (data['elementKey'] ?? '').toString(),
+      },
+      files: files,
+    );
   }
 
   static Future<List<SyncAction>> getDeadLetters() async {
@@ -374,7 +417,8 @@ class SyncQueueService {
     return List.unmodifiable(_currentQueue().where((a) => a.isDeadLetter));
   }
 
-  static int get deadLetterCount => _currentQueue().where((a) => a.isDeadLetter).length;
+  static int get deadLetterCount =>
+      _currentQueue().where((a) => a.isDeadLetter).length;
 
   static Future<bool> retryDeadLetter(String actionId) async {
     final uid = _activeUserId;
@@ -405,8 +449,32 @@ class SyncQueueService {
     return true;
   }
 
+  static Future<int> getQueueBytes() async {
+    final uid = _activeUserId;
+    if (uid == null) return 0;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final s = prefs.getString(_keyFor(uid));
+      if (s == null) return 0;
+      return s.length;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  static Future<void> discardAllDeadLetters() async {
+    final uid = _activeUserId;
+    if (uid == null) return;
+    final queue = _queues[uid];
+    if (queue == null) return;
+    queue.removeWhere((a) => a.isDeadLetter);
+    await _saveQueue();
+  }
+
   static int get pendingCount => _activeQueue().length;
-  static List<SyncAction> get pendingActions => List.unmodifiable(_activeQueue());
-  static List<SyncAction> get deadLetters => List.unmodifiable(_currentQueue().where((a) => a.isDeadLetter));
+  static List<SyncAction> get pendingActions =>
+      List.unmodifiable(_activeQueue());
+  static List<SyncAction> get deadLetters =>
+      List.unmodifiable(_currentQueue().where((a) => a.isDeadLetter));
   static List<SyncAction> get allActions => List.unmodifiable(_currentQueue());
 }
