@@ -112,10 +112,7 @@ class PdfExportService {
           padding: const pw.EdgeInsets.only(top: 12),
           child: pw.Text(
             'No activities yet — generate or edit your itinerary, then export again.',
-            style: pw.TextStyle(
-              font: pw.Font.helveticaOblique(),
-              fontSize: 11,
-            ),
+            style: pw.TextStyle(font: pw.Font.helveticaOblique(), fontSize: 11),
           ),
         ),
       );
@@ -195,9 +192,8 @@ class PdfExportService {
       ),
     ];
     for (final activity in activities) {
-      final bytes = activity.placeImage == null
-          ? null
-          : imageCache[activity.placeImage];
+      final bytes =
+          activity.placeImage == null ? null : imageCache[activity.placeImage];
       final subtitle = _subtitle(activity, categoryNames);
       final row = <pw.Widget>[
         pw.Expanded(
@@ -265,8 +261,11 @@ class PdfExportService {
   ) {
     final parts = <String>[];
     if (activity.cityName?.isNotEmpty == true) parts.add(activity.cityName!);
-    final category =
-        activity.categoryId != null ? categoryNames?[activity.categoryId] : null;
+    final categoryId = activity.categoryId;
+    String? category;
+    if (categoryId != null && categoryNames != null) {
+      category = categoryNames[categoryId];
+    }
     if (category != null && category.isNotEmpty) parts.add(category);
     return parts.join('  •  ');
   }
@@ -326,7 +325,10 @@ class PdfExportService {
   static String _participantsLine(Trip trip) {
     if (trip.participants.isEmpty) return '';
     final names =
-        trip.participants.map((p) => p.displayName.trim()).where((n) => n.isNotEmpty).toList();
+        trip.participants
+            .map((p) => p.displayName.trim())
+            .where((n) => n.isNotEmpty)
+            .toList();
     if (names.isEmpty) return '';
     return 'With ${names.join(', ')}';
   }
