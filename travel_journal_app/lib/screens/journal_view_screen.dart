@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/journal_pdf_export_service.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
+import 'package:pinmap_travel_journal/services/pdf_download.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
@@ -27,6 +30,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
   Journal? _journal;
   bool _loading = true;
   String? _error;
+  bool _isDownloading = false;
 
   @override
   void initState() {
@@ -58,6 +62,46 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
     }
   }
 
+  Future<void> _downloadJournal(BuildContext context, Journal journal) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isDownloading = true);
+    try {
+      String? countryName;
+      try {
+        for (final country in CountryService.getAllCountries()) {
+          if (country.countryId == journal.countryId) {
+            countryName = country.name;
+            break;
+          }
+        }
+      } catch (e) {
+        debugPrint('JournalViewScreen download country lookup failed: $e');
+      }
+      final bytes = await JournalPdfExportService.buildJournalPdf(
+        journal,
+        countryName: countryName,
+      );
+      final filename = JournalPdfExportService.sanitizeFilename(journal.title);
+      await savePdfBytes(bytes, filename);
+      if (!mounted) return;
+      setState(() => _isDownloading = false);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('PDF downloaded', style: GoogleFonts.dmSans()),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isDownloading = false);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Could not download PDF', style: GoogleFonts.dmSans()),
+        ),
+      );
+    }
+  }
+
   Color _pageColor(String? hex) {
     if (hex == null || hex.isEmpty) return const Color(0xFFFFFEF6);
     try {
@@ -83,6 +127,23 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          if (!widget.isPublic && _journal != null && !_loading)
+            _isDownloading
+                ? const Padding(
+                  padding: EdgeInsets.all(14),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+                : IconButton(
+                  tooltip: 'Download Journal',
+                  onPressed: () => _downloadJournal(context, _journal!),
+                  icon: const Icon(Icons.download),
+                ),
+        ],
       ),
       body:
           _loading
