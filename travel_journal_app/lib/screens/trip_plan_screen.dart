@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
+import 'package:pinmap_travel_journal/services/pdf_download.dart';
+import 'package:pinmap_travel_journal/services/pdf_export_service.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
 import 'package:pinmap_travel_journal/screens/trip_map_screen.dart';
@@ -26,6 +28,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   Trip? _trip;
   bool _saving = false;
   bool _regenerating = false;
+  bool _isExporting = false;
 
   bool get _isDraft => _trip != null && _trip!.tripId == 0;
 
@@ -157,19 +160,15 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       const SizedBox(width: AppTheme.space2),
       Expanded(
         child: OutlinedButton.icon(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'PDF export coming soon!',
-                  style: GoogleFonts.dmSans(),
-                ),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          },
-          icon: const Icon(Icons.picture_as_pdf, size: 18),
-          label: const Text('Export PDF'),
+          onPressed: _isExporting ? null : () => _exportPdf(context, trip),
+          icon: _isExporting
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.picture_as_pdf, size: 18),
+          label: Text(_isExporting ? 'Exporting...' : 'Export PDF'),
         ),
       ),
       const SizedBox(width: AppTheme.space2),
@@ -378,6 +377,71 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(message, style: GoogleFonts.dmSans()),
+        ),
+      );
+    }
+  }
+
+  Future<void> _exportPdf(BuildContext context, Trip trip) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isExporting = true);
+    try {
+      var exportTrip = trip;
+      if (exportTrip.itinerary.isEmpty && exportTrip.tripId != 0) {
+        try {
+          exportTrip = await TripService.fetchTripDetail(exportTrip.tripId);
+          if (!mounted) return;
+          setState(() => _trip = exportTrip);
+        } catch (e) {
+          if (!mounted) return;
+          setState(() => _isExporting = false);
+          final message =
+              e is ApiException ? e.message : 'Could not load trip details';
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(message, style: GoogleFonts.dmSans()),
+            ),
+          );
+          return;
+        }
+      }
+      String? countryName;
+      try {
+        for (final country in CountryService.getAllCountries()) {
+          if (country.countryId == exportTrip.countryId) {
+            countryName = country.name;
+            break;
+          }
+        }
+      } catch (e) {
+        debugPrint('TripPlanScreen export country lookup failed: $e');
+      }
+      final bytes = await PdfExportService.buildTripPdf(
+        exportTrip,
+        countryName: countryName,
+      );
+      final filename = PdfExportService.sanitizeFilename(exportTrip.title);
+      await savePdfBytes(bytes, filename);
+      if (!mounted) return;
+      setState(() => _isExporting = false);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'PDF downloaded',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isExporting = false);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not export PDF',
+            style: GoogleFonts.dmSans(),
+          ),
         ),
       );
     }

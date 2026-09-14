@@ -74,6 +74,25 @@ class TripService {
     return List.unmodifiable(_trips);
   }
 
+  static Future<Trip> fetchTripDetail(int id) async {
+    _ensureOwner();
+    final data = await ApiClient.get('/trips/$id');
+    final json = Map<String, dynamic>.from(data as Map);
+    if (!json.containsKey('city_ids') && json.containsKey('cityIds')) {
+      json['city_ids'] = json['cityIds'];
+    }
+    final trip = Trip.fromJson(json);
+    _ensureOwner();
+    final idx = _trips.indexWhere((t) => t.tripId == trip.tripId);
+    if (idx >= 0) {
+      _trips[idx] = trip;
+    } else {
+      _trips.add(trip);
+    }
+    _bump();
+    return trip;
+  }
+
   static String _clientIdFor(Trip trip) =>
       'c_${trip.tripId}_${trip.startDate.millisecondsSinceEpoch}';
 
