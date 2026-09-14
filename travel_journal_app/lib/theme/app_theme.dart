@@ -398,6 +398,45 @@ class AppTheme {
           vertical: space1,
         ),
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: const Color(0xFF2D2420),
+        titleTextStyle: GoogleFonts.playfairDisplay(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        contentTextStyle: GoogleFonts.dmSans(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 14,
+          height: 1.5,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Color(0xFF1E1A17),
+        modalBackgroundColor: Color(0xFF1E1A17),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
+        ),
+        showDragHandle: false,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: const Color(0xFF2D2420),
+        textStyle: GoogleFonts.dmSans(
+          color: const Color(0xFFF5EFE8),
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+        ),
+      ),
+      listTileTheme: const ListTileThemeData(
+        tileColor: Colors.transparent,
+        textColor: Color(0xFFF5EFE8),
+        iconColor: Color(0xFFD7CCC8),
+      ),
     );
   }
 }

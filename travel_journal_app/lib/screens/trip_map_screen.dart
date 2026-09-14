@@ -54,7 +54,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
     for (final day in days) {
       for (final a in day.allActivities) {
         if (a.latitude != null && a.longitude != null) {
-          if (a.latitude! < -90 || a.latitude! > 90 || a.longitude! < -180 || a.longitude! > 180) continue;
+          if (a.latitude! < -90 ||
+              a.latitude! > 90 ||
+              a.longitude! < -180 ||
+              a.longitude! > 180)
+            continue;
           points.add(LatLng(a.latitude!, a.longitude!));
         }
       }
@@ -64,8 +68,10 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   LatLng? _centerOrNull(List<LatLng> points) {
     if (points.isEmpty) return null;
-    final lat = points.map((p) => p.latitude).reduce((a, b) => a + b) / points.length;
-    final lng = points.map((p) => p.longitude).reduce((a, b) => a + b) / points.length;
+    final lat =
+        points.map((p) => p.latitude).reduce((a, b) => a + b) / points.length;
+    final lng =
+        points.map((p) => p.longitude).reduce((a, b) => a + b) / points.length;
     return LatLng(lat, lng);
   }
 
@@ -123,7 +129,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
     for (final day in _visibleDays) {
       for (final a in day.allActivities) {
         if (a.latitude == null || a.longitude == null) continue;
-        if (a.latitude! < -90 || a.latitude! > 90 || a.longitude! < -180 || a.longitude! > 180) continue;
+        if (a.latitude! < -90 ||
+            a.latitude! > 90 ||
+            a.longitude! < -180 ||
+            a.longitude! > 180)
+          continue;
         markers.add(
           Marker(
             point: LatLng(a.latitude!, a.longitude!),
@@ -169,72 +179,125 @@ class _TripMapScreenState extends State<TripMapScreen> {
     final hasPlace = activity.placeId != null;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.card,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.fromLTRB(AppTheme.space4, AppTheme.space4, AppTheme.space4, AppTheme.space4 + 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(color: _dayColor(dayNumber), shape: BoxShape.circle),
-                  alignment: Alignment.center,
-                  child: Text('$dayNumber', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
-                const SizedBox(width: AppTheme.space3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(activity.placeName ?? 'Activity', style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.darkBrown)),
-                      if ((activity.cityName ?? '').isNotEmpty)
-                        Text(activity.cityName!, style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.space3),
-            Wrap(
-              spacing: AppTheme.space2,
-              children: [
-                _InfoChip(icon: Icons.calendar_today, label: 'Day $dayNumber'),
-                _InfoChip(icon: Icons.wb_sunny, label: activity.timeSlot),
-                if (activity.categoryId != null) _InfoChip(icon: Icons.category, label: 'Category ${activity.categoryId}'),
-              ],
-            ),
-            if (activity.notes.isNotEmpty) ...[
-              const SizedBox(height: AppTheme.space3),
-              Text(activity.notes, style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.darkBrown)),
-            ],
-            const SizedBox(height: AppTheme.space4),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Close', style: GoogleFonts.dmSans()),
-                  ),
-                ),
-                const SizedBox(width: AppTheme.space3),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: hasPlace ? () { Navigator.pop(context); _openPlace(activity); } : null,
-                    child: Text('View details', style: GoogleFonts.dmSans()),
-                  ),
-                ),
-              ],
-            ),
-          ],
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.radiusLg),
         ),
       ),
+      builder:
+          (sheetContext) => Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppTheme.space4,
+              AppTheme.space4,
+              AppTheme.space4,
+              AppTheme.space4 + 8,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: _dayColor(dayNumber),
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$dayNumber',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AppTheme.space3),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            activity.placeName ?? 'Activity',
+                            style: GoogleFonts.playfairDisplay(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(sheetContext).colorScheme.onSurface,
+                            ),
+                          ),
+                          if ((activity.cityName ?? '').isNotEmpty)
+                            Text(
+                              activity.cityName!,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: AppTheme.warmGray,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.space3),
+                Wrap(
+                  spacing: AppTheme.space2,
+                  children: [
+                    _InfoChip(
+                      icon: Icons.calendar_today,
+                      label: 'Day $dayNumber',
+                    ),
+                    _InfoChip(icon: Icons.wb_sunny, label: activity.timeSlot),
+                    if (activity.categoryId != null)
+                      _InfoChip(
+                        icon: Icons.category,
+                        label: 'Category ${activity.categoryId}',
+                      ),
+                  ],
+                ),
+                if (activity.notes.isNotEmpty) ...[
+                  const SizedBox(height: AppTheme.space3),
+                  Text(
+                    activity.notes,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      color: Theme.of(sheetContext).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: AppTheme.space4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Close', style: GoogleFonts.dmSans()),
+                      ),
+                    ),
+                    const SizedBox(width: AppTheme.space3),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed:
+                            hasPlace
+                                ? () {
+                                  Navigator.pop(context);
+                                  _openPlace(activity);
+                                }
+                                : null,
+                        child: Text(
+                          'View details',
+                          style: GoogleFonts.dmSans(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
     );
   }
 
@@ -256,21 +319,23 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
     String countryName = '';
     try {
-      countryName = CountryService.getAllCountries()
-          .firstWhere((c) => c.countryId == widget.trip.countryId)
-          .name;
+      countryName =
+          CountryService.getAllCountries()
+              .firstWhere((c) => c.countryId == widget.trip.countryId)
+              .name;
     } catch (e) {
       debugPrint('TripMapScreen country lookup failed: $e');
     }
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PlaceDetailsPage(
-          place: place,
-          categoryName: place.categoryName ?? '',
-          cityName: activity.cityName ?? '',
-          countryName: countryName,
-        ),
+        builder:
+            (context) => PlaceDetailsPage(
+              place: place,
+              categoryName: place.categoryName ?? '',
+              cityName: activity.cityName ?? '',
+              countryName: countryName,
+            ),
       ),
     );
   }
@@ -301,50 +366,67 @@ class _TripMapScreenState extends State<TripMapScreen> {
         children: [
           _buildDaySelector(),
           Expanded(
-            child: hasValid
-                ? FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: center ?? const LatLng(20, 0),
-                      initialZoom: center != null ? 8 : 2,
-                      onMapReady: () {
-                        if (!_didFitInitial) {
-                          _didFitInitial = true;
-                          WidgetsBinding.instance.addPostFrameCallback((_) => _fitVisible());
-                        }
-                      },
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.pinmap_travel_journal',
+            child:
+                hasValid
+                    ? FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        initialCenter: center ?? const LatLng(20, 0),
+                        initialZoom: center != null ? 8 : 2,
+                        onMapReady: () {
+                          if (!_didFitInitial) {
+                            _didFitInitial = true;
+                            WidgetsBinding.instance.addPostFrameCallback(
+                              (_) => _fitVisible(),
+                            );
+                          }
+                        },
                       ),
-                      if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
-                      MarkerLayer(markers: markers),
-                    ],
-                  )
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.space4),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.map_outlined, size: 56, color: AppTheme.warmGray.withValues(alpha: 0.6)),
-                          const SizedBox(height: AppTheme.space3),
-                          Text(
-                            'No mapped locations',
-                            style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.darkBrown),
-                          ),
-                          const SizedBox(height: AppTheme.space2),
-                          Text(
-                            'This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.warmGray),
-                          ),
-                        ],
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName:
+                              'com.example.pinmap_travel_journal',
+                        ),
+                        if (polylines.isNotEmpty)
+                          PolylineLayer(polylines: polylines),
+                        MarkerLayer(markers: markers),
+                      ],
+                    )
+                    : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTheme.space4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.map_outlined,
+                              size: 56,
+                              color: AppTheme.warmGray.withValues(alpha: 0.6),
+                            ),
+                            const SizedBox(height: AppTheme.space3),
+                            Text(
+                              'No mapped locations',
+                              style: GoogleFonts.playfairDisplay(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.darkBrown,
+                              ),
+                            ),
+                            const SizedBox(height: AppTheme.space2),
+                            Text(
+                              'This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                color: AppTheme.warmGray,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
           ),
           _buildLegend(),
         ],
@@ -359,7 +441,9 @@ class _TripMapScreenState extends State<TripMapScreen> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.space3, vertical: AppTheme.space2),
+          horizontal: AppTheme.space3,
+          vertical: AppTheme.space2,
+        ),
         children: [
           _DayChip(
             label: 'All',
@@ -426,10 +510,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
           Text(
             '$_validCount places shown${_validCount == 0 ? " — no coordinates" : ""}',
             textAlign: TextAlign.center,
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              color: AppTheme.warmGray,
-            ),
+            style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
           ),
         ],
       ),
@@ -445,14 +526,29 @@ class _InfoChip extends StatelessWidget {
   const _InfoChip({required this.icon, required this.label});
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(color: AppTheme.bg, borderRadius: BorderRadius.circular(AppTheme.radiusFull), border: Border.all(color: AppTheme.lightGray)),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 14, color: AppTheme.warmGray),
-        const SizedBox(width: 4),
-        Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.darkBrown, fontWeight: FontWeight.w500)),
-      ]),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: AppTheme.warmGray),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: GoogleFonts.dmSans(
+              fontSize: 12,
+              color: scheme.onSurface,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -506,6 +602,9 @@ class _DayChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final unselectedSurface =
+        Theme.of(context).cardTheme.color ?? scheme.surface;
     return Padding(
       padding: const EdgeInsets.only(right: AppTheme.space2),
       child: GestureDetector(
@@ -515,16 +614,16 @@ class _DayChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.space3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: selected ? color : AppTheme.card,
+            color: selected ? color : unselectedSurface,
             borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-            border: Border.all(color: selected ? color : AppTheme.lightGray),
+            border: Border.all(color: selected ? color : scheme.outlineVariant),
           ),
           child: Text(
             label,
             style: GoogleFonts.dmSans(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: selected ? Colors.white : AppTheme.darkBrown,
+              color: selected ? Colors.white : scheme.onSurface,
             ),
           ),
         ),

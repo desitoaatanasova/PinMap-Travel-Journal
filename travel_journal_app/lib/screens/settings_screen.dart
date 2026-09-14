@@ -77,8 +77,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
       appBar: AppBar(
         title: Text(
@@ -86,10 +87,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
-        backgroundColor: AppTheme.bg,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -97,9 +98,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionHeader('Account'),
+            _buildSectionHeader(context, 'Account'),
             const SizedBox(height: AppTheme.space2),
             _buildSettingsRow(
+              context,
               icon: Icons.work_outline,
               title: 'My Trips',
               subtitle: 'View and manage your trips',
@@ -111,6 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             _buildSettingsRow(
+              context,
               icon: Icons.bookmark_border_outlined,
               title: 'My Wish List',
               subtitle: 'Places you want to visit',
@@ -124,9 +127,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader('Preferences'),
+            _buildSectionHeader(context, 'Preferences'),
             const SizedBox(height: AppTheme.space2),
             _buildToggleRow(
+              context,
               icon: Icons.notifications_outlined,
               title: 'Notifications',
               subtitle: 'Receive travel reminders and updates',
@@ -134,6 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: _onNotificationsChanged,
             ),
             _buildToggleRow(
+              context,
               icon: Icons.cloud_off_outlined,
               title: 'Available Offline',
               subtitle:
@@ -144,6 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: _onOfflineChanged,
             ),
             _buildToggleRow(
+              context,
               icon: Icons.lock_outlined,
               title: 'Profile Status',
               subtitle:
@@ -154,17 +160,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: _onProfileStatusChanged,
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader('General'),
+            _buildSectionHeader(context, 'General'),
             const SizedBox(height: AppTheme.space2),
-            _buildLanguageSelector(),
+            _buildLanguageSelector(context),
             _buildSettingsRow(
+              context,
               icon: Icons.palette_outlined,
               title: 'Theme',
               subtitle: ThemeService.label(_themeMode),
               onTap: _showThemePicker,
             ),
-            _buildServerAddressRow(),
+            _buildServerAddressRow(context),
             _buildSettingsRow(
+              context,
               icon: Icons.storage_outlined,
               title: 'Storage',
               subtitle: 'Manage downloaded content',
@@ -178,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader('Danger Zone'),
+            _buildSectionHeader(context, 'Danger Zone'),
             const SizedBox(height: AppTheme.space2),
             _buildDeleteAccountButton(context),
             const SizedBox(height: AppTheme.space6),
@@ -190,7 +198,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(left: AppTheme.space2),
       child: Text(
@@ -198,35 +206,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
         style: GoogleFonts.dmSans(
           fontSize: 12,
           fontWeight: FontWeight.w700,
-          color: AppTheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           letterSpacing: 1.2,
         ),
       ),
     );
   }
 
-  Widget _buildToggleRow({
+  Widget _buildToggleRow(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
       child: SwitchListTile(
-        secondary: Icon(icon, color: AppTheme.primary),
+        secondary: Icon(icon, color: colorScheme.primary),
         title: Text(
           title,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
@@ -235,7 +245,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         value: value,
         onChanged: onChanged,
-        activeColor: AppTheme.primary,
+        activeColor: colorScheme.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
@@ -247,22 +257,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildLanguageSelector() {
+  Widget _buildLanguageSelector(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
       child: ListTile(
-        leading: Icon(Icons.language, color: AppTheme.primary),
+        leading: Icon(Icons.language, color: colorScheme.primary),
         title: Text(
           'Language',
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
@@ -282,27 +293,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSettingsRow({
+  Widget _buildSettingsRow(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
       child: ListTile(
-        leading: Icon(icon, color: AppTheme.primary),
+        leading: Icon(icon, color: colorScheme.primary),
         title: Text(
           title,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
@@ -322,23 +335,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildServerAddressRow() {
+  Widget _buildServerAddressRow(BuildContext context) {
     final override = ApiConfig.serverOverride;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
       child: ListTile(
-        leading: Icon(Icons.dns_outlined, color: AppTheme.primary),
+        leading: Icon(Icons.dns_outlined, color: colorScheme.primary),
         title: Text(
           'Server address',
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
@@ -367,7 +381,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(
               'Server address',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -440,7 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showModalBottomSheet(
       context: context,
       builder:
-          (context) => Container(
+          (sheetContext) => Container(
             padding: const EdgeInsets.all(AppTheme.space4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -450,28 +464,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Theme.of(sheetContext).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: AppTheme.space4),
                 ...options.map((mode) {
+                  final selected = _themeMode == mode;
+                  final scheme = Theme.of(sheetContext).colorScheme;
                   return ListTile(
                     title: Text(
                       ThemeService.label(mode),
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         fontWeight:
-                            _themeMode == mode
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                        color:
-                            _themeMode == mode
-                                ? AppTheme.primary
-                                : AppTheme.darkBrown,
+                            selected ? FontWeight.w600 : FontWeight.normal,
+                        color: selected ? scheme.primary : scheme.onSurface,
                       ),
                     ),
                     trailing:
-                        _themeMode == mode
-                            ? Icon(Icons.check, color: AppTheme.primary)
+                        selected
+                            ? Icon(Icons.check, color: scheme.primary)
                             : null,
                     onTap: () {
                       setState(() {
@@ -492,7 +504,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showModalBottomSheet(
       context: context,
       builder:
-          (context) => Container(
+          (sheetContext) => Container(
             padding: const EdgeInsets.all(AppTheme.space4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -502,28 +514,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Theme.of(sheetContext).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: AppTheme.space4),
                 ..._languages.map((lang) {
+                  final selected = _selectedLanguage == lang;
+                  final scheme = Theme.of(sheetContext).colorScheme;
                   return ListTile(
                     title: Text(
                       lang,
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         fontWeight:
-                            _selectedLanguage == lang
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                        color:
-                            _selectedLanguage == lang
-                                ? AppTheme.primary
-                                : AppTheme.darkBrown,
+                            selected ? FontWeight.w600 : FontWeight.normal,
+                        color: selected ? scheme.primary : scheme.onSurface,
                       ),
                     ),
                     trailing:
-                        _selectedLanguage == lang
-                            ? Icon(Icons.check, color: AppTheme.primary)
+                        selected
+                            ? Icon(Icons.check, color: scheme.primary)
                             : null,
                     onTap: () {
                       setState(() {
@@ -541,9 +551,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildLogoutButton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
@@ -570,9 +581,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildDeleteAccountButton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
@@ -606,11 +618,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (dialogContext) => AlertDialog(
             title: Text(
               'Logout?',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),

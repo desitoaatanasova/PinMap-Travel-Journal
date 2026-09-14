@@ -122,8 +122,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final navSurface = Theme.of(context).cardTheme.color ?? colorScheme.surface;
     return Scaffold(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
       body: Column(
         children: [
@@ -139,7 +141,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           AppTheme.space4,
         ),
         decoration: BoxDecoration(
-          color: AppTheme.card.withValues(alpha: 0.95),
+          color: navSurface.withValues(alpha: 0.95),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           boxShadow: AppTheme.shadowLg,
         ),
@@ -155,24 +157,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                 _selectedIndex = index;
               });
             },
-            indicatorColor: AppTheme.primary.withValues(alpha: 0.1),
+            indicatorColor: colorScheme.primary.withValues(alpha: 0.15),
             labelTextStyle: WidgetStatePropertyAll(
               GoogleFonts.dmSans(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.warmGray,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             destinations: [
               NavigationDestination(
                 icon: Icon(
                   Icons.home_outlined,
-                  color: AppTheme.warmGray,
+                  color: colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 selectedIcon: Icon(
                   Icons.home,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                   size: 24,
                 ),
                 label: 'Home',
@@ -180,12 +182,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               NavigationDestination(
                 icon: Icon(
                   Icons.work_outline,
-                  color: AppTheme.warmGray,
+                  color: colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 selectedIcon: Icon(
                   Icons.luggage,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                   size: 24,
                 ),
                 label: 'Trips',
@@ -193,12 +195,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               NavigationDestination(
                 icon: Icon(
                   Icons.menu_book_outlined,
-                  color: AppTheme.warmGray,
+                  color: colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 selectedIcon: Icon(
                   Icons.book,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                   size: 24,
                 ),
                 label: 'Journal',
@@ -206,12 +208,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               NavigationDestination(
                 icon: Icon(
                   Icons.bookmark_border_outlined,
-                  color: AppTheme.warmGray,
+                  color: colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 selectedIcon: Icon(
                   Icons.bookmark,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                   size: 24,
                 ),
                 label: 'Wish List',
@@ -219,12 +221,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               NavigationDestination(
                 icon: Icon(
                   Icons.person_outline,
-                  color: AppTheme.warmGray,
+                  color: colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 selectedIcon: Icon(
                   Icons.person,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                   size: 24,
                 ),
                 label: 'Profile',

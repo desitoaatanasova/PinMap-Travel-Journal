@@ -12,23 +12,33 @@ Future<bool?> showAppConfirmDialog(
 }) {
   return showDialog<bool>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(
-        title,
-        style: GoogleFonts.playfairDisplay(color: AppTheme.darkBrown, fontWeight: FontWeight.bold),
-      ),
-      content: Text(content, style: GoogleFonts.dmSans()),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: Text(cancelText, style: GoogleFonts.dmSans(color: AppTheme.warmGray)),
+    builder:
+        (dialogContext) => AlertDialog(
+          title: Text(
+            title,
+            style: GoogleFonts.playfairDisplay(
+              color: Theme.of(dialogContext).colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(content, style: GoogleFonts.dmSans()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(
+                cancelText,
+                style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: confirmColor,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(confirmText, style: GoogleFonts.dmSans()),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context, true),
-          style: ElevatedButton.styleFrom(backgroundColor: confirmColor, foregroundColor: Colors.white),
-          child: Text(confirmText, style: GoogleFonts.dmSans()),
-        ),
-      ],
-    ),
   );
 }

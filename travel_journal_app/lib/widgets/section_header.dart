@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
@@ -24,13 +23,13 @@ class SectionHeader extends StatelessWidget {
             child: Text(
               title,
               style: GoogleFonts.playfairDisplay(
-                color: color ?? AppTheme.darkBrown,
+                color: color ?? Theme.of(context).colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          trailing?? const SizedBox.shrink(),
+          trailing ?? const SizedBox.shrink(),
         ],
       ),
     );

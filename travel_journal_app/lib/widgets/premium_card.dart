@@ -6,19 +6,16 @@ class PremiumCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
 
-  const PremiumCard({
-    super.key,
-    required this.child,
-    this.padding,
-    this.onTap,
-  });
+  const PremiumCard({super.key, required this.child, this.padding, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowMd,
       ),
