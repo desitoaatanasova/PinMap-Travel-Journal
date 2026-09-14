@@ -70,9 +70,15 @@ class ApiClient {
   static Uri _uri(String path) => Uri.parse('$baseUrl$path');
 
   static Future<dynamic> _send(Future<http.Response> Function() request) async {
-    final response = await request.timeout(_requestTimeout, onTimeout: () {
-      throw ApiException(504, 'Request timed out after ${_requestTimeout.inSeconds}s');
-    });
+    final response = await request().timeout(
+      _requestTimeout,
+      onTimeout: () {
+        throw ApiException(
+          504,
+          'Request timed out after ${_requestTimeout.inSeconds}s',
+        );
+      },
+    );
     return _handleResponse(response);
   }
 
