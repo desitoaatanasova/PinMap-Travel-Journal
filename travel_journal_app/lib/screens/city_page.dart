@@ -75,10 +75,7 @@ class _CityPageState extends State<CityPage> {
                 AppTheme.space4,
                 AppTheme.space2,
               ),
-              child: SectionHeader(
-                title: 'What to discover',
-                color: AppTheme.darkBrown,
-              ),
+              child: const SectionHeader(title: 'What to discover'),
             ),
           ),
           SliverPadding(

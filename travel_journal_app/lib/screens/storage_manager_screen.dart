@@ -78,7 +78,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
             title: Text(
               'Clear failed operations?',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(ctx).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -130,7 +130,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
             title: Text(
               'Clear AI draft?',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(ctx).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -187,7 +187,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         elevation: 0,
@@ -200,7 +200,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildSectionHeader('Sync'),
+                    _buildSectionHeader(context, 'Sync'),
                     const SizedBox(height: AppTheme.space2),
                     _buildCard(
                       context,
@@ -267,7 +267,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                               style: GoogleFonts.dmSans(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: AppTheme.darkBrown,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             subtitle: Text(
@@ -284,7 +284,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.refresh, size: 18),
-                                  color: AppTheme.primary,
+                                  color: Theme.of(context).colorScheme.primary,
                                   onPressed: () => _retryOne(a),
                                 ),
                                 IconButton(
@@ -302,7 +302,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                       ),
                     ],
                     const SizedBox(height: AppTheme.space6),
-                    _buildSectionHeader('Drafts'),
+                    _buildSectionHeader(context, 'Drafts'),
                     const SizedBox(height: AppTheme.space2),
                     _buildCard(
                       context,
@@ -328,7 +328,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                       ),
                     ),
                     const SizedBox(height: AppTheme.space6),
-                    _buildSectionHeader('Cache'),
+                    _buildSectionHeader(context, 'Cache'),
                     const SizedBox(height: AppTheme.space2),
                     Container(
                       decoration: BoxDecoration(
@@ -378,7 +378,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(left: AppTheme.space2),
       child: Text(
@@ -386,7 +386,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
         style: GoogleFonts.dmSans(
           fontSize: 12,
           fontWeight: FontWeight.w700,
-          color: AppTheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           letterSpacing: 1.2,
         ),
       ),
@@ -400,23 +400,22 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
     required String subtitle,
     Widget? trailing,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color:
-            Theme.of(context).cardTheme.color ??
-            Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
       child: ListTile(
-        leading: Icon(icon, color: AppTheme.primary),
+        leading: Icon(icon, color: colorScheme.primary),
         title: Text(
           title,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: Text(

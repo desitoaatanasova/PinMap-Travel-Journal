@@ -48,7 +48,7 @@ class _TripsScreenState extends State<TripsScreen> {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   titlePadding: const EdgeInsets.only(
@@ -165,12 +165,14 @@ class _TripsScreenState extends State<TripsScreen> {
             Container(
               padding: const EdgeInsets.all(AppTheme.space2),
               decoration: BoxDecoration(
-                color: AppTheme.primary.withValues(alpha: 0.1),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               ),
               child: Icon(
                 Icons.auto_awesome,
-                color: AppTheme.primary,
+                color: Theme.of(context).colorScheme.primary,
                 size: 24,
               ),
             ),
@@ -184,7 +186,7 @@ class _TripsScreenState extends State<TripsScreen> {
                     style: GoogleFonts.dmSans(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -224,12 +226,14 @@ class _TripsScreenState extends State<TripsScreen> {
         children: [
           Container(
             height: 160,
-            color: AppTheme.primary.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             child: Center(
               child: Icon(
                 Icons.luggage,
                 size: 48,
-                color: AppTheme.primary.withValues(alpha: 0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
               ),
             ),
           ),
@@ -243,7 +247,7 @@ class _TripsScreenState extends State<TripsScreen> {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.darkBrown,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: AppTheme.space2),
@@ -295,7 +299,9 @@ class _TripsScreenState extends State<TripsScreen> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primary.withValues(alpha: 0.1),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(
                             AppTheme.radiusFull,
                           ),
@@ -305,7 +311,7 @@ class _TripsScreenState extends State<TripsScreen> {
                           style: GoogleFonts.dmSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: AppTheme.primary,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ),

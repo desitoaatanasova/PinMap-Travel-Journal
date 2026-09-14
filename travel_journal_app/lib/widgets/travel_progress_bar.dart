@@ -50,7 +50,7 @@ class TravelProgressBar extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
@@ -61,8 +61,10 @@ class TravelProgressBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 6,
-              backgroundColor: AppTheme.lightGray,
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primary),
+              backgroundColor: Theme.of(context).colorScheme.outlineVariant,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
         ],

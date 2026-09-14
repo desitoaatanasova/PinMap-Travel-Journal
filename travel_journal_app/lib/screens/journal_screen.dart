@@ -60,7 +60,7 @@ class JournalScreen extends StatelessWidget {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.darkBrown,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               titlePadding: const EdgeInsets.only(
@@ -105,14 +105,18 @@ class JournalScreen extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.public, size: 18, color: AppTheme.primary),
+                        Icon(
+                          Icons.public,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         const SizedBox(width: AppTheme.space2),
                         Text(
                           country.toUpperCase(),
                           style: GoogleFonts.dmSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: AppTheme.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             letterSpacing: 1.2,
                           ),
                         ),
@@ -240,7 +244,7 @@ class JournalScreen extends StatelessWidget {
             title: Text(
               title,
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(ctx).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -416,7 +420,7 @@ class JournalScreen extends StatelessWidget {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.darkBrown,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -427,7 +431,7 @@ class JournalScreen extends StatelessWidget {
                     Icon(
                       Icons.article_outlined,
                       size: 14,
-                      color: AppTheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -435,7 +439,7 @@ class JournalScreen extends StatelessWidget {
                       style: GoogleFonts.dmSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: AppTheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],

@@ -40,11 +40,13 @@ class _CountryPageState extends State<CountryPage> {
   Future<void> _refreshState() async {
     await WishlistService.loadItems();
     final rating = await RatingsService.getCountryRating(
-        widget.country.countryId);
+      widget.country.countryId,
+    );
     if (mounted) {
       setState(() {
-        _isWishlisted =
-            WishlistService.isCountryInWishlist(widget.country.countryId);
+        _isWishlisted = WishlistService.isCountryInWishlist(
+          widget.country.countryId,
+        );
         _isVisited = VisitedService.isCountryVisited(widget.country.countryId);
         _rating = rating?.myRating ?? 0;
       });
@@ -100,13 +102,13 @@ class _CountryPageState extends State<CountryPage> {
               fit: BoxFit.cover,
               memCacheWidth: 800,
               maxWidthDiskCache: 800,
-              placeholder: (context, url) => Container(
-                color: theme.primaryColor,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: theme.primaryColor,
-              ),
+              placeholder:
+                  (context, url) => Container(
+                    color: theme.primaryColor,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              errorWidget:
+                  (context, url, error) => Container(color: theme.primaryColor),
             ),
             Container(
               decoration: BoxDecoration(
@@ -130,20 +132,29 @@ class _CountryPageState extends State<CountryPage> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
-                    child: widget.country.flagImage != null
-                        ? CachedNetworkImage(
-                            imageUrl: widget.country.flagImage!,
-                            width: 40,
-                            height: 28,
-                            memCacheWidth: 120,
-                            memCacheHeight: 84,
-                            maxWidthDiskCache: 120,
-                            maxHeightDiskCache: 84,
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.flag, size: 28, color: Colors.white70),
-                          )
-                        : const Icon(Icons.flag, size: 28, color: Colors.white70),
+                    child:
+                        widget.country.flagImage != null
+                            ? CachedNetworkImage(
+                              imageUrl: widget.country.flagImage!,
+                              width: 40,
+                              height: 28,
+                              memCacheWidth: 120,
+                              memCacheHeight: 84,
+                              maxWidthDiskCache: 120,
+                              maxHeightDiskCache: 84,
+                              fit: BoxFit.cover,
+                              errorWidget:
+                                  (context, url, error) => const Icon(
+                                    Icons.flag,
+                                    size: 28,
+                                    color: Colors.white70,
+                                  ),
+                            )
+                            : const Icon(
+                              Icons.flag,
+                              size: 28,
+                              color: Colors.white70,
+                            ),
                   ),
                   const SizedBox(width: AppTheme.space3),
                   Expanded(
@@ -208,7 +219,8 @@ class _CountryPageState extends State<CountryPage> {
               if (mounted) {
                 setState(() {
                   _isVisited = VisitedService.isCountryVisited(
-                      widget.country.countryId);
+                    widget.country.countryId,
+                  );
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -339,8 +351,8 @@ class _CountryPageState extends State<CountryPage> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: widget.country.cityPins.length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(width: AppTheme.space3),
+            separatorBuilder:
+                (context, index) => const SizedBox(width: AppTheme.space3),
             itemBuilder: (context, index) {
               final city = widget.country.cityPins[index];
               return _buildCityCard(city, theme);
@@ -357,10 +369,11 @@ class _CountryPageState extends State<CountryPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CityPage(
-              cityName: city.name,
-              countryName: widget.country.name,
-            ),
+            builder:
+                (context) => CityPage(
+                  cityName: city.name,
+                  countryName: widget.country.name,
+                ),
           ),
         );
       },
@@ -385,23 +398,26 @@ class _CountryPageState extends State<CountryPage> {
                   topRight: Radius.circular(AppTheme.radiusMd - 1),
                 ),
                 child: CachedNetworkImage(
-                        imageUrl: 'https://source.unsplash.com/200x150/?${city.name},city',
-                        fit: BoxFit.cover,
-                        memCacheWidth: 300,
-                        maxWidthDiskCache: 300,
-                        placeholder: (context, url) => Container(
-                          color: theme.primaryColor.withValues(alpha: 0.1),
-                          child: const Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: theme.primaryColor.withValues(alpha: 0.1),
-                          child: Icon(
-                            Icons.location_city,
-                            color: theme.primaryColor,
-                            size: 28,
-                          ),
+                  imageUrl:
+                      'https://source.unsplash.com/200x150/?${city.name},city',
+                  fit: BoxFit.cover,
+                  memCacheWidth: 300,
+                  maxWidthDiskCache: 300,
+                  placeholder:
+                      (context, url) => Container(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        child: Icon(
+                          Icons.location_city,
+                          color: theme.primaryColor,
+                          size: 28,
                         ),
                       ),
+                ),
               ),
             ),
             Padding(
@@ -422,13 +438,13 @@ class _CountryPageState extends State<CountryPage> {
                   const SizedBox(height: 4),
                   GestureDetector(
                     onTap: () async {
-                      final cityVisited =
-                          VisitedService.isCityVisited(city.cityId);
+                      final cityVisited = VisitedService.isCityVisited(
+                        city.cityId,
+                      );
                       await VisitedService.toggleCity(
                         city.cityId,
-                        countryId: cityVisited
-                            ? null
-                            : widget.country.countryId,
+                        countryId:
+                            cityVisited ? null : widget.country.countryId,
                       );
                       if (mounted) setState(() {});
                     },
@@ -440,9 +456,10 @@ class _CountryPageState extends State<CountryPage> {
                               ? Icons.check_circle
                               : Icons.check_circle_outline,
                           size: 12,
-                          color: VisitedService.isCityVisited(city.cityId)
-                              ? Colors.green
-                              : theme.primaryColor.withValues(alpha: 0.5),
+                          color:
+                              VisitedService.isCityVisited(city.cityId)
+                                  ? Colors.green
+                                  : theme.primaryColor.withValues(alpha: 0.5),
                         ),
                         const SizedBox(width: 2),
                         Text(
@@ -452,9 +469,10 @@ class _CountryPageState extends State<CountryPage> {
                           style: GoogleFonts.dmSans(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
-                            color: VisitedService.isCityVisited(city.cityId)
-                                ? Colors.green
-                                : theme.primaryColor.withValues(alpha: 0.6),
+                            color:
+                                VisitedService.isCityVisited(city.cityId)
+                                    ? Colors.green
+                                    : theme.primaryColor.withValues(alpha: 0.6),
                           ),
                         ),
                       ],
@@ -497,9 +515,10 @@ class _CountryPageState extends State<CountryPage> {
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: widget.country.cityPins.isNotEmpty
-                    ? widget.country.cityPins.first.latLng
-                    : const LatLng(48.8566, 2.3522),
+                initialCenter:
+                    widget.country.cityPins.isNotEmpty
+                        ? widget.country.cityPins.first.latLng
+                        : const LatLng(48.8566, 2.3522),
                 initialZoom: 5.0,
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.none,
@@ -512,23 +531,26 @@ class _CountryPageState extends State<CountryPage> {
                   subdomains: const ['a', 'b', 'c'],
                 ),
                 MarkerLayer(
-                  markers: widget.country.cityPins.map((city) {
-                    return Marker(
-                      point: city.latLng,
-                      width: 44,
-                      height: 52,
-                      child: CustomMarker(
-                        marker: MapMarker(
-                          id: city.name,
-                          position: city.latLng,
-                          title: city.name,
-                          category: MarkerCategory.hiddenGems,
-                          isVisited: VisitedService.isCityVisited(city.cityId),
-                        ),
-                        size: 36,
-                      ),
-                    );
-                  }).toList(),
+                  markers:
+                      widget.country.cityPins.map((city) {
+                        return Marker(
+                          point: city.latLng,
+                          width: 44,
+                          height: 52,
+                          child: CustomMarker(
+                            marker: MapMarker(
+                              id: city.name,
+                              position: city.latLng,
+                              title: city.name,
+                              category: MarkerCategory.hiddenGems,
+                              isVisited: VisitedService.isCityVisited(
+                                city.cityId,
+                              ),
+                            ),
+                            size: 36,
+                          ),
+                        );
+                      }).toList(),
                 ),
               ],
             ),
@@ -541,45 +563,48 @@ class _CountryPageState extends State<CountryPage> {
   void _showRatingDialog(CountryTheme theme) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: theme.surfaceColor,
-        title: Text(
-          'Rate ${widget.country.name}',
-          style: GoogleFonts.playfairDisplay(
-            color: theme.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(5, (index) {
-            return IconButton(
-              icon: Icon(
-                index < _rating ? Icons.star : Icons.star_border,
-                color: theme.accentColor,
-                size: 36,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text(
+              'Rate ${widget.country.name}',
+              style: GoogleFonts.playfairDisplay(
+                color: Theme.of(dialogContext).colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
               ),
-              onPressed: () {
-                final rating = index + 1;
-                setState(() {
-                  _rating = rating;
-                });
-                RatingsService.rateCountry(widget.country.countryId, rating);
-                Navigator.pop(context);
-              },
-            );
-          }),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: theme.primaryColor),
             ),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(5, (index) {
+                return IconButton(
+                  icon: Icon(
+                    index < _rating ? Icons.star : Icons.star_border,
+                    color: theme.accentColor,
+                    size: 36,
+                  ),
+                  onPressed: () {
+                    final rating = index + 1;
+                    setState(() {
+                      _rating = rating;
+                    });
+                    RatingsService.rateCountry(
+                      widget.country.countryId,
+                      rating,
+                    );
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: theme.primaryColor),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

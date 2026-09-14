@@ -141,13 +141,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
     }
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: GoogleFonts.playfairDisplay(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppTheme.darkBrown,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
@@ -212,14 +212,20 @@ class _NewTripScreenState extends State<NewTripScreen> {
             const SizedBox(height: AppTheme.space1),
             Row(
               children: [
-                Icon(Icons.calendar_today, size: 18, color: AppTheme.primary),
+                Icon(
+                  Icons.calendar_today,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: AppTheme.space2),
                 Text(
                   date != null ? formatPickerDate(date) : 'Select',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     color:
-                        date != null ? AppTheme.darkBrown : AppTheme.warmGray,
+                        date != null
+                            ? Theme.of(context).colorScheme.onSurface
+                            : AppTheme.warmGray,
                   ),
                 ),
               ],
@@ -254,7 +260,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: AppTheme.primary),
+            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: AppTheme.space2),
             Expanded(
               child: Column(
@@ -275,7 +281,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       color:
                           value == label
                               ? AppTheme.warmGray
-                              : AppTheme.darkBrown,
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -339,7 +345,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                               style: GoogleFonts.playfairDisplay(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.darkBrown,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ),
@@ -359,9 +365,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         padding: const EdgeInsets.all(AppTheme.space4),
                         children: [
                           if (_countryCities.isNotEmpty) ...[
-                            _buildCityGroupTitle('Cities in ${country.name}'),
+                            _buildCityGroupTitle(
+                              context,
+                              'Cities in ${country.name}',
+                            ),
                             ..._countryCities.map(
                               (city) => _buildCityCheckTile(
+                                context,
                                 city,
                                 current,
                                 setSheetState,
@@ -372,10 +382,12 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           if (_nearbyCities.isNotEmpty) ...[
                             const SizedBox(height: AppTheme.space4),
                             _buildCityGroupTitle(
+                              context,
                               'Nearby in neighbouring countries',
                             ),
                             ..._nearbyCities.map(
                               (city) => _buildCityCheckTile(
+                                context,
                                 city,
                                 current,
                                 setSheetState,
@@ -429,7 +441,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
     return '';
   }
 
-  Widget _buildCityGroupTitle(String title) {
+  Widget _buildCityGroupTitle(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.space2),
       child: Text(
@@ -437,19 +449,21 @@ class _NewTripScreenState extends State<NewTripScreen> {
         style: GoogleFonts.dmSans(
           fontSize: 13,
           fontWeight: FontWeight.w700,
-          color: AppTheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
   }
 
   Widget _buildCityCheckTile(
+    BuildContext context,
     CityPin city,
     Set<int> current,
     StateSetter setSheetState,
     String countryName,
   ) {
     final checked = current.contains(city.cityId);
+    final colorScheme = Theme.of(context).colorScheme;
     return CheckboxListTile(
       value: checked,
       onChanged: (value) {
@@ -462,14 +476,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
         });
       },
       controlAffinity: ListTileControlAffinity.leading,
-      activeColor: AppTheme.primary,
+      activeColor: colorScheme.primary,
       contentPadding: EdgeInsets.zero,
       dense: true,
       title: Text(
         city.name,
         style: GoogleFonts.dmSans(
           fontSize: 14,
-          color: AppTheme.darkBrown,
+          color: colorScheme.onSurface,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -542,15 +556,19 @@ class _NewTripScreenState extends State<NewTripScreen> {
                                 .map(
                                   (city) => ListTile(
                                     contentPadding: EdgeInsets.zero,
-                                    leading: const Icon(
+                                    leading: Icon(
                                       Icons.location_city,
-                                      color: AppTheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                     title: Text(
                                       city.name,
                                       style: GoogleFonts.dmSans(
                                         fontSize: 14,
-                                        color: AppTheme.darkBrown,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                       ),
                                     ),
                                     subtitle: Text(
@@ -638,18 +656,18 @@ class _NewTripScreenState extends State<NewTripScreen> {
     await showDialog<void>(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (dialogContext) => AlertDialog(
             title: Text(
               "Couldn't Generate Trip",
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(message, style: GoogleFonts.dmSans()),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(dialogContext),
                 child: Text(
                   'Cancel',
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
@@ -657,22 +675,26 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                   _generateTripPlan();
                 },
                 child: Text(
                   'Retry',
-                  style: GoogleFonts.dmSans(color: AppTheme.primary),
+                  style: GoogleFonts.dmSans(
+                    color: Theme.of(dialogContext).colorScheme.primary,
+                  ),
                 ),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                   _createBasicItinerary(countryName);
                 },
                 child: Text(
                   'Create basic itinerary without AI',
-                  style: GoogleFonts.dmSans(color: AppTheme.primary),
+                  style: GoogleFonts.dmSans(
+                    color: Theme.of(dialogContext).colorScheme.primary,
+                  ),
                 ),
               ),
             ],
@@ -781,7 +803,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         elevation: 0,
@@ -791,7 +813,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionTitle('Destination'),
+            _buildSectionTitle(context, 'Destination'),
             const SizedBox(height: AppTheme.space2),
             DropdownButtonFormField<int>(
               initialValue: _selectedCountryId,
@@ -870,7 +892,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ],
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle('Dates'),
+            _buildSectionTitle(context, 'Dates'),
             const SizedBox(height: AppTheme.space2),
             Row(
               children: [
@@ -904,7 +926,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ),
             ],
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle('Type of Vacation'),
+            _buildSectionTitle(context, 'Type of Vacation'),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<String>(
               segments:
@@ -925,20 +947,22 @@ class _NewTripScreenState extends State<NewTripScreen> {
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return AppTheme.primary.withValues(alpha: 0.1);
+                    return Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1);
                   }
                   return null;
                 }),
                 foregroundColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return AppTheme.primary;
+                    return Theme.of(context).colorScheme.primary;
                   }
                   return AppTheme.warmGray;
                 }),
               ),
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle('Travel Style'),
+            _buildSectionTitle(context, 'Travel Style'),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<bool>(
               segments: const [
@@ -963,13 +987,15 @@ class _NewTripScreenState extends State<NewTripScreen> {
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return AppTheme.primary.withValues(alpha: 0.1);
+                    return Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1);
                   }
                   return null;
                 }),
                 foregroundColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return AppTheme.primary;
+                    return Theme.of(context).colorScheme.primary;
                   }
                   return AppTheme.warmGray;
                 }),
@@ -977,9 +1003,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ),
             if (!_isSolo) ...[
               const SizedBox(height: AppTheme.space6),
-              _buildSectionTitle('Travel Companions'),
+              _buildSectionTitle(context, 'Travel Companions'),
               const SizedBox(height: AppTheme.space2),
-              _buildParticipantsSection(),
+              _buildParticipantsSection(context),
             ],
             const SizedBox(height: AppTheme.space8),
             ElevatedButton.icon(
@@ -1014,7 +1040,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
     );
   }
 
-  Widget _buildParticipantsSection() {
+  Widget _buildParticipantsSection(BuildContext context) {
     if (_loadingFriends) {
       return const Padding(
         padding: EdgeInsets.all(AppTheme.space4),
@@ -1025,9 +1051,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
       return Container(
         padding: const EdgeInsets.all(AppTheme.space4),
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.lightGray),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Text(
           'No friends found yet. Follow other travellers (and let them follow you back) and they will appear here to add as trip companions.',
@@ -1037,9 +1067,11 @@ class _NewTripScreenState extends State<NewTripScreen> {
     }
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.lightGray),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         children:
@@ -1057,13 +1089,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
-                activeColor: AppTheme.primary,
+                activeColor: Theme.of(context).colorScheme.primary,
                 dense: true,
                 title: Text(
                   friend.displayName,
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: AppTheme.darkBrown,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

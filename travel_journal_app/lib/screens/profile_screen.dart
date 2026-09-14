@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     sliver: SliverGrid(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         if (index == 0) {
-                          return _buildUploadTile();
+                          return _buildUploadTile(context);
                         }
                         final photoIndex = index - 1;
                         final photo = profile.travelPhotos[photoIndex];
@@ -383,10 +383,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat('$placesCount', 'Places', Icons.public),
-          _buildStat('${profile.tripsPlanned}', 'Trips', Icons.luggage),
-          _buildStat('${profile.followersCount}', 'Followers', Icons.people),
+          _buildStat(context, '$placesCount', 'Places', Icons.public),
           _buildStat(
+            context,
+            '${profile.tripsPlanned}',
+            'Trips',
+            Icons.luggage,
+          ),
+          _buildStat(
+            context,
+            '${profile.followersCount}',
+            'Followers',
+            Icons.people,
+          ),
+          _buildStat(
+            context,
             '${profile.followingCount}',
             'Following',
             Icons.person_add,
@@ -396,17 +407,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStat(String value, String label, IconData icon) {
+  Widget _buildStat(
+    BuildContext context,
+    String value,
+    String label,
+    IconData icon,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Icon(icon, size: 20, color: AppTheme.primary),
+        Icon(icon, size: 20, color: colorScheme.primary),
         const SizedBox(height: 4),
         Text(
           value,
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         Text(
@@ -450,14 +467,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildUploadTile() {
+  Widget _buildUploadTile(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
     return GestureDetector(
       onTap: _uploadingPhoto ? null : _uploadPhoto,
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.primary.withValues(alpha: 0.06),
+          color: primary.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-          border: Border.all(color: AppTheme.primary.withValues(alpha: 0.25)),
+          border: Border.all(color: primary.withValues(alpha: 0.25)),
         ),
         child:
             _uploadingPhoto
@@ -473,15 +491,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Icon(
                       Icons.add_a_photo,
                       size: 28,
-                      color: AppTheme.primary.withValues(alpha: 0.7),
+                      color: primary.withValues(alpha: 0.7),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       'Add',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        color: AppTheme.primary,
-                      ),
+                      style: GoogleFonts.dmSans(fontSize: 12, color: primary),
                     ),
                   ],
                 ),
@@ -600,7 +615,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.darkBrown,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -626,6 +641,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         OutlinedButton.icon(
@@ -633,8 +649,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           icon: const Icon(Icons.person_outline, size: 20),
           label: const Text('Edit Profile'),
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppTheme.primary,
-            side: BorderSide(color: AppTheme.primary, width: 2),
+            foregroundColor: colorScheme.primary,
+            side: BorderSide(color: colorScheme.primary, width: 2),
             minimumSize: const Size(double.infinity, 48),
           ),
         ),
@@ -649,8 +665,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           icon: const Icon(Icons.settings, size: 20),
           label: const Text('Settings'),
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppTheme.darkBrown,
-            side: BorderSide(color: AppTheme.warmGray),
+            foregroundColor: colorScheme.onSurface,
+            side: BorderSide(color: colorScheme.outlineVariant),
             minimumSize: const Size(double.infinity, 48),
           ),
         ),
@@ -676,7 +692,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: Text(
               'Edit Profile',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),

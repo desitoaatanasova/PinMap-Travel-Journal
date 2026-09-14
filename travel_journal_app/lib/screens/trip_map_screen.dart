@@ -355,7 +355,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         elevation: 0,
@@ -409,7 +409,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                               style: GoogleFonts.playfairDisplay(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.darkBrown,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: AppTheme.space2),

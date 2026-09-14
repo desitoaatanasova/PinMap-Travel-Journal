@@ -53,7 +53,7 @@ class _WishListScreenState extends State<WishListScreen> {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   titlePadding: const EdgeInsets.only(
@@ -187,7 +187,7 @@ class _WishListScreenState extends State<WishListScreen> {
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppTheme.darkBrown,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -214,7 +214,7 @@ class _WishListScreenState extends State<WishListScreen> {
                     style: GoogleFonts.dmSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -286,7 +286,7 @@ class _WishListScreenState extends State<WishListScreen> {
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: AppTheme.darkBrown,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -313,7 +313,7 @@ class _WishListScreenState extends State<WishListScreen> {
                       style: GoogleFonts.dmSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

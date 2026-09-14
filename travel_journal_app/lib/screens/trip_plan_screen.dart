@@ -72,7 +72,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: AppTheme.space4),
@@ -434,11 +434,11 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (dialogContext) => AlertDialog(
             title: Text(
               'Discard Draft?',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -501,7 +501,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                 vertical: AppTheme.space1,
               ),
               decoration: BoxDecoration(
-                color: AppTheme.primary.withValues(alpha: 0.1),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.radiusFull),
               ),
               child: Text(
@@ -509,27 +509,34 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.primary,
+                  color: colorScheme.primary,
                 ),
               ),
             ),
             const SizedBox(height: AppTheme.space3),
             if (day.morning.isNotEmpty) ...[
-              _buildSectionHeader('Morning', Icons.wb_sunny),
+              _buildSectionHeader(context, 'Morning', Icons.wb_sunny),
               const SizedBox(height: AppTheme.space2),
-              ...day.morning.map((activity) => _buildActivityRow(activity)),
+              ...day.morning.map(
+                (activity) => _buildActivityRow(context, activity),
+              ),
               const SizedBox(height: AppTheme.space3),
             ],
             if (day.afternoon.isNotEmpty) ...[
-              _buildSectionHeader('Afternoon', Icons.light_mode),
+              _buildSectionHeader(context, 'Afternoon', Icons.light_mode),
               const SizedBox(height: AppTheme.space2),
-              ...day.afternoon.map((activity) => _buildActivityRow(activity)),
+              ...day.afternoon.map(
+                (activity) => _buildActivityRow(context, activity),
+              ),
               const SizedBox(height: AppTheme.space3),
             ],
             if (day.evening.isNotEmpty) ...[
-              _buildSectionHeader('Evening', Icons.nightlight),
+              _buildSectionHeader(context, 'Evening', Icons.nightlight),
               const SizedBox(height: AppTheme.space2),
-              ...day.evening.map((activity) => _buildActivityRow(activity)),
+              ...day.evening.map(
+                (activity) => _buildActivityRow(context, activity),
+              ),
+              const SizedBox(height: AppTheme.space3),
             ],
           ],
         ),
@@ -537,24 +544,29 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title, IconData icon) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppTheme.primary),
+        Icon(icon, size: 18, color: colorScheme.primary),
         const SizedBox(width: AppTheme.space2),
         Text(
           title,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.primary,
+            color: colorScheme.primary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildActivityRow(TripActivity activity) {
+  Widget _buildActivityRow(BuildContext context, TripActivity activity) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.space2),
       child: Row(
@@ -576,7 +588,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppTheme.darkBrown,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 if (activity.notes.isNotEmpty) ...[
@@ -616,11 +628,11 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (dialogContext) => AlertDialog(
             title: Text(
               'Delete Trip',
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),

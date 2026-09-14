@@ -121,7 +121,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
         title: Text(
           _journal?.title ?? 'Journal',
           style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.bold,
           ),
         ),

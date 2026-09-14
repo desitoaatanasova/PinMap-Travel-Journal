@@ -71,7 +71,7 @@ class _CategoryPageState extends State<CategoryPage> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         elevation: 0,
@@ -90,7 +90,7 @@ class _CategoryPageState extends State<CategoryPage> {
               '${widget.cityName}, ${widget.countryName}',
               style: GoogleFonts.dancingScript(
                 fontSize: 18,
-                color: AppTheme.primary,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -203,7 +203,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               style: GoogleFonts.playfairDisplay(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: AppTheme.darkBrown,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ),

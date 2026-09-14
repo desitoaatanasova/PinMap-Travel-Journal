@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onChanged: _onSearchChanged,
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Search country or city...',
@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           dense: true,
                           leading: Icon(
                             Icons.location_on,
-                            color: AppTheme.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             size: 18,
                           ),
                           title: Text(
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.dmSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.darkBrown,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           subtitle: Text(
@@ -295,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: AppTheme.darkBrown,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           if (CountryService.hasError)
@@ -306,7 +306,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Icon(
                                     Icons.refresh,
                                     size: 16,
-                                    color: AppTheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
@@ -314,7 +315,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: GoogleFonts.dmSans(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: AppTheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ],
@@ -367,7 +369,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: GoogleFonts.dmSans(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: AppTheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ],
@@ -506,7 +509,7 @@ class _CountryListCard extends StatelessWidget {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.darkBrown,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   Text(

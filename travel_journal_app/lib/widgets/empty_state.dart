@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 class EmptyState extends StatelessWidget {
   final IconData icon;
@@ -27,14 +26,16 @@ class EmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 80,
-              color: AppTheme.warmGray.withValues(alpha: 0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
               style: GoogleFonts.dmSans(
-                color: AppTheme.warmGray,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 16,
               ),
             ),

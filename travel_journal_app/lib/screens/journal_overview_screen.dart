@@ -43,7 +43,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.darkBrown,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               titlePadding: const EdgeInsets.only(
@@ -189,7 +189,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.darkBrown,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -215,7 +215,9 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                           color:
                               isVisited
                                   ? Colors.green.withValues(alpha: 0.15)
-                                  : AppTheme.primary.withValues(alpha: 0.08),
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(
                             AppTheme.radiusFull,
                           ),
@@ -229,7 +231,9 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                                   : Icons.check_circle_outline,
                               size: 14,
                               color:
-                                  isVisited ? Colors.green : AppTheme.primary,
+                                  isVisited
+                                      ? Colors.green
+                                      : Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -238,7 +242,9 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color:
-                                    isVisited ? Colors.green : AppTheme.primary,
+                                    isVisited
+                                        ? Colors.green
+                                        : Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ],

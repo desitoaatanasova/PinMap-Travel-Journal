@@ -329,26 +329,42 @@ class _UserPageScreenState extends State<UserPageScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat('${_user.placesVisited}', 'Places', Icons.public),
-          _buildStat('${_user.tripsPlanned}', 'Trips', Icons.luggage),
-          _buildStat('${_user.followersCount}', 'Followers', Icons.people),
-          _buildStat('${_user.followingCount}', 'Following', Icons.person_add),
+          _buildStat(context, '${_user.placesVisited}', 'Places', Icons.public),
+          _buildStat(context, '${_user.tripsPlanned}', 'Trips', Icons.luggage),
+          _buildStat(
+            context,
+            '${_user.followersCount}',
+            'Followers',
+            Icons.people,
+          ),
+          _buildStat(
+            context,
+            '${_user.followingCount}',
+            'Following',
+            Icons.person_add,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStat(String value, String label, IconData icon) {
+  Widget _buildStat(
+    BuildContext context,
+    String value,
+    String label,
+    IconData icon,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Icon(icon, size: 20, color: AppTheme.primary),
+        Icon(icon, size: 20, color: colorScheme.primary),
         const SizedBox(height: 4),
         Text(
           value,
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: colorScheme.onSurface,
           ),
         ),
         Text(
@@ -368,7 +384,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: AppTheme.space3),
@@ -484,7 +500,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.darkBrown,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

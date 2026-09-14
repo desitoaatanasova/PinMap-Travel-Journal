@@ -226,7 +226,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
             title: Text(
               title,
               style: GoogleFonts.playfairDisplay(
-                color: AppTheme.darkBrown,
+                color: Theme.of(ctx).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -825,7 +825,10 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(AppTheme.space2),
                             decoration: BoxDecoration(
-                              color: AppTheme.bg,
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(
                                 AppTheme.radiusMd,
                               ),
@@ -1049,7 +1052,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                               border: Border.all(
                                 color:
                                     active
-                                        ? AppTheme.darkBrown
+                                        ? Theme.of(context).colorScheme.primary
                                         : Colors.transparent,
                                 width: 3,
                               ),
@@ -1083,10 +1086,13 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 const SizedBox(height: AppTheme.space4),
                 ..._availableFonts.map((font) {
                   return ListTile(
-                    title: Text(font, style: _fontPreviewStyle(font)),
+                    title: Text(font, style: _fontPreviewStyle(context, font)),
                     trailing:
                         _currentFont == font
-                            ? Icon(Icons.check, color: AppTheme.primary)
+                            ? Icon(
+                              Icons.check,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
                             : null,
                     onTap: () {
                       if (_formattingText) {
@@ -1105,8 +1111,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     );
   }
 
-  TextStyle _fontPreviewStyle(String font) {
-    final base = TextStyle(fontSize: 18, color: AppTheme.darkBrown);
+  TextStyle _fontPreviewStyle(BuildContext context, String font) {
+    final base = TextStyle(
+      fontSize: 18,
+      color: Theme.of(context).colorScheme.onSurface,
+    );
     switch (font) {
       case 'Playfair Display':
         return GoogleFonts.playfairDisplay(textStyle: base);

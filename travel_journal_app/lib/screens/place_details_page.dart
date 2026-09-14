@@ -149,7 +149,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.darkBrown,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -205,7 +205,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                       place.address!,
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
-                        color: AppTheme.darkBrown,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -229,9 +229,10 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                         place.website!.trim(),
                         style: GoogleFonts.dmSans(
                           fontSize: 14,
-                          color: AppTheme.primary,
+                          color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
-                          decorationColor: AppTheme.primary,
+                          decorationColor:
+                              Theme.of(context).colorScheme.primary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -258,7 +259,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                       place.openingHours!.trim(),
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
-                        color: AppTheme.darkBrown,
+                        color: Theme.of(context).colorScheme.onSurface,
                         height: 1.4,
                       ),
                     ),
@@ -373,7 +374,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            color: AppTheme.darkBrown,
+            color: Theme.of(context).colorScheme.onSurface,
             height: 1.2,
           ),
         ),
