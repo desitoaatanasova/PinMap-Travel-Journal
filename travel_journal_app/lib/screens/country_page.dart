@@ -53,12 +53,41 @@ class _CountryPageState extends State<CountryPage> {
     }
   }
 
+  bool _isDark(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+
+  Color _pageBg(BuildContext context, CountryTheme theme) =>
+      _isDark(context)
+          ? Theme.of(context).scaffoldBackgroundColor
+          : theme.backgroundColor;
+
+  Color _cardBg(BuildContext context, CountryTheme theme) =>
+      _isDark(context)
+          ? (Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface)
+          : theme.surfaceColor;
+
+  Color _body(BuildContext context, CountryTheme theme) =>
+      _isDark(context)
+          ? Theme.of(context).colorScheme.onSurface
+          : theme.textColor;
+
+  Color _heading(BuildContext context, CountryTheme theme) =>
+      _isDark(context)
+          ? Theme.of(context).colorScheme.onSurface
+          : theme.primaryColor;
+
+  Color _brandFaint(BuildContext context, CountryTheme theme, double alpha) =>
+      _isDark(context)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: alpha)
+          : theme.primaryColor.withValues(alpha: alpha);
+
   @override
   Widget build(BuildContext context) {
     final theme = CountryThemeService.getThemeForCountry(widget.country.name);
 
     return Scaffold(
-      backgroundColor: theme.backgroundColor,
+      backgroundColor: _pageBg(context, theme),
       extendBody: true,
       body: CustomScrollView(
         slivers: [
@@ -72,11 +101,11 @@ class _CountryPageState extends State<CountryPage> {
                   const SizedBox(height: AppTheme.space4),
                   _buildActionButtons(theme),
                   const SizedBox(height: AppTheme.space6),
-                  _buildDescription(theme),
+                  _buildDescription(context, theme),
                   const SizedBox(height: AppTheme.space6),
-                  _buildCityList(theme),
+                  _buildCityList(context, theme),
                   const SizedBox(height: AppTheme.space6),
-                  _buildMiniMap(theme),
+                  _buildMiniMap(context, theme),
                   const SizedBox(height: AppTheme.space8),
                 ],
               ),
@@ -300,11 +329,11 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  Widget _buildDescription(CountryTheme theme) {
+  Widget _buildDescription(BuildContext context, CountryTheme theme) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
-        color: theme.surfaceColor,
+        color: _cardBg(context, theme),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowSm,
       ),
@@ -316,7 +345,7 @@ class _CountryPageState extends State<CountryPage> {
             style: GoogleFonts.playfairDisplay(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: theme.primaryColor,
+              color: _heading(context, theme),
             ),
           ),
           const SizedBox(height: AppTheme.space2),
@@ -324,7 +353,7 @@ class _CountryPageState extends State<CountryPage> {
             widget.country.description,
             style: GoogleFonts.dmSans(
               fontSize: 14,
-              color: theme.textColor,
+              color: _body(context, theme),
               height: 1.6,
             ),
           ),
@@ -333,7 +362,7 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  Widget _buildCityList(CountryTheme theme) {
+  Widget _buildCityList(BuildContext context, CountryTheme theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -342,7 +371,7 @@ class _CountryPageState extends State<CountryPage> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: theme.primaryColor,
+            color: _heading(context, theme),
           ),
         ),
         const SizedBox(height: AppTheme.space3),
@@ -355,7 +384,7 @@ class _CountryPageState extends State<CountryPage> {
                 (context, index) => const SizedBox(width: AppTheme.space3),
             itemBuilder: (context, index) {
               final city = widget.country.cityPins[index];
-              return _buildCityCard(city, theme);
+              return _buildCityCard(context, city, theme);
             },
           ),
         ),
@@ -363,7 +392,11 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  Widget _buildCityCard(CityPin city, CountryTheme theme) {
+  Widget _buildCityCard(
+    BuildContext context,
+    CityPin city,
+    CountryTheme theme,
+  ) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -380,11 +413,14 @@ class _CountryPageState extends State<CountryPage> {
       child: Container(
         width: 110,
         decoration: BoxDecoration(
-          color: theme.surfaceColor,
+          color: _cardBg(context, theme),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           boxShadow: AppTheme.shadowSm,
           border: Border.all(
-            color: theme.primaryColor.withValues(alpha: 0.2),
+            color:
+                _isDark(context)
+                    ? Theme.of(context).colorScheme.outlineVariant
+                    : theme.primaryColor.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -405,15 +441,30 @@ class _CountryPageState extends State<CountryPage> {
                   maxWidthDiskCache: 300,
                   placeholder:
                       (context, url) => Container(
-                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        color:
+                            _isDark(context)
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest
+                                : theme.primaryColor.withValues(alpha: 0.1),
                         child: const Center(child: CircularProgressIndicator()),
                       ),
                   errorWidget:
                       (context, url, error) => Container(
-                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        color:
+                            _isDark(context)
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest
+                                : theme.primaryColor.withValues(alpha: 0.1),
                         child: Icon(
                           Icons.location_city,
-                          color: theme.primaryColor,
+                          color:
+                              _isDark(context)
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant
+                                  : theme.primaryColor,
                           size: 28,
                         ),
                       ),
@@ -429,7 +480,7 @@ class _CountryPageState extends State<CountryPage> {
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: theme.textColor,
+                      color: _body(context, theme),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -459,7 +510,7 @@ class _CountryPageState extends State<CountryPage> {
                           color:
                               VisitedService.isCityVisited(city.cityId)
                                   ? Colors.green
-                                  : theme.primaryColor.withValues(alpha: 0.5),
+                                  : _brandFaint(context, theme, 0.5),
                         ),
                         const SizedBox(width: 2),
                         Text(
@@ -472,7 +523,7 @@ class _CountryPageState extends State<CountryPage> {
                             color:
                                 VisitedService.isCityVisited(city.cityId)
                                     ? Colors.green
-                                    : theme.primaryColor.withValues(alpha: 0.6),
+                                    : _brandFaint(context, theme, 0.6),
                           ),
                         ),
                       ],
@@ -487,7 +538,7 @@ class _CountryPageState extends State<CountryPage> {
     );
   }
 
-  Widget _buildMiniMap(CountryTheme theme) {
+  Widget _buildMiniMap(BuildContext context, CountryTheme theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -496,7 +547,7 @@ class _CountryPageState extends State<CountryPage> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: theme.primaryColor,
+            color: _heading(context, theme),
           ),
         ),
         const SizedBox(height: AppTheme.space3),
@@ -506,7 +557,10 @@ class _CountryPageState extends State<CountryPage> {
             borderRadius: BorderRadius.circular(AppTheme.radiusLg),
             boxShadow: AppTheme.shadowMd,
             border: Border.all(
-              color: theme.primaryColor.withValues(alpha: 0.3),
+              color:
+                  _isDark(context)
+                      ? Theme.of(context).colorScheme.outlineVariant
+                      : theme.primaryColor.withValues(alpha: 0.3),
               width: 2,
             ),
           ),
@@ -597,10 +651,12 @@ class _CountryPageState extends State<CountryPage> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(dialogContext),
                 child: Text(
                   'Cancel',
-                  style: GoogleFonts.dmSans(color: theme.primaryColor),
+                  style: GoogleFonts.dmSans(
+                    color: Theme.of(dialogContext).colorScheme.primary,
+                  ),
                 ),
               ),
             ],
