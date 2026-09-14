@@ -47,14 +47,12 @@ class JournalScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 120,
             pinned: true,
-            backgroundColor: AppTheme.bg,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(

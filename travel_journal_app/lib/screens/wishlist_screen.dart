@@ -36,7 +36,6 @@ class _WishListScreenState extends State<WishListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: ValueListenableBuilder<int>(
         valueListenable: WishlistService.version,
@@ -47,7 +46,6 @@ class _WishListScreenState extends State<WishListScreen> {
               SliverAppBar(
                 expandedHeight: 120,
                 pinned: true,
-                backgroundColor: AppTheme.bg,
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(

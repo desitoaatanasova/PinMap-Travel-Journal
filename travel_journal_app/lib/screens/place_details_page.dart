@@ -139,7 +139,6 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     final categoryColor = _getCategoryColor();
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       appBar: AppBar(
         title: Row(
@@ -167,7 +166,6 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
             onPressed: _toggleWishlist,
           ),
         ],
-        backgroundColor: AppTheme.bg.withValues(alpha: 0.8),
         elevation: 0,
       ),
       body: SingleChildScrollView(

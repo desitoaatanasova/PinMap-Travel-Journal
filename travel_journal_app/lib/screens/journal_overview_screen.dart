@@ -30,14 +30,12 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
     final allCountries = CountryService.getAllCountries();
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 120,
             pinned: true,
-            backgroundColor: AppTheme.bg,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
@@ -49,7 +47,9 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 ),
               ),
               titlePadding: const EdgeInsets.only(
-                  left: AppTheme.space4, bottom: AppTheme.space4),
+                left: AppTheme.space4,
+                bottom: AppTheme.space4,
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -96,9 +96,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: AppTheme.space4),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space4)),
           if (allCountries.isEmpty)
             SliverFillRemaining(
               child: EmptyState(
@@ -114,18 +112,13 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
             SliverPadding(
               padding: const EdgeInsets.all(AppTheme.space4),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final country = allCountries[index];
-                    return _buildCountryCard(context, country);
-                  },
-                  childCount: allCountries.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final country = allCountries[index];
+                  return _buildCountryCard(context, country);
+                }, childCount: allCountries.length),
               ),
             ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: AppTheme.space12),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
         ],
       ),
     );
@@ -141,9 +134,8 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => JournalEditorScreen(
-                countryName: country.name,
-              ),
+              builder:
+                  (context) => JournalEditorScreen(countryName: country.name),
             ),
           );
         },
@@ -159,23 +151,32 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                   bottomLeft: Radius.circular(AppTheme.radiusLg),
                 ),
               ),
-              child: country.flagImage != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(
-                        imageUrl: country.flagImage!,
-                        width: 40,
-                        height: 28,
-                        memCacheWidth: 120,
-                        memCacheHeight: 84,
-                        maxWidthDiskCache: 120,
-                        maxHeightDiskCache: 84,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.flag, size: 24, color: Color(0xFF8B7355)),
+              child:
+                  country.flagImage != null
+                      ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedNetworkImage(
+                          imageUrl: country.flagImage!,
+                          width: 40,
+                          height: 28,
+                          memCacheWidth: 120,
+                          memCacheHeight: 84,
+                          maxWidthDiskCache: 120,
+                          maxHeightDiskCache: 84,
+                          fit: BoxFit.cover,
+                          errorWidget:
+                              (context, url, error) => const Icon(
+                                Icons.flag,
+                                size: 24,
+                                color: Color(0xFF8B7355),
+                              ),
+                        ),
+                      )
+                      : const Icon(
+                        Icons.flag,
+                        size: 24,
+                        color: Color(0xFF8B7355),
                       ),
-                    )
-                  : const Icon(Icons.flag, size: 24, color: Color(0xFF8B7355)),
             ),
             Expanded(
               child: Padding(
@@ -211,11 +212,13 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: isVisited
-                              ? Colors.green.withValues(alpha: 0.15)
-                              : AppTheme.primary.withValues(alpha: 0.08),
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusFull),
+                          color:
+                              isVisited
+                                  ? Colors.green.withValues(alpha: 0.15)
+                                  : AppTheme.primary.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusFull,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -234,9 +237,8 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                               style: GoogleFonts.dmSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: isVisited
-                                    ? Colors.green
-                                    : AppTheme.primary,
+                                color:
+                                    isVisited ? Colors.green : AppTheme.primary,
                               ),
                             ),
                           ],

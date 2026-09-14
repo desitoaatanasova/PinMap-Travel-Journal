@@ -79,7 +79,6 @@ class _UserPageScreenState extends State<UserPageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: CustomScrollView(
         slivers: [
@@ -166,7 +165,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildStatsRow(),
+                  _buildStatsRow(context),
                   const SizedBox(height: AppTheme.space4),
                   ElevatedButton.icon(
                     onPressed: _busy ? null : _toggleFollow,
@@ -190,10 +189,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
                     style:
                         _user.isFollowing
                             ? ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.card,
-                              foregroundColor: AppTheme.primary,
+                              backgroundColor:
+                                  Theme.of(context).cardTheme.color ??
+                                  Theme.of(context).colorScheme.surface,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.primary,
                               side: BorderSide(
-                                color: AppTheme.primary,
+                                color: Theme.of(context).colorScheme.primary,
                                 width: 2,
                               ),
                               minimumSize: const Size(double.infinity, 48),
@@ -207,9 +209,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
                     Container(
                       padding: const EdgeInsets.all(AppTheme.space4),
                       decoration: BoxDecoration(
-                        color: AppTheme.card,
+                        color:
+                            Theme.of(context).cardTheme.color ??
+                            Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        border: Border.all(color: AppTheme.lightGray),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
                       ),
                       child: Text(
                         'This profile is private. Follow ${_user.username} to see their travel photos.',
@@ -256,7 +262,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                 (context, url) => Container(
                   width: 72,
                   height: 72,
-                  color: AppTheme.card,
+                  color:
+                      Theme.of(context).cardTheme.color ??
+                      Theme.of(context).colorScheme.surface,
                   child: const Center(
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
@@ -265,7 +273,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                 (context, url, error) => Container(
                   width: 72,
                   height: 72,
-                  color: AppTheme.card,
+                  color:
+                      Theme.of(context).cardTheme.color ??
+                      Theme.of(context).colorScheme.surface,
                   child: Center(
                     child: Text(
                       _user.username.isNotEmpty
@@ -291,7 +301,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
       ),
       child: CircleAvatar(
         radius: 36,
-        backgroundColor: AppTheme.card,
+        backgroundColor:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         child: Text(
           _user.username.isNotEmpty ? _user.username[0].toUpperCase() : '?',
           style: GoogleFonts.playfairDisplay(
@@ -304,11 +316,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
     );
   }
 
-  Widget _buildStatsRow() {
+  Widget _buildStatsRow(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowSm,
       ),
@@ -375,12 +389,15 @@ class _UserPageScreenState extends State<UserPageScreen> {
                 fit: BoxFit.cover,
                 placeholder:
                     (context, url) => Container(
-                      color: AppTheme.lightGray,
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: const Center(child: CircularProgressIndicator()),
                     ),
                 errorWidget:
-                    (context, url, error) =>
-                        Container(color: AppTheme.lightGray),
+                    (context, url, error) => Container(
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                    ),
               ),
             );
           },
@@ -442,7 +459,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.card,
+                  color:
+                      Theme.of(context).cardTheme.color ??
+                      Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   boxShadow: AppTheme.shadowSm,
                 ),

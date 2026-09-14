@@ -116,9 +116,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
         elevation: 0,
         title: Text(
           _journal?.title ?? 'Journal',

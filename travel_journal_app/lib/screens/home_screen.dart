@@ -86,25 +86,26 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_cachedMarkers != null && _cachedMarkerHash == hash) {
       return _cachedMarkers!;
     }
-    final markers = _countries.expand((country) {
-      return country.cityPins.map((city) {
-        return Marker(
-          point: city.latLng,
-          width: 44,
-          height: 52,
-          child: CustomMarker(
-            marker: MapMarker(
-              id: city.name,
-              position: city.latLng,
-              title: city.name,
-              category: MarkerCategory.hiddenGems,
-              isVisited: VisitedService.isCityVisited(city.cityId),
-            ),
-            size: 36,
-          ),
-        );
-      });
-    }).toList();
+    final markers =
+        _countries.expand((country) {
+          return country.cityPins.map((city) {
+            return Marker(
+              point: city.latLng,
+              width: 44,
+              height: 52,
+              child: CustomMarker(
+                marker: MapMarker(
+                  id: city.name,
+                  position: city.latLng,
+                  title: city.name,
+                  category: MarkerCategory.hiddenGems,
+                  isVisited: VisitedService.isCityVisited(city.cityId),
+                ),
+                size: 36,
+              ),
+            );
+          });
+        }).toList();
     _cachedMarkers = markers;
     _cachedMarkerHash = hash;
     return markers;
@@ -113,7 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: Stack(
         children: [
@@ -147,7 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.card,
+                    color:
+                        Theme.of(context).cardTheme.color ??
+                        Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     boxShadow: AppTheme.shadowMd,
                   ),
@@ -164,15 +166,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: AppTheme.warmGray,
                         fontSize: 14,
                       ),
-                      prefixIcon: Icon(Icons.search,
-                          color: AppTheme.warmGray, size: 20),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: Icon(Icons.clear,
-                                  color: AppTheme.warmGray, size: 18),
-                              onPressed: _clearSearch,
-                            )
-                          : null,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: AppTheme.warmGray,
+                        size: 20,
+                      ),
+                      suffixIcon:
+                          _searchController.text.isNotEmpty
+                              ? IconButton(
+                                icon: Icon(
+                                  Icons.clear,
+                                  color: AppTheme.warmGray,
+                                  size: 18,
+                                ),
+                                onPressed: _clearSearch,
+                              )
+                              : null,
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: AppTheme.space4,
@@ -185,7 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     margin: const EdgeInsets.only(top: AppTheme.space2),
                     decoration: BoxDecoration(
-                      color: AppTheme.card,
+                      color:
+                          Theme.of(context).cardTheme.color ??
+                          Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       boxShadow: AppTheme.shadowMd,
                     ),
@@ -194,16 +205,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
                       itemCount: _searchResults.length,
-                      separatorBuilder: (context, index) => Divider(
-                        height: 1,
-                        color: AppTheme.lightGray.withValues(alpha: 0.5),
-                      ),
+                      separatorBuilder:
+                          (context, index) => Divider(
+                            height: 1,
+                            color: AppTheme.lightGray.withValues(alpha: 0.5),
+                          ),
                       itemBuilder: (context, index) {
                         final location = _searchResults[index];
                         return ListTile(
                           dense: true,
-                          leading: Icon(Icons.location_on,
-                              color: AppTheme.primary, size: 18),
+                          leading: Icon(
+                            Icons.location_on,
+                            color: AppTheme.primary,
+                            size: 18,
+                          ),
                           title: Text(
                             location.name,
                             style: GoogleFonts.dmSans(
@@ -245,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, scrollController) {
               return Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.bg,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(AppTheme.radiusLg),
                     topRight: Radius.circular(AppTheme.radiusLg),
@@ -256,17 +271,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     // Handle bar
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: AppTheme.space2),
+                      margin: const EdgeInsets.symmetric(
+                        vertical: AppTheme.space2,
+                      ),
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
                         color: AppTheme.lightGray,
-                        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusFull,
+                        ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.space4),
+                        horizontal: AppTheme.space4,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -283,8 +303,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: _retryLoad,
                               child: Row(
                                 children: [
-                                  Icon(Icons.refresh,
-                                      size: 16, color: AppTheme.primary),
+                                  Icon(
+                                    Icons.refresh,
+                                    size: 16,
+                                    color: AppTheme.primary,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Retry',
@@ -325,8 +348,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.cloud_off,
-                                    size: 48, color: AppTheme.warmGray),
+                                Icon(
+                                  Icons.cloud_off,
+                                  size: 48,
+                                  color: AppTheme.warmGray,
+                                ),
                                 const SizedBox(height: AppTheme.space2),
                                 Text(
                                   'Could not load countries',
@@ -354,7 +380,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ListView.builder(
                           controller: scrollController,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.space4),
+                            horizontal: AppTheme.space4,
+                          ),
                           itemCount: _countries.length,
                           itemBuilder: (context, index) {
                             final country = _countries[index];
@@ -380,9 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (country != null) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => CountryPage(country: country),
-        ),
+        MaterialPageRoute(builder: (context) => CountryPage(country: country)),
       );
     }
   }
@@ -407,10 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onLocationSelected(Location location) {
-    _mapController.move(
-      LatLng(location.latitude, location.longitude),
-      10.0,
-    );
+    _mapController.move(LatLng(location.latitude, location.longitude), 10.0);
     setState(() {
       _showSuggestions = false;
     });
@@ -448,7 +470,9 @@ class _CountryListCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: AppTheme.space3),
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           boxShadow: AppTheme.shadowSm,
         ),
@@ -456,19 +480,22 @@ class _CountryListCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-              child: country.flagImage != null
-                  ? CachedNetworkImage(
-                      imageUrl: country.flagImage!,
-                      width: 52,
-                      height: 52,
-                      memCacheWidth: 156,
-                      memCacheHeight: 156,
-                      maxWidthDiskCache: 156,
-                      maxHeightDiskCache: 156,
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => _buildFlagPlaceholder(country),
-                    )
-                  : _buildFlagPlaceholder(country),
+              child:
+                  country.flagImage != null
+                      ? CachedNetworkImage(
+                        imageUrl: country.flagImage!,
+                        width: 52,
+                        height: 52,
+                        memCacheWidth: 156,
+                        memCacheHeight: 156,
+                        maxWidthDiskCache: 156,
+                        maxHeightDiskCache: 156,
+                        fit: BoxFit.cover,
+                        errorWidget:
+                            (context, url, error) =>
+                                _buildFlagPlaceholder(country),
+                      )
+                      : _buildFlagPlaceholder(country),
             ),
             Expanded(
               child: Column(
@@ -497,21 +524,24 @@ class _CountryListCard extends StatelessWidget {
                 topRight: Radius.circular(AppTheme.radiusMd),
                 bottomRight: Radius.circular(AppTheme.radiusMd),
               ),
-              child: country.flagImage != null
-                  ? CachedNetworkImage(
-                      imageUrl: country.flagImage!,
-                      width: 72,
-                      height: 72,
-                      memCacheWidth: 216,
-                      memCacheHeight: 216,
-                      maxWidthDiskCache: 216,
-                      maxHeightDiskCache: 216,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => _buildCardImagePlaceholder(),
-                      errorWidget: (context, url, error) =>
-                          _buildCardImagePlaceholder(),
-                    )
-                  : _buildCardImagePlaceholder(),
+              child:
+                  country.flagImage != null
+                      ? CachedNetworkImage(
+                        imageUrl: country.flagImage!,
+                        width: 72,
+                        height: 72,
+                        memCacheWidth: 216,
+                        memCacheHeight: 216,
+                        maxWidthDiskCache: 216,
+                        maxHeightDiskCache: 216,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => _buildCardImagePlaceholder(),
+                        errorWidget:
+                            (context, url, error) =>
+                                _buildCardImagePlaceholder(),
+                      )
+                      : _buildCardImagePlaceholder(),
             ),
           ],
         ),
@@ -544,11 +574,7 @@ class _CountryListCard extends StatelessWidget {
       width: 72,
       height: 72,
       color: AppTheme.lightGray.withValues(alpha: 0.3),
-      child: Icon(
-        Icons.public,
-        color: AppTheme.warmGray,
-        size: 24,
-      ),
+      child: Icon(Icons.public, color: AppTheme.warmGray, size: 24),
     );
   }
 }

@@ -21,7 +21,6 @@ class CityPage extends StatefulWidget {
 }
 
 class _CityPageState extends State<CityPage> {
-
   final List<CityCategory> _categories = const [
     CityCategory(
       name: 'Historical Sights',
@@ -64,7 +63,6 @@ class _CityPageState extends State<CityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: CustomScrollView(
         slivers: [
@@ -72,7 +70,11 @@ class _CityPageState extends State<CityPage> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                  AppTheme.space4, AppTheme.space4, AppTheme.space4, AppTheme.space2),
+                AppTheme.space4,
+                AppTheme.space4,
+                AppTheme.space4,
+                AppTheme.space2,
+              ),
               child: SectionHeader(
                 title: 'What to discover',
                 color: AppTheme.darkBrown,
@@ -82,13 +84,10 @@ class _CityPageState extends State<CityPage> {
           SliverPadding(
             padding: const EdgeInsets.all(AppTheme.space4),
             sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final cat = _categories[index];
-                  return _buildCategoryCard(context, cat);
-                },
-                childCount: _categories.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final cat = _categories[index];
+                return _buildCategoryCard(context, cat);
+              }, childCount: _categories.length),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: AppTheme.space4,
@@ -113,17 +112,18 @@ class _CityPageState extends State<CityPage> {
           fit: StackFit.expand,
           children: [
             CachedNetworkImage(
-              imageUrl: 'https://source.unsplash.com/800x400/?${widget.cityName},city',
+              imageUrl:
+                  'https://source.unsplash.com/800x400/?${widget.cityName},city',
               fit: BoxFit.cover,
               memCacheWidth: 800,
               maxWidthDiskCache: 800,
-              placeholder: (context, url) => Container(
-                color: AppTheme.darkBrown,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: AppTheme.darkBrown,
-              ),
+              placeholder:
+                  (context, url) => Container(
+                    color: AppTheme.darkBrown,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              errorWidget:
+                  (context, url, error) => Container(color: AppTheme.darkBrown),
             ),
             Container(
               decoration: BoxDecoration(
@@ -177,10 +177,7 @@ class _CityPageState extends State<CityPage> {
       decoration: BoxDecoration(
         color: cat.color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(
-          color: cat.color.withValues(alpha: 0.3),
-          width: 1.5,
-        ),
+        border: Border.all(color: cat.color.withValues(alpha: 0.3), width: 1.5),
         boxShadow: AppTheme.shadowSm,
       ),
       child: Material(
@@ -191,11 +188,12 @@ class _CityPageState extends State<CityPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CategoryPage(
-                  categoryName: cat.name,
-                  cityName: widget.cityName,
-                  countryName: widget.countryName,
-                ),
+                builder:
+                    (context) => CategoryPage(
+                      categoryName: cat.name,
+                      cityName: widget.cityName,
+                      countryName: widget.countryName,
+                    ),
               ),
             );
           },
@@ -212,11 +210,7 @@ class _CityPageState extends State<CityPage> {
                     color: cat.color.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    cat.icon,
-                    size: 32,
-                    color: cat.color,
-                  ),
+                  child: Icon(cat.icon, size: 32, color: cat.color),
                 ),
                 const SizedBox(height: AppTheme.space3),
                 Text(

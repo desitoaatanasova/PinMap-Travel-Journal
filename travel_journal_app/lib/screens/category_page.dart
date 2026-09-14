@@ -64,7 +64,6 @@ class _CategoryPageState extends State<CategoryPage> {
     final categoryColor = _getCategoryColor(widget.categoryName);
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       appBar: AppBar(
         title: Text(
@@ -75,7 +74,6 @@ class _CategoryPageState extends State<CategoryPage> {
             color: AppTheme.darkBrown,
           ),
         ),
-        backgroundColor: AppTheme.bg.withValues(alpha: 0.8),
         elevation: 0,
       ),
       body: Column(
@@ -161,7 +159,9 @@ class _CategoryPageState extends State<CategoryPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowMd,
       ),

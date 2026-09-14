@@ -31,7 +31,6 @@ class _TripsScreenState extends State<TripsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: ValueListenableBuilder<int>(
         valueListenable: TripService.version,
@@ -39,101 +38,103 @@ class _TripsScreenState extends State<TripsScreen> {
           final trips = TripService.getAllTrips();
           return CustomScrollView(
             slivers: [
-          SliverAppBar(
-            expandedHeight: 120,
-            pinned: true,
-            backgroundColor: AppTheme.bg,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                'Trips',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.darkBrown,
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(
-                  left: AppTheme.space4,
-                  bottom: AppTheme.space4),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.space4),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NewTripScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add_location_alt),
-                  label: const Text('New Trip'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: AppTheme.space3),
+              SliverAppBar(
+                expandedHeight: 120,
+                pinned: true,
+                elevation: 0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    'Trips',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.darkBrown,
+                    ),
+                  ),
+                  titlePadding: const EdgeInsets.only(
+                    left: AppTheme.space4,
+                    bottom: AppTheme.space4,
                   ),
                 ),
               ),
-            ),
-          ),
-          if (_draft != null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    AppTheme.space4, 0, AppTheme.space4, AppTheme.space2),
-                child: _buildDraftCard(context, _draft!),
-              ),
-            ),
-          if (trips.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.luggage,
-                      size: 64,
-                      color: AppTheme.warmGray.withValues(alpha: 0.5),
-                    ),
-                    const SizedBox(height: AppTheme.space4),
-                    Text(
-                      'No trips yet',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 20,
-                        color: AppTheme.warmGray,
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NewTripScreen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add_location_alt),
+                      label: const Text('New Trip'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppTheme.space3,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: AppTheme.space2),
-                    Text(
-                      'Tap "New Trip" to start planning',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        color: AppTheme.warmGray,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            )
-          else
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final trip = trips[index];
-                  return _buildTripCard(context, trip);
-                },
-                childCount: trips.length,
+              if (_draft != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppTheme.space4,
+                      0,
+                      AppTheme.space4,
+                      AppTheme.space2,
+                    ),
+                    child: _buildDraftCard(context, _draft!),
+                  ),
+                ),
+              if (trips.isEmpty)
+                SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.luggage,
+                          size: 64,
+                          color: AppTheme.warmGray.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: AppTheme.space4),
+                        Text(
+                          'No trips yet',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 20,
+                            color: AppTheme.warmGray,
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.space2),
+                        Text(
+                          'Tap "New Trip" to start planning',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            color: AppTheme.warmGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final trip = trips[index];
+                    return _buildTripCard(context, trip);
+                  }, childCount: trips.length),
+                ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppTheme.space12),
               ),
-            ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: AppTheme.space12),
-          ),
             ],
           );
         },
@@ -148,10 +149,11 @@ class _TripsScreenState extends State<TripsScreen> {
         await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TripPlanScreen(
-              tripId: draft.tripId.toString(),
-              trip: draft,
-            ),
+            builder:
+                (context) => TripPlanScreen(
+                  tripId: draft.tripId.toString(),
+                  trip: draft,
+                ),
           ),
         );
         _loadDraft();
@@ -196,10 +198,7 @@ class _TripsScreenState extends State<TripsScreen> {
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: AppTheme.warmGray,
-            ),
+            Icon(Icons.chevron_right, color: AppTheme.warmGray),
           ],
         ),
       ),
@@ -214,8 +213,9 @@ class _TripsScreenState extends State<TripsScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TripPlanScreen(
-                tripId: trip.tripId.toString(), trip: trip),
+            builder:
+                (context) =>
+                    TripPlanScreen(tripId: trip.tripId.toString(), trip: trip),
           ),
         );
       },
@@ -296,8 +296,9 @@ class _TripsScreenState extends State<TripsScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: AppTheme.primary.withValues(alpha: 0.1),
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusFull),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusFull,
+                          ),
                         ),
                         child: Text(
                           trip.tripType,
@@ -320,8 +321,18 @@ class _TripsScreenState extends State<TripsScreen> {
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}';
   }

@@ -11,9 +11,10 @@ class TravelProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final countries = CountryService.getAllCountries();
     final total = countries.length;
-    final visited = countries
-        .where((c) => VisitedService.isCountryVisited(c.countryId))
-        .length;
+    final visited =
+        countries
+            .where((c) => VisitedService.isCountryVisited(c.countryId))
+            .length;
     final progress = total == 0 ? 0.0 : visited / total;
 
     return Container(
@@ -23,7 +24,9 @@ class TravelProgressBar extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(AppTheme.space3),
       decoration: BoxDecoration(
-        color: AppTheme.card.withValues(alpha: 0.95),
+        color: (Theme.of(context).cardTheme.color ??
+                Theme.of(context).colorScheme.surface)
+            .withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),

@@ -183,7 +183,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
     }
   }
 
-  Widget _buildDateField({
+  Widget _buildDateField(
+    BuildContext context, {
     required String label,
     required DateTime? date,
     required VoidCallback onTap,
@@ -193,9 +194,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppTheme.space3),
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.lightGray),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +230,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
     );
   }
 
-  Widget _buildPickerField({
+  Widget _buildPickerField(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
@@ -238,9 +244,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppTheme.space3),
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.lightGray),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Row(
           children: [
@@ -298,7 +308,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
     final selected = await showModalBottomSheet<Set<int>>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.bg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppTheme.radiusLg),
@@ -482,7 +491,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
     final result = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.bg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppTheme.radiusLg),
@@ -766,7 +774,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
     final countries = CountryService.getAllCountries();
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       appBar: AppBar(
         title: Text(
@@ -777,7 +784,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
             color: AppTheme.darkBrown,
           ),
         ),
-        backgroundColor: AppTheme.bg,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -814,6 +820,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ),
             const SizedBox(height: AppTheme.space3),
             _buildPickerField(
+              context,
               icon: Icons.location_city,
               label: 'Choose cities to visit (optional)',
               value:
@@ -839,6 +846,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               children: [
                 Expanded(
                   child: _buildPickerField(
+                    context,
                     icon: Icons.flight_land,
                     label: 'Arrival city',
                     value: _arrivalCity ?? 'Arrival city',
@@ -850,6 +858,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 const SizedBox(width: AppTheme.space3),
                 Expanded(
                   child: _buildPickerField(
+                    context,
                     icon: Icons.flight_takeoff,
                     label: 'Departure city',
                     value: _departureCity ?? 'Departure city',
@@ -867,6 +876,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               children: [
                 Expanded(
                   child: _buildDateField(
+                    context,
                     label: 'Start Date',
                     date: _startDate,
                     onTap: () => _pickDate(isStart: true),
@@ -875,6 +885,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 const SizedBox(width: AppTheme.space3),
                 Expanded(
                   child: _buildDateField(
+                    context,
                     label: 'End Date',
                     date: _endDate,
                     onTap: () => _pickDate(isStart: false),

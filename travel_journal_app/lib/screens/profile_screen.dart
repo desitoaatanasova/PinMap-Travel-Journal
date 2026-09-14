@@ -114,7 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = _profile;
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body:
           profile == null
@@ -163,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             bottom: AppTheme.space6,
                             child: Row(
                               children: [
-                                _buildAvatar(profile),
+                                _buildAvatar(context, profile),
                                 const SizedBox(width: AppTheme.space4),
                                 Expanded(
                                   child: Column(
@@ -213,7 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.space4),
-                      child: _buildStatsRow(profile),
+                      child: _buildStatsRow(context, profile),
                     ),
                   ),
                   SliverToBoxAdapter(
@@ -297,7 +296,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildAvatar(UserProfile profile) {
+  Widget _buildAvatar(BuildContext context, UserProfile profile) {
     final pic = profile.profilePicture;
     if (pic != null) {
       return Container(
@@ -316,7 +315,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 (context, url) => Container(
                   width: 72,
                   height: 72,
-                  color: AppTheme.card,
+                  color:
+                      Theme.of(context).cardTheme.color ??
+                      Theme.of(context).colorScheme.surface,
                   child: const Center(
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
@@ -325,7 +326,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 (context, url, error) => Container(
                   width: 72,
                   height: 72,
-                  color: AppTheme.card,
+                  color:
+                      Theme.of(context).cardTheme.color ??
+                      Theme.of(context).colorScheme.surface,
                   child: Text(
                     profile.username.isNotEmpty
                         ? profile.username[0].toUpperCase()
@@ -349,7 +352,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: CircleAvatar(
         radius: 36,
-        backgroundColor: AppTheme.card,
+        backgroundColor:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         child: Text(
           profile.username.isNotEmpty ? profile.username[0].toUpperCase() : '?',
           style: GoogleFonts.playfairDisplay(
@@ -362,15 +367,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatsRow(UserProfile profile) {
+  Widget _buildStatsRow(BuildContext context, UserProfile profile) {
     final placesCount =
         profile.placesVisited > 0
             ? profile.placesVisited
             : VisitedService.visitedPlaceIds.length;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowSm,
       ),
@@ -422,9 +428,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppTheme.space3),
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-          border: Border.all(color: AppTheme.lightGray),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Row(
           children: [
@@ -489,11 +499,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           fit: BoxFit.cover,
           placeholder:
               (context, url) => Container(
-                color: AppTheme.lightGray,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: const Center(child: CircularProgressIndicator()),
               ),
           errorWidget:
-              (context, url, error) => Container(color: AppTheme.lightGray),
+              (context, url, error) => Container(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
         ),
       ),
     );
@@ -535,7 +547,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color:
+              Theme.of(context).cardTheme.color ??
+              Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           boxShadow: AppTheme.shadowSm,
         ),

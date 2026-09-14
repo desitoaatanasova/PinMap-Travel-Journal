@@ -14,11 +14,7 @@ class TripPlanScreen extends StatefulWidget {
   final String tripId;
   final Trip? trip;
 
-  const TripPlanScreen({
-    super.key,
-    required this.tripId,
-    this.trip,
-  });
+  const TripPlanScreen({super.key, required this.tripId, this.trip});
 
   @override
   State<TripPlanScreen> createState() => _TripPlanScreenState();
@@ -37,7 +33,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     super.initState();
     _trip =
         widget.trip ??
-            TripService.getTripById(int.tryParse(widget.tripId) ?? 0);
+        TripService.getTripById(int.tryParse(widget.tripId) ?? 0);
   }
 
   @override
@@ -46,7 +42,6 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
 
     if (trip == null) {
       return Scaffold(
-        backgroundColor: AppTheme.bg,
         body: Center(
           child: Text(
             'Trip not found',
@@ -60,7 +55,6 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       body: CustomScrollView(
         slivers: [
@@ -87,17 +81,12 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
             ),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final day = trip.itinerary[index];
-                return _buildDayCard(day);
-              },
-              childCount: trip.itinerary.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final day = trip.itinerary[index];
+              return _buildDayCard(context, day);
+            }, childCount: trip.itinerary.length),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: AppTheme.space12),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.space12)),
         ],
       ),
     );
@@ -121,7 +110,9 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           ),
         ),
         titlePadding: const EdgeInsets.only(
-            left: AppTheme.space4, bottom: AppTheme.space4),
+          left: AppTheme.space4,
+          bottom: AppTheme.space4,
+        ),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,13 +152,14 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       Expanded(
         child: OutlinedButton.icon(
           onPressed: _isExporting ? null : () => _exportPdf(context, trip),
-          icon: _isExporting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.picture_as_pdf, size: 18),
+          icon:
+              _isExporting
+                  ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                  : const Icon(Icons.picture_as_pdf, size: 18),
           label: Text(_isExporting ? 'Exporting...' : 'Export PDF'),
         ),
       ),
@@ -176,13 +168,14 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
         Expanded(
           child: OutlinedButton.icon(
             onPressed: _regenerating ? null : () => _regenerate(context, trip),
-            icon: _regenerating
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh, size: 18),
+            icon:
+                _regenerating
+                    ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : const Icon(Icons.refresh, size: 18),
             label: const Text('Regenerate'),
           ),
         )
@@ -227,16 +220,17 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
         if (_isDraft) ...[
           ElevatedButton.icon(
             onPressed: _saving ? null : () => _saveDraft(context, trip),
-            icon: _saving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Icon(Icons.save),
+            icon:
+                _saving
+                    ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                    : const Icon(Icons.save),
             label: Text(_saving ? 'Saving...' : 'Save Trip'),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
@@ -250,10 +244,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           Center(
             child: Text(
               'AI draft — not saved to your trips yet',
-              style: GoogleFonts.dmSans(
-                fontSize: 12,
-                color: AppTheme.warmGray,
-              ),
+              style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
             ),
           ),
         ],
@@ -283,12 +274,9 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
-      final message =
-          e is ApiException ? e.message : 'Could not save the trip';
+      final message = e is ApiException ? e.message : 'Could not save the trip';
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(message, style: GoogleFonts.dmSans()),
-        ),
+        SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
       );
     }
   }
@@ -308,7 +296,10 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       try {
         final countries = CountryService.getAllCountries();
         for (final co in countries) {
-          if (co.countryId == trip.countryId) { countryName = co.name; break; }
+          if (co.countryId == trip.countryId) {
+            countryName = co.name;
+            break;
+          }
         }
       } catch (e) {
         debugPrint('TripPlanScreen country lookup failed: $e');
@@ -317,25 +308,30 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
         try {
           await CountryService.loadCountries();
           for (final co in CountryService.getAllCountries()) {
-            if (co.countryId == trip.countryId) { countryName = co.name; break; }
+            if (co.countryId == trip.countryId) {
+              countryName = co.name;
+              break;
+            }
           }
         } catch (e) {
           debugPrint('TripPlanScreen fallback loadCountries failed: $e');
         }
       }
-      List<String> cityNames = trip.cityIds
-          .map((id) => CountryService.cityName(id))
-          .where((n) => n != null && n!.isNotEmpty)
-          .map((n) => n!)
-          .toList();
-      if (trip.cityIds.isNotEmpty && cityNames.isEmpty) {
-        try {
-          await CountryService.loadCountries();
-          cityNames = trip.cityIds
+      List<String> cityNames =
+          trip.cityIds
               .map((id) => CountryService.cityName(id))
               .where((n) => n != null && n!.isNotEmpty)
               .map((n) => n!)
               .toList();
+      if (trip.cityIds.isNotEmpty && cityNames.isEmpty) {
+        try {
+          await CountryService.loadCountries();
+          cityNames =
+              trip.cityIds
+                  .map((id) => CountryService.cityName(id))
+                  .where((n) => n != null && n!.isNotEmpty)
+                  .map((n) => n!)
+                  .toList();
         } catch (e) {
           debugPrint('TripPlanScreen cityNames fallback failed: $e');
         }
@@ -362,10 +358,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       });
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            'New itinerary generated',
-            style: GoogleFonts.dmSans(),
-          ),
+          content: Text('New itinerary generated', style: GoogleFonts.dmSans()),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -375,9 +368,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       final message =
           e is ApiException ? e.message : 'Could not regenerate the trip';
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(message, style: GoogleFonts.dmSans()),
-        ),
+        SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
       );
     }
   }
@@ -398,9 +389,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           final message =
               e is ApiException ? e.message : 'Could not load trip details';
           messenger.showSnackBar(
-            SnackBar(
-              content: Text(message, style: GoogleFonts.dmSans()),
-            ),
+            SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
           );
           return;
         }
@@ -426,10 +415,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       setState(() => _isExporting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            'PDF downloaded',
-            style: GoogleFonts.dmSans(),
-          ),
+          content: Text('PDF downloaded', style: GoogleFonts.dmSans()),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -438,10 +424,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       setState(() => _isExporting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            'Could not export PDF',
-            style: GoogleFonts.dmSans(),
-          ),
+          content: Text('Could not export PDF', style: GoogleFonts.dmSans()),
         ),
       );
     }
@@ -450,40 +433,41 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   void _confirmDiscard(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Discard Draft?',
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'This AI-generated draft will be removed.',
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Discard Draft?',
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              TripService.clearDraft();
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+            content: Text(
+              'This AI-generated draft will be removed.',
+              style: GoogleFonts.dmSans(),
             ),
-            child: Text('Discard', style: GoogleFonts.dmSans()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  TripService.clearDraft();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Discard', style: GoogleFonts.dmSans()),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -494,12 +478,15 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     );
   }
 
-  Widget _buildDayCard(TripDay day) {
+  Widget _buildDayCard(BuildContext context, TripDay day) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
-          horizontal: AppTheme.space4, vertical: AppTheme.space2),
+        horizontal: AppTheme.space4,
+        vertical: AppTheme.space2,
+      ),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: AppTheme.shadowMd,
       ),
@@ -510,7 +497,9 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space3, vertical: AppTheme.space1),
+                horizontal: AppTheme.space3,
+                vertical: AppTheme.space1,
+              ),
               decoration: BoxDecoration(
                 color: AppTheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.radiusFull),
@@ -571,18 +560,11 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.place,
-            size: 16,
-            color: AppTheme.warmGray,
-          ),
+          Icon(Icons.place, size: 16, color: AppTheme.warmGray),
           const SizedBox(width: AppTheme.space2),
           Text(
             activity.timeSlot,
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              color: AppTheme.warmGray,
-            ),
+            style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
           ),
           const SizedBox(width: AppTheme.space2),
           Expanded(
@@ -633,50 +615,58 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   void _confirmDelete(BuildContext context, int tripId) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Delete Trip',
-          style: GoogleFonts.playfairDisplay(
-            color: AppTheme.darkBrown,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to delete this trip?',
-          style: GoogleFonts.dmSans(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Delete Trip',
+              style: GoogleFonts.playfairDisplay(
+                color: AppTheme.darkBrown,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              TripService.deleteTrip(tripId);
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              'Delete',
+            content: Text(
+              'Are you sure you want to delete this trip?',
               style: GoogleFonts.dmSans(),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  TripService.deleteTrip(tripId);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Delete', style: GoogleFonts.dmSans()),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}';
   }

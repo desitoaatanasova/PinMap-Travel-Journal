@@ -348,7 +348,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     final markers = _buildMarkers();
     final hasValid = points.isNotEmpty;
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       extendBody: true,
       appBar: AppBar(
         title: Text(
@@ -359,7 +358,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
             color: AppTheme.darkBrown,
           ),
         ),
-        backgroundColor: AppTheme.bg,
         elevation: 0,
       ),
       body: Column(

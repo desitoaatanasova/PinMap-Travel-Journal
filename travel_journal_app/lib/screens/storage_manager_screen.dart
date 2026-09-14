@@ -181,7 +181,6 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.bg,
       appBar: AppBar(
         title: Text(
           'Storage',
@@ -191,7 +190,6 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
             color: AppTheme.darkBrown,
           ),
         ),
-        backgroundColor: AppTheme.bg,
         elevation: 0,
       ),
       body:
@@ -205,6 +203,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                     _buildSectionHeader('Sync'),
                     const SizedBox(height: AppTheme.space2),
                     _buildCard(
+                      context,
                       icon: Icons.sync,
                       title: 'Pending sync',
                       subtitle:
@@ -223,6 +222,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                       ),
                     ),
                     _buildCard(
+                      context,
                       icon: Icons.error_outline,
                       title: 'Failed operations',
                       subtitle:
@@ -253,7 +253,9 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                             bottom: AppTheme.space2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.card,
+                            color:
+                                Theme.of(context).cardTheme.color ??
+                                Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(
                               AppTheme.radiusMd,
                             ),
@@ -303,6 +305,7 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                     _buildSectionHeader('Drafts'),
                     const SizedBox(height: AppTheme.space2),
                     _buildCard(
+                      context,
                       icon: Icons.auto_awesome_outlined,
                       title: 'AI Trip Draft',
                       subtitle:
@@ -329,7 +332,9 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
                     const SizedBox(height: AppTheme.space2),
                     Container(
                       decoration: BoxDecoration(
-                        color: AppTheme.card,
+                        color:
+                            Theme.of(context).cardTheme.color ??
+                            Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         boxShadow: AppTheme.shadowSm,
                       ),
@@ -388,7 +393,8 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
     );
   }
 
-  Widget _buildCard({
+  Widget _buildCard(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
@@ -397,7 +403,9 @@ class _StorageManagerScreenState extends State<StorageManagerScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
-        color: AppTheme.card,
+        color:
+            Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.shadowSm,
       ),
