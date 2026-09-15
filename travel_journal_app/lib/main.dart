@@ -10,6 +10,8 @@ import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
 import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
 import 'package:pinmap_travel_journal/screens/journal_overview_screen.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/services/language_service.dart';
 import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/screens/profile_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
@@ -23,6 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ApiConfig.loadOverride();
   await ThemeService.init();
+  await LanguageService.init();
   runApp(const TravelJournalApp());
 }
 
@@ -34,28 +37,45 @@ class TravelJournalApp extends StatelessWidget {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: ThemeService.notifier,
       builder: (context, mode, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'PinMap: Travel journal',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: mode,
-          initialRoute: '/',
-          routes: {
-            '/': (context) => const SplashScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/register': (context) => const RegisterScreen(),
-            '/home': (context) => const MainScreen(),
-            '/new-trip': (context) => const NewTripScreen(),
-            '/trip-plan':
-                (context) => TripPlanScreen(
-                  tripId: ModalRoute.of(context)!.settings.arguments as String,
-                ),
-            '/journal-editor':
-                (context) => JournalEditorScreen(
-                  chapterId:
-                      ModalRoute.of(context)?.settings.arguments as String?,
-                ),
+        return ValueListenableBuilder<Locale?>(
+          valueListenable: LanguageService.notifier,
+          builder: (context, locale, _) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'PinMap: Travel journal',
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: mode,
+              locale: locale,
+              supportedLocales: LanguageService.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localeResolutionCallback: (deviceLocale, supported) {
+                if (locale != null) return locale;
+                if (deviceLocale == null) return const Locale('en');
+                for (final s in supported) {
+                  if (s.languageCode == deviceLocale.languageCode) return s;
+                }
+                return const Locale('en');
+              },
+              initialRoute: '/',
+              routes: {
+                '/': (context) => const SplashScreen(),
+                '/login': (context) => const LoginScreen(),
+                '/register': (context) => const RegisterScreen(),
+                '/home': (context) => const MainScreen(),
+                '/new-trip': (context) => const NewTripScreen(),
+                '/trip-plan':
+                    (context) => TripPlanScreen(
+                      tripId:
+                          ModalRoute.of(context)!.settings.arguments as String,
+                    ),
+                '/journal-editor':
+                    (context) => JournalEditorScreen(
+                      chapterId:
+                          ModalRoute.of(context)?.settings.arguments as String?,
+                    ),
+              },
+            );
           },
         );
       },

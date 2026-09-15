@@ -1,0 +1,166 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Chinese (`zh`).
+class AppLocalizationsZh extends AppLocalizations {
+  AppLocalizationsZh([String locale = 'zh']) : super(locale);
+
+  @override
+  String get navHome => '首页';
+
+  @override
+  String get navTrips => '行程';
+
+  @override
+  String get navJournal => '日记';
+
+  @override
+  String get navWishlist => '心愿单';
+
+  @override
+  String get navProfile => '我的';
+
+  @override
+  String get settingsTitle => '设置';
+
+  @override
+  String get settingsAccount => '账号';
+
+  @override
+  String get settingsMyTrips => '我的行程';
+
+  @override
+  String get settingsMyTripsSubtitle => '查看和管理你的行程';
+
+  @override
+  String get settingsMyWishlist => '我的心愿单';
+
+  @override
+  String get settingsMyWishlistSubtitle => '你想去的地方';
+
+  @override
+  String get settingsPreferences => '偏好设置';
+
+  @override
+  String get settingsNotifications => '通知';
+
+  @override
+  String get settingsNotificationsSubtitle => '接收旅行提醒和动态';
+
+  @override
+  String get settingsOffline => '离线可用';
+
+  @override
+  String get settingsOfflineEnabled => '已启用离线访问';
+
+  @override
+  String get settingsOfflineDisabled => '已关闭离线访问';
+
+  @override
+  String get settingsProfileStatus => '主页状态';
+
+  @override
+  String get settingsProfilePrivate => '私密 – 仅关注者可见你的动态';
+
+  @override
+  String get settingsProfilePublic => '公开 – 所有人可见你的动态';
+
+  @override
+  String get settingsGeneral => '通用';
+
+  @override
+  String get settingsLanguage => '语言';
+
+  @override
+  String get settingsSelectLanguage => '选择语言';
+
+  @override
+  String get settingsTheme => '主题';
+
+  @override
+  String get settingsThemeSystem => '跟随系统';
+
+  @override
+  String get settingsThemeLight => '浅色';
+
+  @override
+  String get settingsThemeDark => '深色';
+
+  @override
+  String get settingsSelectTheme => '选择主题';
+
+  @override
+  String get settingsServerAddress => '服务器地址';
+
+  @override
+  String settingsServerDefault(String url) {
+    return '默认 ($url)';
+  }
+
+  @override
+  String get settingsServerDialogText =>
+      '后端服务的运行地址。示例：\n• 家庭 Wi-Fi:  http://192.168.1.50:3001\n• 出门在外:    https://your-tunnel-url\n\n留空则使用默认服务器。';
+
+  @override
+  String get settingsServerUpdated => '服务器地址已更新';
+
+  @override
+  String get settingsStorage => '存储空间';
+
+  @override
+  String get settingsStorageSubtitle => '管理已下载的内容';
+
+  @override
+  String get settingsDangerZone => '危险区';
+
+  @override
+  String get settingsDeleteAccount => '删除账号';
+
+  @override
+  String get settingsDeleteAccountSubtitle => '永久删除你的账号及所有数据';
+
+  @override
+  String get settingsDeleteAccountConfirmTitle => '删除账号？';
+
+  @override
+  String get settingsDeleteAccountConfirmText => '此操作无法撤销，你的所有数据将被永久删除。';
+
+  @override
+  String get settingsDeleteAccountSoon => '账号删除功能即将上线！';
+
+  @override
+  String get settingsDelete => '删除';
+
+  @override
+  String get settingsLogout => '退出登录';
+
+  @override
+  String get settingsLogoutConfirmTitle => '退出登录？';
+
+  @override
+  String get settingsLogoutConfirmText => '确定要退出登录吗？';
+
+  @override
+  String get commonCancel => '取消';
+
+  @override
+  String get commonSave => '保存';
+
+  @override
+  String get commonClose => '关闭';
+
+  @override
+  String get commonRetry => '重试';
+
+  @override
+  String get commonLoading => '加载中...';
+
+  @override
+  String get commonError => '出错了';
+
+  @override
+  String get commonOffline => '无网络连接';
+}
