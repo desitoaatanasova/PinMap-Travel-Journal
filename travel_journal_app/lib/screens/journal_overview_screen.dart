@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
+import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
+import 'package:pinmap_travel_journal/screens/journal_view_screen.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/widgets/empty_state.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -23,6 +26,178 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
     VisitedService.reloadVisited().then((_) {
       if (mounted) setState(() {});
     });
+  }
+
+  String _countryName(int countryId) {
+    final country =
+        CountryService.getAllCountries()
+            .where((c) => c.countryId == countryId)
+            .firstOrNull;
+    return country?.name ?? 'Unknown';
+  }
+
+  void _showNoJournalSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'No journal yet for this country.',
+          style: GoogleFonts.dmSans(),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _openOwnerJournal(int journalId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => JournalViewScreen(journalId: journalId, isPublic: false),
+      ),
+    );
+  }
+
+  Future<void> _downloadJournalFlow() async {
+    await JournalService.loadJournals();
+    if (!mounted) return;
+    final journals = JournalService.getAllJournals();
+    if (journals.isEmpty) {
+      _showNoJournalSnackBar();
+      return;
+    }
+    final byCountry = <int, List<Journal>>{};
+    for (final journal in journals) {
+      byCountry.putIfAbsent(journal.countryId, () => []).add(journal);
+    }
+    if (byCountry.length == 1) {
+      final entry = byCountry.entries.single;
+      await _openForCountry(entry.key, entry.value);
+      return;
+    }
+    final pickedCountry = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder:
+          (sheetContext) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: Text(
+                    'Choose country',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(sheetContext).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final entry in byCountry.entries)
+                        ListTile(
+                          title: Text(
+                            _countryName(entry.key),
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  Theme.of(sheetContext).colorScheme.onSurface,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${entry.value.length} journal${entry.value.length == 1 ? '' : 's'}',
+                            style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => Navigator.pop(sheetContext, entry.key),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+    if (pickedCountry == null || !mounted) return;
+    await _openForCountry(pickedCountry, byCountry[pickedCountry] ?? []);
+  }
+
+  Future<void> _openForCountry(int countryId, List<Journal> journals) async {
+    if (journals.isEmpty) {
+      _showNoJournalSnackBar();
+      return;
+    }
+    if (journals.length == 1) {
+      _openOwnerJournal(journals.single.journalId);
+      return;
+    }
+    final pickedJournal = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder:
+          (sheetContext) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: Text(
+                    _countryName(countryId),
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(sheetContext).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final journal in journals)
+                        ListTile(
+                          title: Text(
+                            journal.title.isEmpty
+                                ? 'Untitled journal'
+                                : journal.title,
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  Theme.of(sheetContext).colorScheme.onSurface,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${journal.pages.length} page${journal.pages.length == 1 ? '' : 's'}',
+                            style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                          ),
+                          trailing: const Icon(Icons.download),
+                          onTap:
+                              () => Navigator.pop(
+                                sheetContext,
+                                journal.journalId,
+                              ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+    if (pickedJournal == null || !mounted) return;
+    _openOwnerJournal(pickedJournal);
   }
 
   @override
@@ -59,17 +234,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Download journal coming soon!',
-                              style: GoogleFonts.dmSans(),
-                            ),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
+                      onPressed: _downloadJournalFlow,
                       icon: const Icon(Icons.download, size: 18),
                       label: const Text('Download Journal'),
                     ),
