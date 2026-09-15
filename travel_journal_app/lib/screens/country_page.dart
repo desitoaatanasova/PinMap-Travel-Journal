@@ -82,6 +82,11 @@ class _CountryPageState extends State<CountryPage> {
           ? Theme.of(context).colorScheme.primary.withValues(alpha: alpha)
           : theme.primaryColor.withValues(alpha: alpha);
 
+  Color _dialogAccent(BuildContext context, CountryTheme theme) =>
+      _isDark(context)
+          ? Theme.of(context).colorScheme.primary
+          : theme.accentColor;
+
   @override
   Widget build(BuildContext context) {
     final theme = CountryThemeService.getThemeForCountry(widget.country.name);
@@ -632,7 +637,7 @@ class _CountryPageState extends State<CountryPage> {
                 return IconButton(
                   icon: Icon(
                     index < _rating ? Icons.star : Icons.star_border,
-                    color: theme.accentColor,
+                    color: _dialogAccent(dialogContext, theme),
                     size: 36,
                   ),
                   onPressed: () {

@@ -133,6 +133,14 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     }
   }
 
+  Color _categoryFg(BuildContext context, Color color) {
+    if (Theme.of(context).brightness != Brightness.dark) return color;
+    if (color == const Color(0xFF8B4513)) return const Color(0xFFD29A5B);
+    if (color == const Color(0xFF008080)) return const Color(0xFF63B3B3);
+    if (color == const Color(0xFF228B22)) return const Color(0xFF7BC47F);
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
@@ -173,7 +181,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildPhotoCarousel(place, categoryColor),
+            _buildPhotoCarousel(context, place, categoryColor),
             const SizedBox(height: AppTheme.space4),
             _buildCategoryBadge(context, categoryColor, widget.categoryName),
             const SizedBox(height: AppTheme.space4),
@@ -194,10 +202,13 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
             if (place.address != null) ...[
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.location_on,
                     size: 16,
-                    color: Color(0xFF8B7355),
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : const Color(0xFF8B7355),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -218,10 +229,13 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                 onTap: () => _launchWebsite(place.website!),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.language,
                       size: 16,
-                      color: Color(0xFF8B7355),
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Theme.of(context).colorScheme.onSurfaceVariant
+                              : const Color(0xFF8B7355),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -248,10 +262,13 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.access_time,
                     size: 16,
-                    color: Color(0xFF8B7355),
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : const Color(0xFF8B7355),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -279,7 +296,11 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     );
   }
 
-  Widget _buildPhotoCarousel(Place place, Color categoryColor) {
+  Widget _buildPhotoCarousel(
+    BuildContext context,
+    Place place,
+    Color categoryColor,
+  ) {
     final photos = [
       if (place.imageCover != null) place.imageCover!,
       ...place.photos.map((p) => p.imageUrl),
@@ -312,7 +333,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                         child: Icon(
                           Icons.place,
                           size: 80,
-                          color: categoryColor,
+                          color: _categoryFg(context, categoryColor),
                         ),
                       ),
                 ),
@@ -328,7 +349,11 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         color: categoryColor.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
-      child: Icon(Icons.place, size: 80, color: categoryColor),
+      child: Icon(
+        Icons.place,
+        size: 80,
+        color: _categoryFg(context, categoryColor),
+      ),
     );
   }
 
@@ -350,12 +375,16 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.category, size: 16, color: color),
+          Icon(
+            Icons.category,
+            size: 16,
+            color: _categoryFg(context, color),
+          ),
           const SizedBox(width: AppTheme.space2),
           Text(
             categoryName,
             style: GoogleFonts.dmSans(
-              color: color,
+              color: _categoryFg(context, color),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

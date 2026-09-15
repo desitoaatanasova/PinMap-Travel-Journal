@@ -169,6 +169,14 @@ class _CityPageState extends State<CityPage> {
     );
   }
 
+  Color _categoryFg(BuildContext context, Color color) {
+    if (Theme.of(context).brightness != Brightness.dark) return color;
+    if (color == const Color(0xFF8B4513)) return const Color(0xFFD29A5B);
+    if (color == const Color(0xFF008080)) return const Color(0xFF63B3B3);
+    if (color == const Color(0xFF228B22)) return const Color(0xFF7BC47F);
+    return color;
+  }
+
   Widget _buildCategoryCard(BuildContext context, CityCategory cat) {
     return Container(
       decoration: BoxDecoration(
@@ -207,14 +215,18 @@ class _CityPageState extends State<CityPage> {
                     color: cat.color.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(cat.icon, size: 32, color: cat.color),
+                  child: Icon(
+                    cat.icon,
+                    size: 32,
+                    color: _categoryFg(context, cat.color),
+                  ),
                 ),
                 const SizedBox(height: AppTheme.space3),
                 Text(
                   cat.name,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.dmSans(
-                    color: cat.color,
+                    color: _categoryFg(context, cat.color),
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     height: 1.3,

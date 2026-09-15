@@ -150,6 +150,14 @@ class _CategoryPageState extends State<CategoryPage> {
     }
   }
 
+  Color _categoryFg(BuildContext context, Color color) {
+    if (Theme.of(context).brightness != Brightness.dark) return color;
+    if (color == const Color(0xFF8B4513)) return const Color(0xFFD29A5B);
+    if (color == const Color(0xFF008080)) return const Color(0xFF63B3B3);
+    if (color == const Color(0xFF228B22)) return const Color(0xFF7BC47F);
+    return color;
+  }
+
   Widget _buildPlaceCard(
     BuildContext context,
     Place place,
@@ -329,7 +337,10 @@ class _CategoryPageState extends State<CategoryPage> {
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: isVisited ? Colors.green : categoryColor,
+                              color:
+                                  isVisited
+                                      ? Colors.green
+                                      : _categoryFg(context, categoryColor),
                             ),
                           ),
                         ),
@@ -345,7 +356,11 @@ class _CategoryPageState extends State<CategoryPage> {
     );
   }
 
-  Widget _buildThumbnail(Place place, Color categoryColor) {
+  Widget _buildThumbnail(
+    BuildContext context,
+    Place place,
+    Color categoryColor,
+  ) {
     final imageUrl =
         place.imageCover ??
         (place.photos.isNotEmpty ? place.photos.first.imageUrl : null);
@@ -358,16 +373,22 @@ class _CategoryPageState extends State<CategoryPage> {
           height: 80,
           fit: BoxFit.cover,
           placeholder:
-              (context, url) => _buildPlaceholder(categoryColor, place),
+              (context, url) =>
+                  _buildPlaceholder(context, categoryColor, place),
           errorWidget:
-              (context, url, error) => _buildPlaceholder(categoryColor, place),
+              (context, url, error) =>
+                  _buildPlaceholder(context, categoryColor, place),
         ),
       );
     }
-    return _buildPlaceholder(categoryColor, place);
+    return _buildPlaceholder(context, categoryColor, place);
   }
 
-  Widget _buildPlaceholder(Color categoryColor, Place place) {
+  Widget _buildPlaceholder(
+    BuildContext context,
+    Color categoryColor,
+    Place place,
+  ) {
     return Container(
       width: 80,
       height: 80,
@@ -377,7 +398,7 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       child: Icon(
         Place.iconFromString(place.categoryIcon),
-        color: categoryColor,
+        color: _categoryFg(context, categoryColor),
         size: 32,
       ),
     );
