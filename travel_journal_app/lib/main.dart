@@ -144,6 +144,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final navSurface = Theme.of(context).cardTheme.color ?? colorScheme.surface;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
@@ -197,7 +198,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   color: colorScheme.primary,
                   size: 24,
                 ),
-                label: 'Home',
+                label: l10n.navHome,
               ),
               NavigationDestination(
                 icon: Icon(
@@ -210,7 +211,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   color: colorScheme.primary,
                   size: 24,
                 ),
-                label: 'Trips',
+                label: l10n.navTrips,
               ),
               NavigationDestination(
                 icon: Icon(
@@ -223,7 +224,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   color: colorScheme.primary,
                   size: 24,
                 ),
-                label: 'Journal',
+                label: l10n.navJournal,
               ),
               NavigationDestination(
                 icon: Icon(
@@ -236,7 +237,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   color: colorScheme.primary,
                   size: 24,
                 ),
-                label: 'Wish List',
+                label: l10n.navWishlist,
               ),
               NavigationDestination(
                 icon: Icon(
@@ -249,7 +250,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   color: colorScheme.primary,
                   size: 24,
                 ),
-                label: 'Profile',
+                label: l10n.navProfile,
               ),
             ],
           ),

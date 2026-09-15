@@ -5,10 +5,12 @@ import 'package:pinmap_travel_journal/screens/wishlist_screen.dart';
 import 'package:pinmap_travel_journal/screens/storage_manager_screen.dart';
 import 'package:pinmap_travel_journal/services/api_config.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
+import 'package:pinmap_travel_journal/services/language_service.dart';
 import 'package:pinmap_travel_journal/services/profile_service.dart';
 import 'package:pinmap_travel_journal/services/settings_service.dart';
 import 'package:pinmap_travel_journal/services/theme_service.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,14 +45,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadSettings() async {
     final settings = await SettingsService.getSettings();
     final profile = await ProfileService.getProfile();
+    await LanguageService.syncFromServer(settings.language);
     if (mounted) {
       setState(() {
         _notificationsEnabled = settings.notificationsEnabled;
         _offlineModeEnabled = settings.offlineModeEnabled;
-        _selectedLanguage = settings.language;
+        _selectedLanguage = LanguageService.currentLanguage;
         _isProfilePrivate = profile.profileStatus == 'private';
         _themeMode = ThemeService.mode;
       });
+    }
+  }
+
+  String _themeLabel(ThemeMode mode, AppLocalizations l10n) {
+    switch (mode) {
+      case ThemeMode.light:
+        return l10n.settingsThemeLight;
+      case ThemeMode.dark:
+        return l10n.settingsThemeDark;
+      case ThemeMode.system:
+        return l10n.settingsThemeSystem;
     }
   }
 
@@ -78,12 +92,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          'Settings',
+          l10n.settingsTitle,
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -98,13 +113,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionHeader(context, 'Account'),
+            _buildSectionHeader(context, l10n.settingsAccount),
             const SizedBox(height: AppTheme.space2),
             _buildSettingsRow(
               context,
               icon: Icons.work_outline,
-              title: 'My Trips',
-              subtitle: 'View and manage your trips',
+              title: l10n.settingsMyTrips,
+              subtitle: l10n.settingsMyTripsSubtitle,
               onTap: () {
                 Navigator.push(
                   context,
@@ -115,8 +130,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSettingsRow(
               context,
               icon: Icons.bookmark_border_outlined,
-              title: 'My Wish List',
-              subtitle: 'Places you want to visit',
+              title: l10n.settingsMyWishlist,
+              subtitle: l10n.settingsMyWishlistSubtitle,
               onTap: () {
                 Navigator.push(
                   context,
@@ -127,55 +142,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader(context, 'Preferences'),
+            _buildSectionHeader(context, l10n.settingsPreferences),
             const SizedBox(height: AppTheme.space2),
             _buildToggleRow(
               context,
               icon: Icons.notifications_outlined,
-              title: 'Notifications',
-              subtitle: 'Receive travel reminders and updates',
+              title: l10n.settingsNotifications,
+              subtitle: l10n.settingsNotificationsSubtitle,
               value: _notificationsEnabled,
               onChanged: _onNotificationsChanged,
             ),
             _buildToggleRow(
               context,
               icon: Icons.cloud_off_outlined,
-              title: 'Available Offline',
+              title: l10n.settingsOffline,
               subtitle:
                   _offlineModeEnabled
-                      ? 'Offline access enabled'
-                      : 'Offline access disabled',
+                      ? l10n.settingsOfflineEnabled
+                      : l10n.settingsOfflineDisabled,
               value: _offlineModeEnabled,
               onChanged: _onOfflineChanged,
             ),
             _buildToggleRow(
               context,
               icon: Icons.lock_outlined,
-              title: 'Profile Status',
+              title: l10n.settingsProfileStatus,
               subtitle:
                   _isProfilePrivate
-                      ? 'Private - Only followers can see your activity'
-                      : 'Public - Anyone can see your activity',
+                      ? l10n.settingsProfilePrivate
+                      : l10n.settingsProfilePublic,
               value: _isProfilePrivate,
               onChanged: _onProfileStatusChanged,
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader(context, 'General'),
+            _buildSectionHeader(context, l10n.settingsGeneral),
             const SizedBox(height: AppTheme.space2),
             _buildLanguageSelector(context),
             _buildSettingsRow(
               context,
               icon: Icons.palette_outlined,
-              title: 'Theme',
-              subtitle: ThemeService.label(_themeMode),
+              title: l10n.settingsTheme,
+              subtitle: _themeLabel(_themeMode, l10n),
               onTap: _showThemePicker,
             ),
             _buildServerAddressRow(context),
             _buildSettingsRow(
               context,
               icon: Icons.storage_outlined,
-              title: 'Storage',
-              subtitle: 'Manage downloaded content',
+              title: l10n.settingsStorage,
+              subtitle: l10n.settingsStorageSubtitle,
               onTap: () {
                 Navigator.push(
                   context,
@@ -186,7 +201,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionHeader(context, 'Danger Zone'),
+            _buildSectionHeader(context, l10n.settingsDangerZone),
             const SizedBox(height: AppTheme.space2),
             _buildDeleteAccountButton(context),
             const SizedBox(height: AppTheme.space6),
@@ -259,6 +274,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildLanguageSelector(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
@@ -269,7 +285,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         leading: Icon(Icons.language, color: colorScheme.primary),
         title: Text(
-          'Language',
+          l10n.settingsLanguage,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -338,6 +354,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildServerAddressRow(BuildContext context) {
     final override = ApiConfig.serverOverride;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       decoration: BoxDecoration(
@@ -348,7 +365,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         leading: Icon(Icons.dns_outlined, color: colorScheme.primary),
         title: Text(
-          'Server address',
+          l10n.settingsServerAddress,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -356,7 +373,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         subtitle: Text(
-          override.isEmpty ? 'Default (${ApiConfig.baseUrl})' : override,
+          override.isEmpty
+              ? l10n.settingsServerDefault(ApiConfig.baseUrl)
+              : override,
           style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
         trailing: Icon(Icons.chevron_right, color: AppTheme.warmGray),
@@ -374,12 +393,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _showServerAddressDialog() {
     final controller = TextEditingController(text: ApiConfig.serverOverride);
+    final l10n = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Server address',
+              l10n.settingsServerAddress,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
@@ -389,10 +409,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Where the backend runs. Examples:\n'
-                  '• Home Wi-Fi:  http://192.168.1.50:3001\n'
-                  '• Anywhere:    https://your-tunnel-url\n\n'
-                  'Leave empty to use the default server.',
+                  l10n.settingsServerDialogText,
                   style: GoogleFonts.dmSans(
                     fontSize: 13,
                     color: AppTheme.warmGray,
@@ -419,7 +436,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.pop(dialogContext);
                 },
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -434,7 +451,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Server address updated',
+                          l10n.settingsServerUpdated,
                           style: GoogleFonts.dmSans(),
                         ),
                         duration: const Duration(seconds: 2),
@@ -442,7 +459,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     );
                   }
                 },
-                child: Text('Save', style: GoogleFonts.dmSans()),
+                child: Text(l10n.commonSave, style: GoogleFonts.dmSans()),
               ),
             ],
           ),
@@ -451,6 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _showThemePicker() {
     const options = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder:
@@ -460,7 +478,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Select Theme',
+                  l10n.settingsSelectTheme,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -473,7 +491,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final scheme = Theme.of(sheetContext).colorScheme;
                   return ListTile(
                     title: Text(
-                      ThemeService.label(mode),
+                      _themeLabel(mode, l10n),
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         fontWeight:
@@ -501,6 +519,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showLanguagePicker() {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder:
@@ -510,7 +529,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Select Language',
+                  l10n.settingsSelectLanguage,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -539,6 +558,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       setState(() {
                         _selectedLanguage = lang;
                       });
+                      LanguageService.setLanguage(lang);
                       SettingsService.updateSettings(language: lang);
                       Navigator.pop(context);
                     },
@@ -552,6 +572,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildLogoutButton(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
@@ -561,7 +582,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         leading: const Icon(Icons.logout, color: Colors.red),
         title: Text(
-          'Logout',
+          l10n.settingsLogout,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -582,6 +603,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildDeleteAccountButton(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? colorScheme.surface,
@@ -591,7 +613,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: ListTile(
         leading: const Icon(Icons.delete_forever, color: Colors.red),
         title: Text(
-          'Delete Account',
+          l10n.settingsDeleteAccount,
           style: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -599,7 +621,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         subtitle: Text(
-          'Permanently delete your account and all data',
+          l10n.settingsDeleteAccountSubtitle,
           style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
         onTap: () => _confirmDeleteAccount(context),
@@ -615,26 +637,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _confirmLogout(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Logout?',
+              l10n.settingsLogoutConfirmTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'Are you sure you want to logout?',
+              l10n.settingsLogoutConfirmText,
               style: GoogleFonts.dmSans(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -654,7 +677,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: Text('Logout', style: GoogleFonts.dmSans()),
+                child: Text(l10n.settingsLogout, style: GoogleFonts.dmSans()),
               ),
             ],
           ),
@@ -662,26 +685,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _confirmDeleteAccount(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
             title: Text(
-              'Delete Account?',
+              l10n.settingsDeleteAccountConfirmTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Colors.red,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'This action cannot be undone. All your data will be permanently deleted.',
+              l10n.settingsDeleteAccountConfirmText,
               style: GoogleFonts.dmSans(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -691,7 +715,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Delete account coming soon!',
+                        l10n.settingsDeleteAccountSoon,
                         style: GoogleFonts.dmSans(),
                       ),
                       duration: const Duration(seconds: 2),
@@ -702,7 +726,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: Text('Delete', style: GoogleFonts.dmSans()),
+                child: Text(l10n.settingsDelete, style: GoogleFonts.dmSans()),
               ),
             ],
           ),

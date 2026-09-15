@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/connectivity_service.dart';
 
 class OfflineBanner extends StatelessWidget {
@@ -18,24 +19,17 @@ class OfflineBanner extends StatelessWidget {
         return Container(
           width: double.infinity,
           color: Colors.red.shade600,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: const SafeArea(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: SafeArea(
             top: false,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.wifi_off,
-                  color: Colors.white,
-                  size: 16,
-                ),
-                SizedBox(width: 8),
+                const Icon(Icons.wifi_off, color: Colors.white, size: 16),
+                const SizedBox(width: 8),
                 Text(
-                  'No internet connection',
-                  style: TextStyle(
+                  AppLocalizations.of(context).commonOffline,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
