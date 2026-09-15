@@ -200,6 +200,253 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
     _openOwnerJournal(pickedJournal);
   }
 
+  bool _postingVisibility = false;
+
+  Future<void> _postToProfileFlow() async {
+    if (_postingVisibility) return;
+    await JournalService.loadJournals();
+    if (!mounted) return;
+    final journals = JournalService.getAllJournals();
+    if (journals.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No journals yet to post.',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    final byCountry = <int, List<Journal>>{};
+    for (final journal in journals) {
+      byCountry.putIfAbsent(journal.countryId, () => []).add(journal);
+    }
+    if (byCountry.length == 1) {
+      final entry = byCountry.entries.single;
+      await _postForCountry(entry.key, entry.value);
+      return;
+    }
+    final pickedCountry = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder:
+          (sheetContext) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: Text(
+                    'Choose country',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(sheetContext).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final entry in byCountry.entries)
+                        ListTile(
+                          title: Text(
+                            _countryName(entry.key),
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  Theme.of(sheetContext).colorScheme.onSurface,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${entry.value.length} journal${entry.value.length == 1 ? '' : 's'}',
+                            style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => Navigator.pop(sheetContext, entry.key),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+    if (pickedCountry == null || !mounted) return;
+    await _postForCountry(pickedCountry, byCountry[pickedCountry] ?? []);
+  }
+
+  Future<void> _postForCountry(int countryId, List<Journal> journals) async {
+    if (journals.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No journals yet to post.',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    if (journals.length == 1) {
+      await _confirmAndToggleVisibility(journals.single);
+      return;
+    }
+    final pickedJournal = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder:
+          (sheetContext) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.space4),
+                  child: Text(
+                    _countryName(countryId),
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(sheetContext).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final journal in journals)
+                        ListTile(
+                          leading: Icon(
+                            journal.visibility == 'public'
+                                ? Icons.public
+                                : Icons.lock_outline,
+                            color: Theme.of(sheetContext).colorScheme.primary,
+                          ),
+                          title: Text(
+                            journal.title.isEmpty
+                                ? 'Untitled journal'
+                                : journal.title,
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  Theme.of(sheetContext).colorScheme.onSurface,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${journal.pages.length} page${journal.pages.length == 1 ? '' : 's'} • ${journal.visibility == 'public' ? 'Public' : 'Private'}',
+                            style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                          ),
+                          trailing: Text(
+                            journal.visibility == 'public' ? 'Remove' : 'Post',
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(sheetContext).colorScheme.primary,
+                            ),
+                          ),
+                          onTap:
+                              () => Navigator.pop(
+                                sheetContext,
+                                journal.journalId,
+                              ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+    if (pickedJournal == null || !mounted) return;
+    final selected =
+        JournalService.getJournalById(pickedJournal) ??
+        journals.where((j) => j.journalId == pickedJournal).firstOrNull;
+    if (selected == null) return;
+    await _confirmAndToggleVisibility(selected);
+  }
+
+  Future<void> _confirmAndToggleVisibility(Journal journal) async {
+    if (_postingVisibility) return;
+    final current = JournalService.getJournalById(journal.journalId) ?? journal;
+    final isPublic = current.visibility == 'public';
+    final target = isPublic ? 'private' : 'public';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              isPublic ? 'Remove from Profile?' : 'Post to Profile?',
+              style: GoogleFonts.playfairDisplay(
+                color: Theme.of(ctx).colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              isPublic
+                  ? 'This will make your journal private and hide it from your profile.'
+                  : 'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.',
+              style: GoogleFonts.dmSans(),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  isPublic ? 'Remove' : 'Post',
+                  style: GoogleFonts.dmSans(),
+                ),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _postingVisibility = true);
+    try {
+      await JournalService.updateVisibility(current.journalId, target);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isPublic ? 'Removed from profile' : 'Posted to profile',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not update visibility: $e',
+            style: GoogleFonts.dmSans(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _postingVisibility = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final allCountries = CountryService.getAllCountries();
@@ -242,17 +489,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                   const SizedBox(width: AppTheme.space2),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Post to profile coming soon!',
-                              style: GoogleFonts.dmSans(),
-                            ),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
+                      onPressed: _postToProfileFlow,
                       icon: const Icon(Icons.person_add, size: 18),
                       label: const Text('Post to Profile'),
                     ),

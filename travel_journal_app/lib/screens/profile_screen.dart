@@ -35,6 +35,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadProfile();
+    JournalService.version.addListener(_onJournalsChanged);
+  }
+
+  @override
+  void dispose() {
+    JournalService.version.removeListener(_onJournalsChanged);
+    super.dispose();
+  }
+
+  void _onJournalsChanged() {
+    final p = _profile;
+    if (p == null) return;
+    _loadJournals(p.userId);
   }
 
   Future<void> _loadProfile() async {
