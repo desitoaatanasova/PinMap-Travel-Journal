@@ -197,7 +197,7 @@ class _CategoryPageState extends State<CategoryPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildThumbnail(place, categoryColor),
+                _buildThumbnail(context, place, categoryColor),
                 const SizedBox(width: AppTheme.space4),
                 Expanded(
                   child: Column(
