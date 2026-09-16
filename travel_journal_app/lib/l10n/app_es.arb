@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "– sin coordenadas"
+  "mapNoCoordsSuffix": "– sin coordenadas",
+  "journalOverviewTitle": "Resumen del diario",
+  "journalDownload": "Descargar diario",
+  "journalPost": "Publicar en el perfil",
+  "journalNoCountries": "Aún no hay países cargados",
+  "journalExploreMap": "Explorar el mapa",
+  "journalCityCount": "{n, plural, =1{1 ciudad} other{{n} ciudades}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "Aún no hay diario para este país.",
+  "journalChooseCountry": "Elige un país",
+  "journalCount": "{n, plural, =1{1 diario} other{{n} diarios}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, =1{1 página} other{{n} páginas}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "Diario sin título",
+  "journalNoneToPost": "Aún no hay diarios para publicar.",
+  "journalPublic": "Público",
+  "journalPrivate": "Privado",
+  "journalRemoveShort": "Quitar",
+  "journalRemoveTitle": "¿Quitar del perfil?",
+  "journalPostTitle": "¿Publicar en el perfil?",
+  "journalRemoveText": "Esto hará tu diario privado y lo ocultará de tu perfil.",
+  "journalPostText": "Esto hará tu diario visible en tu perfil. Los diarios públicos son visibles para cualquiera que pueda ver tu perfil.",
+  "journalRemoved": "Quitado del perfil",
+  "journalPosted": "Publicado en el perfil",
+  "journalVisibilityError": "No se pudo actualizar la visibilidad: {error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "Desconocido",
+  "journalNew": "Nuevo diario",
+  "journalNewHint": "Empieza a documentar tu viaje",
+  "journalEmpty": "Aún no hay entradas en el diario",
+  "journalStartWriting": "Empezar a escribir",
+  "journalRemoveProfile": "Quitar del perfil",
+  "journalView": "Ver",
+  "editorSaveError": "No se pudo guardar: {error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "Guardado en este dispositivo; se sincronizará cuando estés en línea.",
+  "editorDraftSaved": "¡Borrador guardado!",
+  "editorAddPicture": "Añadir una foto",
+  "editorFromGallery": "Desde la galería",
+  "editorTakePhoto": "Hacer una foto",
+  "editorPicOffline": "Foto guardada en este dispositivo; se sincronizará cuando estés en línea.",
+  "editorPicAdded": "¡Foto añadida!",
+  "editorPicError": "No se pudo añadir la foto: {error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "Billete guardado en este dispositivo. Se sincronizará cuando estés en línea.",
+  "editorTicketAdded": "¡Billete añadido a tu diario!",
+  "editorClosedError": "El editor del diario se cerró.",
+  "editorPageGoneError": "La página ya no está disponible.",
+  "editorTicketError": "Falló el escaneo del billete: {error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "Añadir pegatina",
+  "editorStickerAirplane": "Avión",
+  "editorStickerTicket": "Billete",
+  "editorStickerCamera": "Cámara",
+  "editorStickerArt": "Arte",
+  "editorStickerCoffee": "Café",
+  "editorStickerBuilding": "Edificio",
+  "editorStickerTheater": "Teatro",
+  "editorStickerWine": "Vino",
+  "editorEditText": "Editar texto",
+  "editorDuplicate": "Duplicar",
+  "editorBringForward": "Traer adelante",
+  "editorSendBackward": "Enviar atrás",
+  "editorTextColor": "Color del texto",
+  "editorFontFamily": "Fuente",
+  "editorDupPage": "Duplicar página",
+  "editorMoveLeft": "Mover a la izquierda",
+  "editorMoveRight": "Mover a la derecha",
+  "editorDeletePage": "Eliminar página",
+  "editorPageBg": "Fondo de página",
+  "editorBgCream": "Crema",
+  "editorBgPeach": "Melocotón",
+  "editorBgMint": "Menta",
+  "editorBgSky": "Cielo",
+  "editorBgLavender": "Lavanda",
+  "editorBgLemon": "Limón",
+  "editorMinPage": "Un diario necesita al menos una página.",
+  "editorToolText": "Texto",
+  "editorToolPicture": "Foto",
+  "editorToolTicket": "Billete",
+  "editorToolSticker": "Pegatina",
+  "editorAddPage": "Añadir página",
+  "editorFormatTooltip": "Formato",
+  "editorRotateLeft": "Girar a la izquierda",
+  "editorRotateRight": "Girar a la derecha",
+  "editorSmaller": "Más pequeño",
+  "editorBigger": "Más grande",
+  "editorRetakePhoto": "Repetir foto",
+  "editorCropTicket": "Recortar billete",
+  "journalNotFound": "No encontrado",
+  "journalNoPages": "Sin páginas",
+  "journalPageTitle": "Página {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "No se pudo descargar el PDF"
 }

@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "– sans coordonnées"
+  "mapNoCoordsSuffix": "– sans coordonnées",
+  "journalOverviewTitle": "Aperçu du journal",
+  "journalDownload": "Télécharger le journal",
+  "journalPost": "Publier sur le profil",
+  "journalNoCountries": "Aucun pays chargé pour l'instant",
+  "journalExploreMap": "Explorer la carte",
+  "journalCityCount": "{n, plural, =1{1 ville} other{{n} villes}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "Pas encore de journal pour ce pays.",
+  "journalChooseCountry": "Choisissez un pays",
+  "journalCount": "{n, plural, =1{1 journal} other{{n} journaux}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, =1{1 page} other{{n} pages}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "Journal sans titre",
+  "journalNoneToPost": "Aucun journal à publier pour l'instant.",
+  "journalPublic": "Public",
+  "journalPrivate": "Privé",
+  "journalRemoveShort": "Retirer",
+  "journalRemoveTitle": "Retirer du profil ?",
+  "journalPostTitle": "Publier sur le profil ?",
+  "journalRemoveText": "Votre journal deviendra privé et sera masqué de votre profil.",
+  "journalPostText": "Votre journal sera visible sur votre profil. Les journaux publics sont visibles par tous ceux qui peuvent voir votre profil.",
+  "journalRemoved": "Retiré du profil",
+  "journalPosted": "Publié sur le profil",
+  "journalVisibilityError": "Impossible de mettre à jour la visibilité : {error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "Inconnu",
+  "journalNew": "Nouveau journal",
+  "journalNewHint": "Commencez à documenter votre voyage",
+  "journalEmpty": "Aucune entrée pour l'instant",
+  "journalStartWriting": "Commencer à écrire",
+  "journalRemoveProfile": "Retirer du profil",
+  "journalView": "Voir",
+  "editorSaveError": "Enregistrement impossible : {error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "Enregistré sur cet appareil — sera synchronisé en ligne.",
+  "editorDraftSaved": "Brouillon enregistré !",
+  "editorAddPicture": "Ajouter une photo",
+  "editorFromGallery": "Depuis la galerie",
+  "editorTakePhoto": "Prendre une photo",
+  "editorPicOffline": "Photo enregistrée sur cet appareil — sera synchronisée en ligne.",
+  "editorPicAdded": "Photo ajoutée !",
+  "editorPicError": "Impossible d'ajouter la photo : {error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "Billet enregistré sur cet appareil. Sera synchronisé en ligne.",
+  "editorTicketAdded": "Billet ajouté à votre journal !",
+  "editorClosedError": "L'éditeur de journal a été fermé.",
+  "editorPageGoneError": "La page n'est plus disponible.",
+  "editorTicketError": "Échec du scan du billet : {error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "Ajouter un autocollant",
+  "editorStickerAirplane": "Avion",
+  "editorStickerTicket": "Billet",
+  "editorStickerCamera": "Appareil photo",
+  "editorStickerArt": "Art",
+  "editorStickerCoffee": "Café",
+  "editorStickerBuilding": "Bâtiment",
+  "editorStickerTheater": "Théâtre",
+  "editorStickerWine": "Vin",
+  "editorEditText": "Modifier le texte",
+  "editorDuplicate": "Dupliquer",
+  "editorBringForward": "Avancer",
+  "editorSendBackward": "Reculer",
+  "editorTextColor": "Couleur du texte",
+  "editorFontFamily": "Police",
+  "editorDupPage": "Dupliquer la page",
+  "editorMoveLeft": "Déplacer à gauche",
+  "editorMoveRight": "Déplacer à droite",
+  "editorDeletePage": "Supprimer la page",
+  "editorPageBg": "Arrière-plan de page",
+  "editorBgCream": "Crème",
+  "editorBgPeach": "Pêche",
+  "editorBgMint": "Menthe",
+  "editorBgSky": "Ciel",
+  "editorBgLavender": "Lavande",
+  "editorBgLemon": "Citron",
+  "editorMinPage": "Un journal doit contenir au moins une page.",
+  "editorToolText": "Texte",
+  "editorToolPicture": "Photo",
+  "editorToolTicket": "Billet",
+  "editorToolSticker": "Autocollant",
+  "editorAddPage": "Ajouter une page",
+  "editorFormatTooltip": "Format",
+  "editorRotateLeft": "Pivoter à gauche",
+  "editorRotateRight": "Pivoter à droite",
+  "editorSmaller": "Plus petit",
+  "editorBigger": "Plus grand",
+  "editorRetakePhoto": "Reprendre la photo",
+  "editorCropTicket": "Recadrer le billet",
+  "journalNotFound": "Introuvable",
+  "journalNoPages": "Aucune page",
+  "journalPageTitle": "Page {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "Impossible de télécharger le PDF"
 }

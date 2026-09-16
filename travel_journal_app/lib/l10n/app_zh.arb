@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "— 无坐标"
+  "mapNoCoordsSuffix": "— 无坐标",
+  "journalOverviewTitle": "日记总览",
+  "journalDownload": "下载日记",
+  "journalPost": "发布到主页",
+  "journalNoCountries": "尚未加载国家",
+  "journalExploreMap": "探索地图",
+  "journalCityCount": "{n, plural, other{{n} 个城市}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "该国家还没有日记。",
+  "journalChooseCountry": "选择国家",
+  "journalCount": "{n, plural, other{{n} 篇日记}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, other{{n} 页}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "未命名日记",
+  "journalNoneToPost": "还没有可发布的日记。",
+  "journalPublic": "公开",
+  "journalPrivate": "私密",
+  "journalRemoveShort": "移除",
+  "journalRemoveTitle": "从主页移除？",
+  "journalPostTitle": "发布到主页？",
+  "journalRemoveText": "这会将日记设为私密，并从你的主页隐藏。",
+  "journalPostText": "这会将日记显示在你的主页上。公开日记对所有能查看你主页的人可见。",
+  "journalRemoved": "已从主页移除",
+  "journalPosted": "已发布到主页",
+  "journalVisibilityError": "无法更新可见性：{error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "未知",
+  "journalNew": "新建日记",
+  "journalNewHint": "开始记录你的旅程",
+  "journalEmpty": "还没有日记条目",
+  "journalStartWriting": "开始写作",
+  "journalRemoveProfile": "从主页移除",
+  "journalView": "查看",
+  "editorSaveError": "无法保存：{error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "已保存在本设备 — 联网后将同步。",
+  "editorDraftSaved": "草稿已保存！",
+  "editorAddPicture": "添加图片",
+  "editorFromGallery": "从相册选择",
+  "editorTakePhoto": "拍照",
+  "editorPicOffline": "图片已保存在本设备 — 联网后将同步。",
+  "editorPicAdded": "图片已添加！",
+  "editorPicError": "无法添加图片：{error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "票据已保存在本设备。联网后将同步。",
+  "editorTicketAdded": "票据已添加到你的日记！",
+  "editorClosedError": "日记编辑器已关闭。",
+  "editorPageGoneError": "该页面已不可用。",
+  "editorTicketError": "票据扫描失败：{error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "添加贴纸",
+  "editorStickerAirplane": "飞机",
+  "editorStickerTicket": "票",
+  "editorStickerCamera": "相机",
+  "editorStickerArt": "艺术",
+  "editorStickerCoffee": "咖啡",
+  "editorStickerBuilding": "建筑",
+  "editorStickerTheater": "剧院",
+  "editorStickerWine": "葡萄酒",
+  "editorEditText": "编辑文本",
+  "editorDuplicate": "复制",
+  "editorBringForward": "前移",
+  "editorSendBackward": "后移",
+  "editorTextColor": "文字颜色",
+  "editorFontFamily": "字体",
+  "editorDupPage": "复制页面",
+  "editorMoveLeft": "左移",
+  "editorMoveRight": "右移",
+  "editorDeletePage": "删除页面",
+  "editorPageBg": "页面背景",
+  "editorBgCream": "奶油色",
+  "editorBgPeach": "蜜桃色",
+  "editorBgMint": "薄荷色",
+  "editorBgSky": "天蓝色",
+  "editorBgLavender": "薰衣草色",
+  "editorBgLemon": "柠檬色",
+  "editorMinPage": "日记至少需要一页。",
+  "editorToolText": "文本",
+  "editorToolPicture": "图片",
+  "editorToolTicket": "票据",
+  "editorToolSticker": "贴纸",
+  "editorAddPage": "添加页面",
+  "editorFormatTooltip": "格式",
+  "editorRotateLeft": "向左旋转",
+  "editorRotateRight": "向右旋转",
+  "editorSmaller": "缩小",
+  "editorBigger": "放大",
+  "editorRetakePhoto": "重新拍照",
+  "editorCropTicket": "裁剪票据",
+  "journalNotFound": "未找到",
+  "journalNoPages": "没有页面",
+  "journalPageTitle": "第 {n} 页",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "无法下载PDF"
 }

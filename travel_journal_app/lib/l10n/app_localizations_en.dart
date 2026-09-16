@@ -663,4 +663,301 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapNoCoordsSuffix => '— no coordinates';
+
+  @override
+  String get journalOverviewTitle => 'Journal Overview';
+
+  @override
+  String get journalDownload => 'Download Journal';
+
+  @override
+  String get journalPost => 'Post to Profile';
+
+  @override
+  String get journalNoCountries => 'No countries loaded yet';
+
+  @override
+  String get journalExploreMap => 'Explore Map';
+
+  @override
+  String journalCityCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n cities',
+      one: '1 city',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalNoneForCountry => 'No journal yet for this country.';
+
+  @override
+  String get journalChooseCountry => 'Choose country';
+
+  @override
+  String journalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n journals',
+      one: '1 journal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String journalPageCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n pages',
+      one: '1 page',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalUntitled => 'Untitled journal';
+
+  @override
+  String get journalNoneToPost => 'No journals yet to post.';
+
+  @override
+  String get journalPublic => 'Public';
+
+  @override
+  String get journalPrivate => 'Private';
+
+  @override
+  String get journalRemoveShort => 'Remove';
+
+  @override
+  String get journalRemoveTitle => 'Remove from Profile?';
+
+  @override
+  String get journalPostTitle => 'Post to Profile?';
+
+  @override
+  String get journalRemoveText =>
+      'This will make your journal private and hide it from your profile.';
+
+  @override
+  String get journalPostText =>
+      'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.';
+
+  @override
+  String get journalRemoved => 'Removed from profile';
+
+  @override
+  String get journalPosted => 'Posted to profile';
+
+  @override
+  String journalVisibilityError(String error) {
+    return 'Could not update visibility: $error';
+  }
+
+  @override
+  String get journalUnknown => 'Unknown';
+
+  @override
+  String get journalNew => 'New Journal';
+
+  @override
+  String get journalNewHint => 'Start documenting your journey';
+
+  @override
+  String get journalEmpty => 'No journal entries yet';
+
+  @override
+  String get journalStartWriting => 'Start Writing';
+
+  @override
+  String get journalRemoveProfile => 'Remove from Profile';
+
+  @override
+  String get journalView => 'View';
+
+  @override
+  String editorSaveError(String error) {
+    return 'Could not save: $error';
+  }
+
+  @override
+  String get editorSavedOffline =>
+      'Saved on this device — will sync when online.';
+
+  @override
+  String get editorDraftSaved => 'Draft saved!';
+
+  @override
+  String get editorAddPicture => 'Add a picture';
+
+  @override
+  String get editorFromGallery => 'From gallery';
+
+  @override
+  String get editorTakePhoto => 'Take a photo';
+
+  @override
+  String get editorPicOffline =>
+      'Picture saved on this device — will sync when online.';
+
+  @override
+  String get editorPicAdded => 'Picture added!';
+
+  @override
+  String editorPicError(String error) {
+    return 'Could not add picture: $error';
+  }
+
+  @override
+  String get editorTicketOffline =>
+      'Ticket saved on this device. Will sync when online.';
+
+  @override
+  String get editorTicketAdded => 'Ticket added to your journal!';
+
+  @override
+  String get editorClosedError => 'Journal editor was closed.';
+
+  @override
+  String get editorPageGoneError => 'Journal page is no longer available.';
+
+  @override
+  String editorTicketError(String error) {
+    return 'Ticket scan failed: $error';
+  }
+
+  @override
+  String get editorAddSticker => 'Add Sticker';
+
+  @override
+  String get editorStickerAirplane => 'Airplane';
+
+  @override
+  String get editorStickerTicket => 'Ticket';
+
+  @override
+  String get editorStickerCamera => 'Camera';
+
+  @override
+  String get editorStickerArt => 'Art';
+
+  @override
+  String get editorStickerCoffee => 'Coffee';
+
+  @override
+  String get editorStickerBuilding => 'Building';
+
+  @override
+  String get editorStickerTheater => 'Theater';
+
+  @override
+  String get editorStickerWine => 'Wine';
+
+  @override
+  String get editorEditText => 'Edit text';
+
+  @override
+  String get editorDuplicate => 'Duplicate';
+
+  @override
+  String get editorBringForward => 'Bring forward';
+
+  @override
+  String get editorSendBackward => 'Send backward';
+
+  @override
+  String get editorTextColor => 'Text Color';
+
+  @override
+  String get editorFontFamily => 'Font Family';
+
+  @override
+  String get editorDupPage => 'Duplicate page';
+
+  @override
+  String get editorMoveLeft => 'Move left';
+
+  @override
+  String get editorMoveRight => 'Move right';
+
+  @override
+  String get editorDeletePage => 'Delete page';
+
+  @override
+  String get editorPageBg => 'Page background';
+
+  @override
+  String get editorBgCream => 'Cream';
+
+  @override
+  String get editorBgPeach => 'Peach';
+
+  @override
+  String get editorBgMint => 'Mint';
+
+  @override
+  String get editorBgSky => 'Sky';
+
+  @override
+  String get editorBgLavender => 'Lavender';
+
+  @override
+  String get editorBgLemon => 'Lemon';
+
+  @override
+  String get editorMinPage => 'A journal needs at least one page.';
+
+  @override
+  String get editorToolText => 'Text';
+
+  @override
+  String get editorToolPicture => 'Picture';
+
+  @override
+  String get editorToolTicket => 'Ticket';
+
+  @override
+  String get editorToolSticker => 'Sticker';
+
+  @override
+  String get editorAddPage => 'Add page';
+
+  @override
+  String get editorFormatTooltip => 'Format';
+
+  @override
+  String get editorRotateLeft => 'Rotate left';
+
+  @override
+  String get editorRotateRight => 'Rotate right';
+
+  @override
+  String get editorSmaller => 'Smaller';
+
+  @override
+  String get editorBigger => 'Bigger';
+
+  @override
+  String get editorRetakePhoto => 'Retake photo';
+
+  @override
+  String get editorCropTicket => 'Crop ticket';
+
+  @override
+  String get journalNotFound => 'Not found';
+
+  @override
+  String get journalNoPages => 'No pages';
+
+  @override
+  String journalPageTitle(int n) {
+    return 'Page $n';
+  }
+
+  @override
+  String get journalPdfError => 'Could not download PDF';
 }

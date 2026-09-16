@@ -1255,6 +1255,522 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'— no coordinates'**
   String get mapNoCoordsSuffix;
+
+  /// No description provided for @journalOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal Overview'**
+  String get journalOverviewTitle;
+
+  /// No description provided for @journalDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Journal'**
+  String get journalDownload;
+
+  /// No description provided for @journalPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Post to Profile'**
+  String get journalPost;
+
+  /// No description provided for @journalNoCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'No countries loaded yet'**
+  String get journalNoCountries;
+
+  /// No description provided for @journalExploreMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Map'**
+  String get journalExploreMap;
+
+  /// No description provided for @journalCityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 city} other{{n} cities}}'**
+  String journalCityCount(int n);
+
+  /// No description provided for @journalNoneForCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'No journal yet for this country.'**
+  String get journalNoneForCountry;
+
+  /// No description provided for @journalChooseCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose country'**
+  String get journalChooseCountry;
+
+  /// No description provided for @journalCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 journal} other{{n} journals}}'**
+  String journalCount(int n);
+
+  /// No description provided for @journalPageCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 page} other{{n} pages}}'**
+  String journalPageCount(int n);
+
+  /// No description provided for @journalUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled journal'**
+  String get journalUntitled;
+
+  /// No description provided for @journalNoneToPost.
+  ///
+  /// In en, this message translates to:
+  /// **'No journals yet to post.'**
+  String get journalNoneToPost;
+
+  /// No description provided for @journalPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get journalPublic;
+
+  /// No description provided for @journalPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get journalPrivate;
+
+  /// No description provided for @journalRemoveShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get journalRemoveShort;
+
+  /// No description provided for @journalRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Profile?'**
+  String get journalRemoveTitle;
+
+  /// No description provided for @journalPostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Post to Profile?'**
+  String get journalPostTitle;
+
+  /// No description provided for @journalRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will make your journal private and hide it from your profile.'**
+  String get journalRemoveText;
+
+  /// No description provided for @journalPostText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.'**
+  String get journalPostText;
+
+  /// No description provided for @journalRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from profile'**
+  String get journalRemoved;
+
+  /// No description provided for @journalPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted to profile'**
+  String get journalPosted;
+
+  /// No description provided for @journalVisibilityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update visibility: {error}'**
+  String journalVisibilityError(String error);
+
+  /// No description provided for @journalUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get journalUnknown;
+
+  /// No description provided for @journalNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New Journal'**
+  String get journalNew;
+
+  /// No description provided for @journalNewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start documenting your journey'**
+  String get journalNewHint;
+
+  /// No description provided for @journalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No journal entries yet'**
+  String get journalEmpty;
+
+  /// No description provided for @journalStartWriting.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Writing'**
+  String get journalStartWriting;
+
+  /// No description provided for @journalRemoveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Profile'**
+  String get journalRemoveProfile;
+
+  /// No description provided for @journalView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get journalView;
+
+  /// No description provided for @editorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save: {error}'**
+  String editorSaveError(String error);
+
+  /// No description provided for @editorSavedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device — will sync when online.'**
+  String get editorSavedOffline;
+
+  /// No description provided for @editorDraftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft saved!'**
+  String get editorDraftSaved;
+
+  /// No description provided for @editorAddPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a picture'**
+  String get editorAddPicture;
+
+  /// No description provided for @editorFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'From gallery'**
+  String get editorFromGallery;
+
+  /// No description provided for @editorTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get editorTakePhoto;
+
+  /// No description provided for @editorPicOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture saved on this device — will sync when online.'**
+  String get editorPicOffline;
+
+  /// No description provided for @editorPicAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture added!'**
+  String get editorPicAdded;
+
+  /// No description provided for @editorPicError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add picture: {error}'**
+  String editorPicError(String error);
+
+  /// No description provided for @editorTicketOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket saved on this device. Will sync when online.'**
+  String get editorTicketOffline;
+
+  /// No description provided for @editorTicketAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket added to your journal!'**
+  String get editorTicketAdded;
+
+  /// No description provided for @editorClosedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal editor was closed.'**
+  String get editorClosedError;
+
+  /// No description provided for @editorPageGoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal page is no longer available.'**
+  String get editorPageGoneError;
+
+  /// No description provided for @editorTicketError.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket scan failed: {error}'**
+  String editorTicketError(String error);
+
+  /// No description provided for @editorAddSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Sticker'**
+  String get editorAddSticker;
+
+  /// No description provided for @editorStickerAirplane.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane'**
+  String get editorStickerAirplane;
+
+  /// No description provided for @editorStickerTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get editorStickerTicket;
+
+  /// No description provided for @editorStickerCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get editorStickerCamera;
+
+  /// No description provided for @editorStickerArt.
+  ///
+  /// In en, this message translates to:
+  /// **'Art'**
+  String get editorStickerArt;
+
+  /// No description provided for @editorStickerCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Coffee'**
+  String get editorStickerCoffee;
+
+  /// No description provided for @editorStickerBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get editorStickerBuilding;
+
+  /// No description provided for @editorStickerTheater.
+  ///
+  /// In en, this message translates to:
+  /// **'Theater'**
+  String get editorStickerTheater;
+
+  /// No description provided for @editorStickerWine.
+  ///
+  /// In en, this message translates to:
+  /// **'Wine'**
+  String get editorStickerWine;
+
+  /// No description provided for @editorEditText.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit text'**
+  String get editorEditText;
+
+  /// No description provided for @editorDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get editorDuplicate;
+
+  /// No description provided for @editorBringForward.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring forward'**
+  String get editorBringForward;
+
+  /// No description provided for @editorSendBackward.
+  ///
+  /// In en, this message translates to:
+  /// **'Send backward'**
+  String get editorSendBackward;
+
+  /// No description provided for @editorTextColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Color'**
+  String get editorTextColor;
+
+  /// No description provided for @editorFontFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Family'**
+  String get editorFontFamily;
+
+  /// No description provided for @editorDupPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate page'**
+  String get editorDupPage;
+
+  /// No description provided for @editorMoveLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Move left'**
+  String get editorMoveLeft;
+
+  /// No description provided for @editorMoveRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Move right'**
+  String get editorMoveRight;
+
+  /// No description provided for @editorDeletePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete page'**
+  String get editorDeletePage;
+
+  /// No description provided for @editorPageBg.
+  ///
+  /// In en, this message translates to:
+  /// **'Page background'**
+  String get editorPageBg;
+
+  /// No description provided for @editorBgCream.
+  ///
+  /// In en, this message translates to:
+  /// **'Cream'**
+  String get editorBgCream;
+
+  /// No description provided for @editorBgPeach.
+  ///
+  /// In en, this message translates to:
+  /// **'Peach'**
+  String get editorBgPeach;
+
+  /// No description provided for @editorBgMint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mint'**
+  String get editorBgMint;
+
+  /// No description provided for @editorBgSky.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky'**
+  String get editorBgSky;
+
+  /// No description provided for @editorBgLavender.
+  ///
+  /// In en, this message translates to:
+  /// **'Lavender'**
+  String get editorBgLavender;
+
+  /// No description provided for @editorBgLemon.
+  ///
+  /// In en, this message translates to:
+  /// **'Lemon'**
+  String get editorBgLemon;
+
+  /// No description provided for @editorMinPage.
+  ///
+  /// In en, this message translates to:
+  /// **'A journal needs at least one page.'**
+  String get editorMinPage;
+
+  /// No description provided for @editorToolText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get editorToolText;
+
+  /// No description provided for @editorToolPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get editorToolPicture;
+
+  /// No description provided for @editorToolTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get editorToolTicket;
+
+  /// No description provided for @editorToolSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker'**
+  String get editorToolSticker;
+
+  /// No description provided for @editorAddPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add page'**
+  String get editorAddPage;
+
+  /// No description provided for @editorFormatTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get editorFormatTooltip;
+
+  /// No description provided for @editorRotateLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate left'**
+  String get editorRotateLeft;
+
+  /// No description provided for @editorRotateRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate right'**
+  String get editorRotateRight;
+
+  /// No description provided for @editorSmaller.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller'**
+  String get editorSmaller;
+
+  /// No description provided for @editorBigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger'**
+  String get editorBigger;
+
+  /// No description provided for @editorRetakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake photo'**
+  String get editorRetakePhoto;
+
+  /// No description provided for @editorCropTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop ticket'**
+  String get editorCropTicket;
+
+  /// No description provided for @journalNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found'**
+  String get journalNotFound;
+
+  /// No description provided for @journalNoPages.
+  ///
+  /// In en, this message translates to:
+  /// **'No pages'**
+  String get journalNoPages;
+
+  /// No description provided for @journalPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {n}'**
+  String journalPageTitle(int n);
+
+  /// No description provided for @journalPdfError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download PDF'**
+  String get journalPdfError;
 }
 
 class _AppLocalizationsDelegate

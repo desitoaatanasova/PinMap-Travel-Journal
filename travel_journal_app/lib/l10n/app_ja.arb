@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "— 座標なし"
+  "mapNoCoordsSuffix": "— 座標なし",
+  "journalOverviewTitle": "日記一覧",
+  "journalDownload": "日記をダウンロード",
+  "journalPost": "プロフィールに投稿",
+  "journalNoCountries": "国がまだ読み込まれていません",
+  "journalExploreMap": "地図を探索",
+  "journalCityCount": "{n, plural, other{{n}都市}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "この国の日記はまだありません。",
+  "journalChooseCountry": "国を選択",
+  "journalCount": "{n, plural, other{{n}件の日記}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, other{{n}ページ}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "無題の日記",
+  "journalNoneToPost": "投稿できる日記はまだありません。",
+  "journalPublic": "公開",
+  "journalPrivate": "非公開",
+  "journalRemoveShort": "削除",
+  "journalRemoveTitle": "プロフィールから削除しますか？",
+  "journalPostTitle": "プロフィールに投稿しますか？",
+  "journalRemoveText": "日記は非公開になり、プロフィールから非表示になります。",
+  "journalPostText": "日記はプロフィールに表示されます。公開日記はプロフィールを閲覧できる全員に表示されます。",
+  "journalRemoved": "プロフィールから削除しました",
+  "journalPosted": "プロフィールに投稿しました",
+  "journalVisibilityError": "公開設定を更新できませんでした：{error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "不明",
+  "journalNew": "新しい日記",
+  "journalNewHint": "旅の記録を始めましょう",
+  "journalEmpty": "まだ日記の記録がありません",
+  "journalStartWriting": "書き始める",
+  "journalRemoveProfile": "プロフィールから削除",
+  "journalView": "表示",
+  "editorSaveError": "保存できませんでした：{error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "このデバイスに保存しました — オンライン時に同期されます。",
+  "editorDraftSaved": "下書きを保存しました！",
+  "editorAddPicture": "写真を追加",
+  "editorFromGallery": "ギャラリーから",
+  "editorTakePhoto": "写真を撮る",
+  "editorPicOffline": "写真をこのデバイスに保存しました — オンライン時に同期されます。",
+  "editorPicAdded": "写真を追加しました！",
+  "editorPicError": "写真を追加できませんでした：{error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "チケットをこのデバイスに保存しました。オンライン時に同期されます。",
+  "editorTicketAdded": "チケットを日記に追加しました！",
+  "editorClosedError": "日記エディターが閉じられました。",
+  "editorPageGoneError": "ページは利用できなくなりました。",
+  "editorTicketError": "チケットのスキャンに失敗しました：{error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "ステッカーを追加",
+  "editorStickerAirplane": "飛行機",
+  "editorStickerTicket": "チケット",
+  "editorStickerCamera": "カメラ",
+  "editorStickerArt": "アート",
+  "editorStickerCoffee": "コーヒー",
+  "editorStickerBuilding": "建物",
+  "editorStickerTheater": "劇場",
+  "editorStickerWine": "ワイン",
+  "editorEditText": "テキストを編集",
+  "editorDuplicate": "複製",
+  "editorBringForward": "前面へ",
+  "editorSendBackward": "背面へ",
+  "editorTextColor": "文字色",
+  "editorFontFamily": "フォント",
+  "editorDupPage": "ページを複製",
+  "editorMoveLeft": "左へ移動",
+  "editorMoveRight": "右へ移動",
+  "editorDeletePage": "ページを削除",
+  "editorPageBg": "ページ背景",
+  "editorBgCream": "クリーム",
+  "editorBgPeach": "ピーチ",
+  "editorBgMint": "ミント",
+  "editorBgSky": "スカイ",
+  "editorBgLavender": "ラベンダー",
+  "editorBgLemon": "レモン",
+  "editorMinPage": "日記には少なくとも1ページ必要です。",
+  "editorToolText": "テキスト",
+  "editorToolPicture": "写真",
+  "editorToolTicket": "チケット",
+  "editorToolSticker": "ステッカー",
+  "editorAddPage": "ページを追加",
+  "editorFormatTooltip": "書式",
+  "editorRotateLeft": "左に回転",
+  "editorRotateRight": "右に回転",
+  "editorSmaller": "小さく",
+  "editorBigger": "大きく",
+  "editorRetakePhoto": "写真を撮り直す",
+  "editorCropTicket": "チケットを切り抜く",
+  "journalNotFound": "見つかりません",
+  "journalNoPages": "ページがありません",
+  "journalPageTitle": "ページ {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "PDFをダウンロードできませんでした"
 }

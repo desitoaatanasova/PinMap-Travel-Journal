@@ -666,4 +666,301 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get mapNoCoordsSuffix => '– senza coordinate';
+
+  @override
+  String get journalOverviewTitle => 'Panoramica diario';
+
+  @override
+  String get journalDownload => 'Scarica diario';
+
+  @override
+  String get journalPost => 'Pubblica sul profilo';
+
+  @override
+  String get journalNoCountries => 'Nessun paese caricato';
+
+  @override
+  String get journalExploreMap => 'Esplora la mappa';
+
+  @override
+  String journalCityCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n città',
+      one: '1 città',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalNoneForCountry => 'Ancora nessun diario per questo paese.';
+
+  @override
+  String get journalChooseCountry => 'Scegli un paese';
+
+  @override
+  String journalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n diari',
+      one: '1 diario',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String journalPageCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n pagine',
+      one: '1 pagina',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalUntitled => 'Diario senza titolo';
+
+  @override
+  String get journalNoneToPost => 'Ancora nessun diario da pubblicare.';
+
+  @override
+  String get journalPublic => 'Pubblico';
+
+  @override
+  String get journalPrivate => 'Privato';
+
+  @override
+  String get journalRemoveShort => 'Rimuovi';
+
+  @override
+  String get journalRemoveTitle => 'Rimuovere dal profilo?';
+
+  @override
+  String get journalPostTitle => 'Pubblicare sul profilo?';
+
+  @override
+  String get journalRemoveText =>
+      'Il diario diventerà privato e sarà nascosto dal tuo profilo.';
+
+  @override
+  String get journalPostText =>
+      'Il diario sarà visibile sul tuo profilo. I diari pubblici sono visibili a chiunque possa vedere il tuo profilo.';
+
+  @override
+  String get journalRemoved => 'Rimosso dal profilo';
+
+  @override
+  String get journalPosted => 'Pubblicato sul profilo';
+
+  @override
+  String journalVisibilityError(String error) {
+    return 'Impossibile aggiornare la visibilità: $error';
+  }
+
+  @override
+  String get journalUnknown => 'Sconosciuto';
+
+  @override
+  String get journalNew => 'Nuovo diario';
+
+  @override
+  String get journalNewHint => 'Inizia a documentare il tuo viaggio';
+
+  @override
+  String get journalEmpty => 'Ancora nessuna voce nel diario';
+
+  @override
+  String get journalStartWriting => 'Inizia a scrivere';
+
+  @override
+  String get journalRemoveProfile => 'Rimuovi dal profilo';
+
+  @override
+  String get journalView => 'Vedi';
+
+  @override
+  String editorSaveError(String error) {
+    return 'Impossibile salvare: $error';
+  }
+
+  @override
+  String get editorSavedOffline =>
+      'Salvato su questo dispositivo — sincronizzato quando sei online.';
+
+  @override
+  String get editorDraftSaved => 'Bozza salvata!';
+
+  @override
+  String get editorAddPicture => 'Aggiungi una foto';
+
+  @override
+  String get editorFromGallery => 'Dalla galleria';
+
+  @override
+  String get editorTakePhoto => 'Scatta una foto';
+
+  @override
+  String get editorPicOffline =>
+      'Foto salvata su questo dispositivo — sincronizzata quando sei online.';
+
+  @override
+  String get editorPicAdded => 'Foto aggiunta!';
+
+  @override
+  String editorPicError(String error) {
+    return 'Impossibile aggiungere la foto: $error';
+  }
+
+  @override
+  String get editorTicketOffline =>
+      'Biglietto salvato su questo dispositivo. Sincronizzato quando sei online.';
+
+  @override
+  String get editorTicketAdded => 'Biglietto aggiunto al tuo diario!';
+
+  @override
+  String get editorClosedError => 'L\'editor del diario è stato chiuso.';
+
+  @override
+  String get editorPageGoneError => 'La pagina non è più disponibile.';
+
+  @override
+  String editorTicketError(String error) {
+    return 'Scansione del biglietto non riuscita: $error';
+  }
+
+  @override
+  String get editorAddSticker => 'Aggiungi adesivo';
+
+  @override
+  String get editorStickerAirplane => 'Aereo';
+
+  @override
+  String get editorStickerTicket => 'Biglietto';
+
+  @override
+  String get editorStickerCamera => 'Fotocamera';
+
+  @override
+  String get editorStickerArt => 'Arte';
+
+  @override
+  String get editorStickerCoffee => 'Caffè';
+
+  @override
+  String get editorStickerBuilding => 'Edificio';
+
+  @override
+  String get editorStickerTheater => 'Teatro';
+
+  @override
+  String get editorStickerWine => 'Vino';
+
+  @override
+  String get editorEditText => 'Modifica testo';
+
+  @override
+  String get editorDuplicate => 'Duplica';
+
+  @override
+  String get editorBringForward => 'Porta avanti';
+
+  @override
+  String get editorSendBackward => 'Manda indietro';
+
+  @override
+  String get editorTextColor => 'Colore testo';
+
+  @override
+  String get editorFontFamily => 'Carattere';
+
+  @override
+  String get editorDupPage => 'Duplica pagina';
+
+  @override
+  String get editorMoveLeft => 'Sposta a sinistra';
+
+  @override
+  String get editorMoveRight => 'Sposta a destra';
+
+  @override
+  String get editorDeletePage => 'Elimina pagina';
+
+  @override
+  String get editorPageBg => 'Sfondo pagina';
+
+  @override
+  String get editorBgCream => 'Crema';
+
+  @override
+  String get editorBgPeach => 'Pesca';
+
+  @override
+  String get editorBgMint => 'Menta';
+
+  @override
+  String get editorBgSky => 'Cielo';
+
+  @override
+  String get editorBgLavender => 'Lavanda';
+
+  @override
+  String get editorBgLemon => 'Limone';
+
+  @override
+  String get editorMinPage => 'Un diario deve avere almeno una pagina.';
+
+  @override
+  String get editorToolText => 'Testo';
+
+  @override
+  String get editorToolPicture => 'Foto';
+
+  @override
+  String get editorToolTicket => 'Biglietto';
+
+  @override
+  String get editorToolSticker => 'Adesivo';
+
+  @override
+  String get editorAddPage => 'Aggiungi pagina';
+
+  @override
+  String get editorFormatTooltip => 'Formato';
+
+  @override
+  String get editorRotateLeft => 'Ruota a sinistra';
+
+  @override
+  String get editorRotateRight => 'Ruota a destra';
+
+  @override
+  String get editorSmaller => 'Più piccolo';
+
+  @override
+  String get editorBigger => 'Più grande';
+
+  @override
+  String get editorRetakePhoto => 'Ripeti foto';
+
+  @override
+  String get editorCropTicket => 'Ritaglia biglietto';
+
+  @override
+  String get journalNotFound => 'Non trovato';
+
+  @override
+  String get journalNoPages => 'Nessuna pagina';
+
+  @override
+  String journalPageTitle(int n) {
+    return 'Pagina $n';
+  }
+
+  @override
+  String get journalPdfError => 'Impossibile scaricare il PDF';
 }

@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "— без координати"
+  "mapNoCoordsSuffix": "— без координати",
+  "journalOverviewTitle": "Преглед на дневника",
+  "journalDownload": "Изтегли дневник",
+  "journalPost": "Публикувай в профила",
+  "journalNoCountries": "Все още няма заредени държави",
+  "journalExploreMap": "Разгледай картата",
+  "journalCityCount": "{n, plural, =1{1 град} other{{n} града}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "Все още няма дневник за тази държава.",
+  "journalChooseCountry": "Изберете държава",
+  "journalCount": "{n, plural, =1{1 дневник} other{{n} дневника}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, =1{1 страница} other{{n} страници}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "Дневник без заглавие",
+  "journalNoneToPost": "Все още няма дневници за публикуване.",
+  "journalPublic": "Публичен",
+  "journalPrivate": "Частен",
+  "journalRemoveShort": "Премахни",
+  "journalRemoveTitle": "Да се премахне ли от профила?",
+  "journalPostTitle": "Да се публикува ли в профила?",
+  "journalRemoveText": "Това ще направи дневника ви частен и ще го скрие от профила ви.",
+  "journalPostText": "Това ще направи дневника ви видим в профила ви. Публичните дневници са видими за всеки, който може да разглежда профила ви.",
+  "journalRemoved": "Премахнато от профила",
+  "journalPosted": "Публикувано в профила",
+  "journalVisibilityError": "Видимостта не можа да се обнови: {error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "Неизвестно",
+  "journalNew": "Нов дневник",
+  "journalNewHint": "Започнете да документирате пътуването си",
+  "journalEmpty": "Все още няма записи в дневника",
+  "journalStartWriting": "Започнете да пишете",
+  "journalRemoveProfile": "Премахни от профила",
+  "journalView": "Преглед",
+  "editorSaveError": "Не можа да се запази: {error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "Запазено на това устройство — ще се синхронизира, когато сте онлайн.",
+  "editorDraftSaved": "Черновата е запазена!",
+  "editorAddPicture": "Добави снимка",
+  "editorFromGallery": "От галерията",
+  "editorTakePhoto": "Направи снимка",
+  "editorPicOffline": "Снимката е запазена на това устройство — ще се синхронизира, когато сте онлайн.",
+  "editorPicAdded": "Снимката е добавена!",
+  "editorPicError": "Снимката не можа да се добави: {error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "Билетът е запазен на това устройство. Ще се синхронизира, когато сте онлайн.",
+  "editorTicketAdded": "Билетът е добавен в дневника ви!",
+  "editorClosedError": "Редакторът на дневника беше затворен.",
+  "editorPageGoneError": "Страницата вече не е налична.",
+  "editorTicketError": "Сканирането на билета не бе успешно: {error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "Добави стикер",
+  "editorStickerAirplane": "Самолет",
+  "editorStickerTicket": "Билет",
+  "editorStickerCamera": "Камера",
+  "editorStickerArt": "Изкуство",
+  "editorStickerCoffee": "Кафе",
+  "editorStickerBuilding": "Сграда",
+  "editorStickerTheater": "Театър",
+  "editorStickerWine": "Вино",
+  "editorEditText": "Редактирай текста",
+  "editorDuplicate": "Дублирай",
+  "editorBringForward": "Премести напред",
+  "editorSendBackward": "Премести назад",
+  "editorTextColor": "Цвят на текста",
+  "editorFontFamily": "Шрифт",
+  "editorDupPage": "Дублирай страницата",
+  "editorMoveLeft": "Премести наляво",
+  "editorMoveRight": "Премести надясно",
+  "editorDeletePage": "Изтрий страницата",
+  "editorPageBg": "Фон на страницата",
+  "editorBgCream": "Крем",
+  "editorBgPeach": "Праскова",
+  "editorBgMint": "Мента",
+  "editorBgSky": "Небе",
+  "editorBgLavender": "Лавандула",
+  "editorBgLemon": "Лимон",
+  "editorMinPage": "Дневникът се нуждае от поне една страница.",
+  "editorToolText": "Текст",
+  "editorToolPicture": "Снимка",
+  "editorToolTicket": "Билет",
+  "editorToolSticker": "Стикер",
+  "editorAddPage": "Добави страница",
+  "editorFormatTooltip": "Форматиране",
+  "editorRotateLeft": "Завърти наляво",
+  "editorRotateRight": "Завърти надясно",
+  "editorSmaller": "По-малко",
+  "editorBigger": "По-голямо",
+  "editorRetakePhoto": "Направи снимката отново",
+  "editorCropTicket": "Изрежи билета",
+  "journalNotFound": "Не е намерено",
+  "journalNoPages": "Няма страници",
+  "journalPageTitle": "Страница {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "PDF не можа да се изтегли"
 }

@@ -373,6 +373,150 @@ void main() {
       );
     });
 
+    test('journal keys exist in all 8 ARBs', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      const expected = [
+        'journalOverviewTitle',
+        'journalDownload',
+        'journalPost',
+        'journalNoCountries',
+        'journalExploreMap',
+        'journalCityCount',
+        'journalNoneForCountry',
+        'journalChooseCountry',
+        'journalCount',
+        'journalPageCount',
+        'journalUntitled',
+        'journalNoneToPost',
+        'journalPublic',
+        'journalPrivate',
+        'journalRemoveShort',
+        'journalRemoveTitle',
+        'journalPostTitle',
+        'journalRemoveText',
+        'journalPostText',
+        'journalRemoved',
+        'journalPosted',
+        'journalVisibilityError',
+        'journalUnknown',
+        'journalNew',
+        'journalNewHint',
+        'journalEmpty',
+        'journalStartWriting',
+        'journalRemoveProfile',
+        'journalView',
+        'editorSaveError',
+        'editorSavedOffline',
+        'editorDraftSaved',
+        'editorAddPicture',
+        'editorFromGallery',
+        'editorTakePhoto',
+        'editorPicOffline',
+        'editorPicAdded',
+        'editorPicError',
+        'editorTicketOffline',
+        'editorTicketAdded',
+        'editorClosedError',
+        'editorPageGoneError',
+        'editorTicketError',
+        'editorAddSticker',
+        'editorStickerAirplane',
+        'editorStickerTicket',
+        'editorStickerCamera',
+        'editorStickerArt',
+        'editorStickerCoffee',
+        'editorStickerBuilding',
+        'editorStickerTheater',
+        'editorStickerWine',
+        'editorEditText',
+        'editorDuplicate',
+        'editorBringForward',
+        'editorSendBackward',
+        'editorTextColor',
+        'editorFontFamily',
+        'editorDupPage',
+        'editorMoveLeft',
+        'editorMoveRight',
+        'editorDeletePage',
+        'editorPageBg',
+        'editorBgCream',
+        'editorBgPeach',
+        'editorBgMint',
+        'editorBgSky',
+        'editorBgLavender',
+        'editorBgLemon',
+        'editorMinPage',
+        'editorToolText',
+        'editorToolPicture',
+        'editorToolTicket',
+        'editorToolSticker',
+        'editorAddPage',
+        'editorFormatTooltip',
+        'editorRotateLeft',
+        'editorRotateRight',
+        'editorSmaller',
+        'editorBigger',
+        'editorRetakePhoto',
+        'editorCropTicket',
+        'journalNotFound',
+        'journalNoPages',
+        'journalPageTitle',
+        'journalPdfError',
+      ];
+      expect(expected, hasLength(86));
+      for (final code in codes) {
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in expected) {
+          expect(map[key], isNotNull, reason: 'app_$code.arb missing $key');
+          expect(
+            map[key],
+            isA<String>(),
+            reason: 'app_$code.arb $key must be a string',
+          );
+        }
+      }
+    });
+
+    test('journal plurals and placeholders resolve', () {
+      expect(
+        lookupAppLocalizations(const Locale('en')).journalCityCount(1),
+        '1 city',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('en')).journalCityCount(4),
+        '4 cities',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).journalPageCount(1),
+        '1 страница',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ja')).journalCount(2),
+        '2件の日記',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).journalPageTitle(3),
+        'Seite 3',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('fr')).journalVisibilityError('x'),
+        'Impossible de mettre à jour la visibilité : x',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('zh')).editorTicketAdded,
+        '票据已添加到你的日记！',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('es')).editorStickerCoffee,
+        'Café',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('it')).editorBgLavender,
+        'Lavanda',
+      );
+    });
+
     test('home/places keys resolve without English placeholders', () {
       expect(
         lookupAppLocalizations(const Locale('bg')).homeCountriesTitle,

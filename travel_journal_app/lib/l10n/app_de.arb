@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "– ohne Koordinaten"
+  "mapNoCoordsSuffix": "– ohne Koordinaten",
+  "journalOverviewTitle": "Tagebuch-Übersicht",
+  "journalDownload": "Tagebuch herunterladen",
+  "journalPost": "Im Profil posten",
+  "journalNoCountries": "Noch keine Länder geladen",
+  "journalExploreMap": "Karte erkunden",
+  "journalCityCount": "{n, plural, =1{1 Stadt} other{{n} Städte}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "Noch kein Tagebuch für dieses Land.",
+  "journalChooseCountry": "Land wählen",
+  "journalCount": "{n, plural, =1{1 Tagebuch} other{{n} Tagebücher}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, =1{1 Seite} other{{n} Seiten}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "Tagebuch ohne Titel",
+  "journalNoneToPost": "Noch keine Tagebücher zum Posten.",
+  "journalPublic": "Öffentlich",
+  "journalPrivate": "Privat",
+  "journalRemoveShort": "Entfernen",
+  "journalRemoveTitle": "Aus dem Profil entfernen?",
+  "journalPostTitle": "Im Profil posten?",
+  "journalRemoveText": "Dadurch wird dein Tagebuch privat und aus deinem Profil ausgeblendet.",
+  "journalPostText": "Dadurch wird dein Tagebuch in deinem Profil sichtbar. Öffentliche Tagebücher sind für alle sichtbar, die dein Profil sehen können.",
+  "journalRemoved": "Aus dem Profil entfernt",
+  "journalPosted": "Im Profil gepostet",
+  "journalVisibilityError": "Sichtbarkeit konnte nicht aktualisiert werden: {error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "Unbekannt",
+  "journalNew": "Neues Tagebuch",
+  "journalNewHint": "Beginne, deine Reise zu dokumentieren",
+  "journalEmpty": "Noch keine Tagebucheinträge",
+  "journalStartWriting": "Mit dem Schreiben beginnen",
+  "journalRemoveProfile": "Aus dem Profil entfernen",
+  "journalView": "Ansehen",
+  "editorSaveError": "Konnte nicht gespeichert werden: {error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "Auf diesem Gerät gespeichert – wird synchronisiert, sobald du online bist.",
+  "editorDraftSaved": "Entwurf gespeichert!",
+  "editorAddPicture": "Bild hinzufügen",
+  "editorFromGallery": "Aus der Galerie",
+  "editorTakePhoto": "Foto aufnehmen",
+  "editorPicOffline": "Bild auf diesem Gerät gespeichert – wird synchronisiert, sobald du online bist.",
+  "editorPicAdded": "Bild hinzugefügt!",
+  "editorPicError": "Bild konnte nicht hinzugefügt werden: {error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "Ticket auf diesem Gerät gespeichert. Wird synchronisiert, sobald du online bist.",
+  "editorTicketAdded": "Ticket zu deinem Tagebuch hinzugefügt!",
+  "editorClosedError": "Tagebuch-Editor wurde geschlossen.",
+  "editorPageGoneError": "Tagebuchseite ist nicht mehr verfügbar.",
+  "editorTicketError": "Ticket-Scan fehlgeschlagen: {error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "Sticker hinzufügen",
+  "editorStickerAirplane": "Flugzeug",
+  "editorStickerTicket": "Ticket",
+  "editorStickerCamera": "Kamera",
+  "editorStickerArt": "Kunst",
+  "editorStickerCoffee": "Kaffee",
+  "editorStickerBuilding": "Gebäude",
+  "editorStickerTheater": "Theater",
+  "editorStickerWine": "Wein",
+  "editorEditText": "Text bearbeiten",
+  "editorDuplicate": "Duplizieren",
+  "editorBringForward": "Nach vorne",
+  "editorSendBackward": "Nach hinten",
+  "editorTextColor": "Textfarbe",
+  "editorFontFamily": "Schriftart",
+  "editorDupPage": "Seite duplizieren",
+  "editorMoveLeft": "Nach links",
+  "editorMoveRight": "Nach rechts",
+  "editorDeletePage": "Seite löschen",
+  "editorPageBg": "Seitenhintergrund",
+  "editorBgCream": "Creme",
+  "editorBgPeach": "Pfirsich",
+  "editorBgMint": "Minze",
+  "editorBgSky": "Himmel",
+  "editorBgLavender": "Lavendel",
+  "editorBgLemon": "Zitrone",
+  "editorMinPage": "Ein Tagebuch braucht mindestens eine Seite.",
+  "editorToolText": "Text",
+  "editorToolPicture": "Bild",
+  "editorToolTicket": "Ticket",
+  "editorToolSticker": "Sticker",
+  "editorAddPage": "Seite hinzufügen",
+  "editorFormatTooltip": "Format",
+  "editorRotateLeft": "Nach links drehen",
+  "editorRotateRight": "Nach rechts drehen",
+  "editorSmaller": "Kleiner",
+  "editorBigger": "Größer",
+  "editorRetakePhoto": "Foto wiederholen",
+  "editorCropTicket": "Ticket zuschneiden",
+  "journalNotFound": "Nicht gefunden",
+  "journalNoPages": "Keine Seiten",
+  "journalPageTitle": "Seite {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "PDF konnte nicht heruntergeladen werden"
 }

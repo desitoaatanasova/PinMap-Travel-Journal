@@ -645,4 +645,289 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mapNoCoordsSuffix => '— 无坐标';
+
+  @override
+  String get journalOverviewTitle => '日记总览';
+
+  @override
+  String get journalDownload => '下载日记';
+
+  @override
+  String get journalPost => '发布到主页';
+
+  @override
+  String get journalNoCountries => '尚未加载国家';
+
+  @override
+  String get journalExploreMap => '探索地图';
+
+  @override
+  String journalCityCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n 个城市',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalNoneForCountry => '该国家还没有日记。';
+
+  @override
+  String get journalChooseCountry => '选择国家';
+
+  @override
+  String journalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n 篇日记',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String journalPageCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n 页');
+    return '$_temp0';
+  }
+
+  @override
+  String get journalUntitled => '未命名日记';
+
+  @override
+  String get journalNoneToPost => '还没有可发布的日记。';
+
+  @override
+  String get journalPublic => '公开';
+
+  @override
+  String get journalPrivate => '私密';
+
+  @override
+  String get journalRemoveShort => '移除';
+
+  @override
+  String get journalRemoveTitle => '从主页移除？';
+
+  @override
+  String get journalPostTitle => '发布到主页？';
+
+  @override
+  String get journalRemoveText => '这会将日记设为私密，并从你的主页隐藏。';
+
+  @override
+  String get journalPostText => '这会将日记显示在你的主页上。公开日记对所有能查看你主页的人可见。';
+
+  @override
+  String get journalRemoved => '已从主页移除';
+
+  @override
+  String get journalPosted => '已发布到主页';
+
+  @override
+  String journalVisibilityError(String error) {
+    return '无法更新可见性：$error';
+  }
+
+  @override
+  String get journalUnknown => '未知';
+
+  @override
+  String get journalNew => '新建日记';
+
+  @override
+  String get journalNewHint => '开始记录你的旅程';
+
+  @override
+  String get journalEmpty => '还没有日记条目';
+
+  @override
+  String get journalStartWriting => '开始写作';
+
+  @override
+  String get journalRemoveProfile => '从主页移除';
+
+  @override
+  String get journalView => '查看';
+
+  @override
+  String editorSaveError(String error) {
+    return '无法保存：$error';
+  }
+
+  @override
+  String get editorSavedOffline => '已保存在本设备 — 联网后将同步。';
+
+  @override
+  String get editorDraftSaved => '草稿已保存！';
+
+  @override
+  String get editorAddPicture => '添加图片';
+
+  @override
+  String get editorFromGallery => '从相册选择';
+
+  @override
+  String get editorTakePhoto => '拍照';
+
+  @override
+  String get editorPicOffline => '图片已保存在本设备 — 联网后将同步。';
+
+  @override
+  String get editorPicAdded => '图片已添加！';
+
+  @override
+  String editorPicError(String error) {
+    return '无法添加图片：$error';
+  }
+
+  @override
+  String get editorTicketOffline => '票据已保存在本设备。联网后将同步。';
+
+  @override
+  String get editorTicketAdded => '票据已添加到你的日记！';
+
+  @override
+  String get editorClosedError => '日记编辑器已关闭。';
+
+  @override
+  String get editorPageGoneError => '该页面已不可用。';
+
+  @override
+  String editorTicketError(String error) {
+    return '票据扫描失败：$error';
+  }
+
+  @override
+  String get editorAddSticker => '添加贴纸';
+
+  @override
+  String get editorStickerAirplane => '飞机';
+
+  @override
+  String get editorStickerTicket => '票';
+
+  @override
+  String get editorStickerCamera => '相机';
+
+  @override
+  String get editorStickerArt => '艺术';
+
+  @override
+  String get editorStickerCoffee => '咖啡';
+
+  @override
+  String get editorStickerBuilding => '建筑';
+
+  @override
+  String get editorStickerTheater => '剧院';
+
+  @override
+  String get editorStickerWine => '葡萄酒';
+
+  @override
+  String get editorEditText => '编辑文本';
+
+  @override
+  String get editorDuplicate => '复制';
+
+  @override
+  String get editorBringForward => '前移';
+
+  @override
+  String get editorSendBackward => '后移';
+
+  @override
+  String get editorTextColor => '文字颜色';
+
+  @override
+  String get editorFontFamily => '字体';
+
+  @override
+  String get editorDupPage => '复制页面';
+
+  @override
+  String get editorMoveLeft => '左移';
+
+  @override
+  String get editorMoveRight => '右移';
+
+  @override
+  String get editorDeletePage => '删除页面';
+
+  @override
+  String get editorPageBg => '页面背景';
+
+  @override
+  String get editorBgCream => '奶油色';
+
+  @override
+  String get editorBgPeach => '蜜桃色';
+
+  @override
+  String get editorBgMint => '薄荷色';
+
+  @override
+  String get editorBgSky => '天蓝色';
+
+  @override
+  String get editorBgLavender => '薰衣草色';
+
+  @override
+  String get editorBgLemon => '柠檬色';
+
+  @override
+  String get editorMinPage => '日记至少需要一页。';
+
+  @override
+  String get editorToolText => '文本';
+
+  @override
+  String get editorToolPicture => '图片';
+
+  @override
+  String get editorToolTicket => '票据';
+
+  @override
+  String get editorToolSticker => '贴纸';
+
+  @override
+  String get editorAddPage => '添加页面';
+
+  @override
+  String get editorFormatTooltip => '格式';
+
+  @override
+  String get editorRotateLeft => '向左旋转';
+
+  @override
+  String get editorRotateRight => '向右旋转';
+
+  @override
+  String get editorSmaller => '缩小';
+
+  @override
+  String get editorBigger => '放大';
+
+  @override
+  String get editorRetakePhoto => '重新拍照';
+
+  @override
+  String get editorCropTicket => '裁剪票据';
+
+  @override
+  String get journalNotFound => '未找到';
+
+  @override
+  String get journalNoPages => '没有页面';
+
+  @override
+  String journalPageTitle(int n) {
+    return '第 $n 页';
+  }
+
+  @override
+  String get journalPdfError => '无法下载PDF';
 }

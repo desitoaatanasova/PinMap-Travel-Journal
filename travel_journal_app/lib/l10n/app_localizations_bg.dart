@@ -671,4 +671,301 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get mapNoCoordsSuffix => '— без координати';
+
+  @override
+  String get journalOverviewTitle => 'Преглед на дневника';
+
+  @override
+  String get journalDownload => 'Изтегли дневник';
+
+  @override
+  String get journalPost => 'Публикувай в профила';
+
+  @override
+  String get journalNoCountries => 'Все още няма заредени държави';
+
+  @override
+  String get journalExploreMap => 'Разгледай картата';
+
+  @override
+  String journalCityCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n града',
+      one: '1 град',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalNoneForCountry => 'Все още няма дневник за тази държава.';
+
+  @override
+  String get journalChooseCountry => 'Изберете държава';
+
+  @override
+  String journalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n дневника',
+      one: '1 дневник',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String journalPageCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n страници',
+      one: '1 страница',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalUntitled => 'Дневник без заглавие';
+
+  @override
+  String get journalNoneToPost => 'Все още няма дневници за публикуване.';
+
+  @override
+  String get journalPublic => 'Публичен';
+
+  @override
+  String get journalPrivate => 'Частен';
+
+  @override
+  String get journalRemoveShort => 'Премахни';
+
+  @override
+  String get journalRemoveTitle => 'Да се премахне ли от профила?';
+
+  @override
+  String get journalPostTitle => 'Да се публикува ли в профила?';
+
+  @override
+  String get journalRemoveText =>
+      'Това ще направи дневника ви частен и ще го скрие от профила ви.';
+
+  @override
+  String get journalPostText =>
+      'Това ще направи дневника ви видим в профила ви. Публичните дневници са видими за всеки, който може да разглежда профила ви.';
+
+  @override
+  String get journalRemoved => 'Премахнато от профила';
+
+  @override
+  String get journalPosted => 'Публикувано в профила';
+
+  @override
+  String journalVisibilityError(String error) {
+    return 'Видимостта не можа да се обнови: $error';
+  }
+
+  @override
+  String get journalUnknown => 'Неизвестно';
+
+  @override
+  String get journalNew => 'Нов дневник';
+
+  @override
+  String get journalNewHint => 'Започнете да документирате пътуването си';
+
+  @override
+  String get journalEmpty => 'Все още няма записи в дневника';
+
+  @override
+  String get journalStartWriting => 'Започнете да пишете';
+
+  @override
+  String get journalRemoveProfile => 'Премахни от профила';
+
+  @override
+  String get journalView => 'Преглед';
+
+  @override
+  String editorSaveError(String error) {
+    return 'Не можа да се запази: $error';
+  }
+
+  @override
+  String get editorSavedOffline =>
+      'Запазено на това устройство — ще се синхронизира, когато сте онлайн.';
+
+  @override
+  String get editorDraftSaved => 'Черновата е запазена!';
+
+  @override
+  String get editorAddPicture => 'Добави снимка';
+
+  @override
+  String get editorFromGallery => 'От галерията';
+
+  @override
+  String get editorTakePhoto => 'Направи снимка';
+
+  @override
+  String get editorPicOffline =>
+      'Снимката е запазена на това устройство — ще се синхронизира, когато сте онлайн.';
+
+  @override
+  String get editorPicAdded => 'Снимката е добавена!';
+
+  @override
+  String editorPicError(String error) {
+    return 'Снимката не можа да се добави: $error';
+  }
+
+  @override
+  String get editorTicketOffline =>
+      'Билетът е запазен на това устройство. Ще се синхронизира, когато сте онлайн.';
+
+  @override
+  String get editorTicketAdded => 'Билетът е добавен в дневника ви!';
+
+  @override
+  String get editorClosedError => 'Редакторът на дневника беше затворен.';
+
+  @override
+  String get editorPageGoneError => 'Страницата вече не е налична.';
+
+  @override
+  String editorTicketError(String error) {
+    return 'Сканирането на билета не бе успешно: $error';
+  }
+
+  @override
+  String get editorAddSticker => 'Добави стикер';
+
+  @override
+  String get editorStickerAirplane => 'Самолет';
+
+  @override
+  String get editorStickerTicket => 'Билет';
+
+  @override
+  String get editorStickerCamera => 'Камера';
+
+  @override
+  String get editorStickerArt => 'Изкуство';
+
+  @override
+  String get editorStickerCoffee => 'Кафе';
+
+  @override
+  String get editorStickerBuilding => 'Сграда';
+
+  @override
+  String get editorStickerTheater => 'Театър';
+
+  @override
+  String get editorStickerWine => 'Вино';
+
+  @override
+  String get editorEditText => 'Редактирай текста';
+
+  @override
+  String get editorDuplicate => 'Дублирай';
+
+  @override
+  String get editorBringForward => 'Премести напред';
+
+  @override
+  String get editorSendBackward => 'Премести назад';
+
+  @override
+  String get editorTextColor => 'Цвят на текста';
+
+  @override
+  String get editorFontFamily => 'Шрифт';
+
+  @override
+  String get editorDupPage => 'Дублирай страницата';
+
+  @override
+  String get editorMoveLeft => 'Премести наляво';
+
+  @override
+  String get editorMoveRight => 'Премести надясно';
+
+  @override
+  String get editorDeletePage => 'Изтрий страницата';
+
+  @override
+  String get editorPageBg => 'Фон на страницата';
+
+  @override
+  String get editorBgCream => 'Крем';
+
+  @override
+  String get editorBgPeach => 'Праскова';
+
+  @override
+  String get editorBgMint => 'Мента';
+
+  @override
+  String get editorBgSky => 'Небе';
+
+  @override
+  String get editorBgLavender => 'Лавандула';
+
+  @override
+  String get editorBgLemon => 'Лимон';
+
+  @override
+  String get editorMinPage => 'Дневникът се нуждае от поне една страница.';
+
+  @override
+  String get editorToolText => 'Текст';
+
+  @override
+  String get editorToolPicture => 'Снимка';
+
+  @override
+  String get editorToolTicket => 'Билет';
+
+  @override
+  String get editorToolSticker => 'Стикер';
+
+  @override
+  String get editorAddPage => 'Добави страница';
+
+  @override
+  String get editorFormatTooltip => 'Форматиране';
+
+  @override
+  String get editorRotateLeft => 'Завърти наляво';
+
+  @override
+  String get editorRotateRight => 'Завърти надясно';
+
+  @override
+  String get editorSmaller => 'По-малко';
+
+  @override
+  String get editorBigger => 'По-голямо';
+
+  @override
+  String get editorRetakePhoto => 'Направи снимката отново';
+
+  @override
+  String get editorCropTicket => 'Изрежи билета';
+
+  @override
+  String get journalNotFound => 'Не е намерено';
+
+  @override
+  String get journalNoPages => 'Няма страници';
+
+  @override
+  String journalPageTitle(int n) {
+    return 'Страница $n';
+  }
+
+  @override
+  String get journalPdfError => 'PDF не можа да се изтегли';
 }

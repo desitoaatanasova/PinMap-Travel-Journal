@@ -643,4 +643,289 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mapNoCoordsSuffix => '— 座標なし';
+
+  @override
+  String get journalOverviewTitle => '日記一覧';
+
+  @override
+  String get journalDownload => '日記をダウンロード';
+
+  @override
+  String get journalPost => 'プロフィールに投稿';
+
+  @override
+  String get journalNoCountries => '国がまだ読み込まれていません';
+
+  @override
+  String get journalExploreMap => '地図を探索';
+
+  @override
+  String journalCityCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n都市');
+    return '$_temp0';
+  }
+
+  @override
+  String get journalNoneForCountry => 'この国の日記はまだありません。';
+
+  @override
+  String get journalChooseCountry => '国を選択';
+
+  @override
+  String journalCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n件の日記',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String journalPageCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$nページ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get journalUntitled => '無題の日記';
+
+  @override
+  String get journalNoneToPost => '投稿できる日記はまだありません。';
+
+  @override
+  String get journalPublic => '公開';
+
+  @override
+  String get journalPrivate => '非公開';
+
+  @override
+  String get journalRemoveShort => '削除';
+
+  @override
+  String get journalRemoveTitle => 'プロフィールから削除しますか？';
+
+  @override
+  String get journalPostTitle => 'プロフィールに投稿しますか？';
+
+  @override
+  String get journalRemoveText => '日記は非公開になり、プロフィールから非表示になります。';
+
+  @override
+  String get journalPostText => '日記はプロフィールに表示されます。公開日記はプロフィールを閲覧できる全員に表示されます。';
+
+  @override
+  String get journalRemoved => 'プロフィールから削除しました';
+
+  @override
+  String get journalPosted => 'プロフィールに投稿しました';
+
+  @override
+  String journalVisibilityError(String error) {
+    return '公開設定を更新できませんでした：$error';
+  }
+
+  @override
+  String get journalUnknown => '不明';
+
+  @override
+  String get journalNew => '新しい日記';
+
+  @override
+  String get journalNewHint => '旅の記録を始めましょう';
+
+  @override
+  String get journalEmpty => 'まだ日記の記録がありません';
+
+  @override
+  String get journalStartWriting => '書き始める';
+
+  @override
+  String get journalRemoveProfile => 'プロフィールから削除';
+
+  @override
+  String get journalView => '表示';
+
+  @override
+  String editorSaveError(String error) {
+    return '保存できませんでした：$error';
+  }
+
+  @override
+  String get editorSavedOffline => 'このデバイスに保存しました — オンライン時に同期されます。';
+
+  @override
+  String get editorDraftSaved => '下書きを保存しました！';
+
+  @override
+  String get editorAddPicture => '写真を追加';
+
+  @override
+  String get editorFromGallery => 'ギャラリーから';
+
+  @override
+  String get editorTakePhoto => '写真を撮る';
+
+  @override
+  String get editorPicOffline => '写真をこのデバイスに保存しました — オンライン時に同期されます。';
+
+  @override
+  String get editorPicAdded => '写真を追加しました！';
+
+  @override
+  String editorPicError(String error) {
+    return '写真を追加できませんでした：$error';
+  }
+
+  @override
+  String get editorTicketOffline => 'チケットをこのデバイスに保存しました。オンライン時に同期されます。';
+
+  @override
+  String get editorTicketAdded => 'チケットを日記に追加しました！';
+
+  @override
+  String get editorClosedError => '日記エディターが閉じられました。';
+
+  @override
+  String get editorPageGoneError => 'ページは利用できなくなりました。';
+
+  @override
+  String editorTicketError(String error) {
+    return 'チケットのスキャンに失敗しました：$error';
+  }
+
+  @override
+  String get editorAddSticker => 'ステッカーを追加';
+
+  @override
+  String get editorStickerAirplane => '飛行機';
+
+  @override
+  String get editorStickerTicket => 'チケット';
+
+  @override
+  String get editorStickerCamera => 'カメラ';
+
+  @override
+  String get editorStickerArt => 'アート';
+
+  @override
+  String get editorStickerCoffee => 'コーヒー';
+
+  @override
+  String get editorStickerBuilding => '建物';
+
+  @override
+  String get editorStickerTheater => '劇場';
+
+  @override
+  String get editorStickerWine => 'ワイン';
+
+  @override
+  String get editorEditText => 'テキストを編集';
+
+  @override
+  String get editorDuplicate => '複製';
+
+  @override
+  String get editorBringForward => '前面へ';
+
+  @override
+  String get editorSendBackward => '背面へ';
+
+  @override
+  String get editorTextColor => '文字色';
+
+  @override
+  String get editorFontFamily => 'フォント';
+
+  @override
+  String get editorDupPage => 'ページを複製';
+
+  @override
+  String get editorMoveLeft => '左へ移動';
+
+  @override
+  String get editorMoveRight => '右へ移動';
+
+  @override
+  String get editorDeletePage => 'ページを削除';
+
+  @override
+  String get editorPageBg => 'ページ背景';
+
+  @override
+  String get editorBgCream => 'クリーム';
+
+  @override
+  String get editorBgPeach => 'ピーチ';
+
+  @override
+  String get editorBgMint => 'ミント';
+
+  @override
+  String get editorBgSky => 'スカイ';
+
+  @override
+  String get editorBgLavender => 'ラベンダー';
+
+  @override
+  String get editorBgLemon => 'レモン';
+
+  @override
+  String get editorMinPage => '日記には少なくとも1ページ必要です。';
+
+  @override
+  String get editorToolText => 'テキスト';
+
+  @override
+  String get editorToolPicture => '写真';
+
+  @override
+  String get editorToolTicket => 'チケット';
+
+  @override
+  String get editorToolSticker => 'ステッカー';
+
+  @override
+  String get editorAddPage => 'ページを追加';
+
+  @override
+  String get editorFormatTooltip => '書式';
+
+  @override
+  String get editorRotateLeft => '左に回転';
+
+  @override
+  String get editorRotateRight => '右に回転';
+
+  @override
+  String get editorSmaller => '小さく';
+
+  @override
+  String get editorBigger => '大きく';
+
+  @override
+  String get editorRetakePhoto => '写真を撮り直す';
+
+  @override
+  String get editorCropTicket => 'チケットを切り抜く';
+
+  @override
+  String get journalNotFound => '見つかりません';
+
+  @override
+  String get journalNoPages => 'ページがありません';
+
+  @override
+  String journalPageTitle(int n) {
+    return 'ページ $n';
+  }
+
+  @override
+  String get journalPdfError => 'PDFをダウンロードできませんでした';
 }

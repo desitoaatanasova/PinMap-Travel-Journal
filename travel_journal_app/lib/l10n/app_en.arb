@@ -286,5 +286,131 @@
       "n": { "type": "int" }
     }
   },
-  "mapNoCoordsSuffix": "— no coordinates"
+  "mapNoCoordsSuffix": "— no coordinates",
+  "journalOverviewTitle": "Journal Overview",
+  "journalDownload": "Download Journal",
+  "journalPost": "Post to Profile",
+  "journalNoCountries": "No countries loaded yet",
+  "journalExploreMap": "Explore Map",
+  "journalCityCount": "{n, plural, =1{1 city} other{{n} cities}}",
+  "@journalCityCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalNoneForCountry": "No journal yet for this country.",
+  "journalChooseCountry": "Choose country",
+  "journalCount": "{n, plural, =1{1 journal} other{{n} journals}}",
+  "@journalCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPageCount": "{n, plural, =1{1 page} other{{n} pages}}",
+  "@journalPageCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalUntitled": "Untitled journal",
+  "journalNoneToPost": "No journals yet to post.",
+  "journalPublic": "Public",
+  "journalPrivate": "Private",
+  "journalRemoveShort": "Remove",
+  "journalRemoveTitle": "Remove from Profile?",
+  "journalPostTitle": "Post to Profile?",
+  "journalRemoveText": "This will make your journal private and hide it from your profile.",
+  "journalPostText": "This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.",
+  "journalRemoved": "Removed from profile",
+  "journalPosted": "Posted to profile",
+  "journalVisibilityError": "Could not update visibility: {error}",
+  "@journalVisibilityError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "journalUnknown": "Unknown",
+  "journalNew": "New Journal",
+  "journalNewHint": "Start documenting your journey",
+  "journalEmpty": "No journal entries yet",
+  "journalStartWriting": "Start Writing",
+  "journalRemoveProfile": "Remove from Profile",
+  "journalView": "View",
+  "editorSaveError": "Could not save: {error}",
+  "@editorSaveError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorSavedOffline": "Saved on this device — will sync when online.",
+  "editorDraftSaved": "Draft saved!",
+  "editorAddPicture": "Add a picture",
+  "editorFromGallery": "From gallery",
+  "editorTakePhoto": "Take a photo",
+  "editorPicOffline": "Picture saved on this device — will sync when online.",
+  "editorPicAdded": "Picture added!",
+  "editorPicError": "Could not add picture: {error}",
+  "@editorPicError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorTicketOffline": "Ticket saved on this device. Will sync when online.",
+  "editorTicketAdded": "Ticket added to your journal!",
+  "editorClosedError": "Journal editor was closed.",
+  "editorPageGoneError": "Journal page is no longer available.",
+  "editorTicketError": "Ticket scan failed: {error}",
+  "@editorTicketError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "editorAddSticker": "Add Sticker",
+  "editorStickerAirplane": "Airplane",
+  "editorStickerTicket": "Ticket",
+  "editorStickerCamera": "Camera",
+  "editorStickerArt": "Art",
+  "editorStickerCoffee": "Coffee",
+  "editorStickerBuilding": "Building",
+  "editorStickerTheater": "Theater",
+  "editorStickerWine": "Wine",
+  "editorEditText": "Edit text",
+  "editorDuplicate": "Duplicate",
+  "editorBringForward": "Bring forward",
+  "editorSendBackward": "Send backward",
+  "editorTextColor": "Text Color",
+  "editorFontFamily": "Font Family",
+  "editorDupPage": "Duplicate page",
+  "editorMoveLeft": "Move left",
+  "editorMoveRight": "Move right",
+  "editorDeletePage": "Delete page",
+  "editorPageBg": "Page background",
+  "editorBgCream": "Cream",
+  "editorBgPeach": "Peach",
+  "editorBgMint": "Mint",
+  "editorBgSky": "Sky",
+  "editorBgLavender": "Lavender",
+  "editorBgLemon": "Lemon",
+  "editorMinPage": "A journal needs at least one page.",
+  "editorToolText": "Text",
+  "editorToolPicture": "Picture",
+  "editorToolTicket": "Ticket",
+  "editorToolSticker": "Sticker",
+  "editorAddPage": "Add page",
+  "editorFormatTooltip": "Format",
+  "editorRotateLeft": "Rotate left",
+  "editorRotateRight": "Rotate right",
+  "editorSmaller": "Smaller",
+  "editorBigger": "Bigger",
+  "editorRetakePhoto": "Retake photo",
+  "editorCropTicket": "Crop ticket",
+  "journalNotFound": "Not found",
+  "journalNoPages": "No pages",
+  "journalPageTitle": "Page {n}",
+  "@journalPageTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "journalPdfError": "Could not download PDF"
 }
