@@ -147,7 +147,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      extendBody: true,
+      extendBody: false,
       body: Column(
         children: [
           const OfflineBanner(),
