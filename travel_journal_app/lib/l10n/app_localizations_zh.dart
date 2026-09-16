@@ -249,4 +249,133 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authGenderPrefer => '不愿透露';
+
+  @override
+  String get homeSearchHint => '搜索国家或城市...';
+
+  @override
+  String get homeCountriesTitle => '国家';
+
+  @override
+  String homeCountriesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n 个国家',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLoadError => '无法加载国家';
+
+  @override
+  String get homeTapRetry => '点击重试';
+
+  @override
+  String get progressTitle => '旅行进度';
+
+  @override
+  String progressCount(int v, int t) {
+    return '$v / $t 个国家';
+  }
+
+  @override
+  String get countryRate => '评分';
+
+  @override
+  String get countryVisitedPrompt => '去过？';
+
+  @override
+  String get countryWishlist => '心愿单';
+
+  @override
+  String get countryWishlisted => '已在心愿单';
+
+  @override
+  String countryMarkedVisited(String name) {
+    return '已将$name标记为去过';
+  }
+
+  @override
+  String countryUnmarkedVisited(String name) {
+    return '已取消$name的去过标记';
+  }
+
+  @override
+  String countryAbout(String name) {
+    return '关于$name';
+  }
+
+  @override
+  String get countryMajorCities => '主要城市';
+
+  @override
+  String get countryMapPreview => '地图预览';
+
+  @override
+  String rateDialogTitle(String name) {
+    return '为$name评分';
+  }
+
+  @override
+  String get cityDiscover => '值得探索';
+
+  @override
+  String get catHistorical => '历史名胜';
+
+  @override
+  String get catArtLovers => '艺术爱好者';
+
+  @override
+  String get catAtmosphere => '氛围与体验';
+
+  @override
+  String get catHiddenGems => '隐藏瑰宝';
+
+  @override
+  String get catCloseBy => '附近';
+
+  @override
+  String get catMyPlaces => '我的地点';
+
+  @override
+  String get categoryPlaces => '地点';
+
+  @override
+  String get placeMarkVisited => '标记为去过';
+
+  @override
+  String get markShort => '标记';
+
+  @override
+  String get detailsAbout => '关于这个地方';
+
+  @override
+  String get detailsLocation => '位置';
+
+  @override
+  String get detailsWebsiteError => '无法打开网站';
+
+  @override
+  String get detailsVisitedAdded => '已标记为去过！';
+
+  @override
+  String get detailsVisitedRemoved => '已取消去过标记';
+
+  @override
+  String get detailsMarkAsVisited => '标记为去过';
+
+  @override
+  String get visitedLabel => '去过';
+
+  @override
+  String wishlistAdded(String name) {
+    return '已将$name加入心愿单';
+  }
+
+  @override
+  String wishlistRemoved(String name) {
+    return '已将$name移出心愿单';
+  }
 }

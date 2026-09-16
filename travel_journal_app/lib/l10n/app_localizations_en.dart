@@ -253,4 +253,134 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authGenderPrefer => 'Prefer not to say';
+
+  @override
+  String get homeSearchHint => 'Search country or city...';
+
+  @override
+  String get homeCountriesTitle => 'Countries';
+
+  @override
+  String homeCountriesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n countries',
+      one: '1 country',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLoadError => 'Could not load countries';
+
+  @override
+  String get homeTapRetry => 'Tap to retry';
+
+  @override
+  String get progressTitle => 'Travel Progress';
+
+  @override
+  String progressCount(int v, int t) {
+    return '$v / $t countries';
+  }
+
+  @override
+  String get countryRate => 'Rate';
+
+  @override
+  String get countryVisitedPrompt => 'Visited?';
+
+  @override
+  String get countryWishlist => 'Wishlist';
+
+  @override
+  String get countryWishlisted => 'Wishlisted';
+
+  @override
+  String countryMarkedVisited(String name) {
+    return '$name marked as visited';
+  }
+
+  @override
+  String countryUnmarkedVisited(String name) {
+    return '$name no longer marked as visited';
+  }
+
+  @override
+  String countryAbout(String name) {
+    return 'About $name';
+  }
+
+  @override
+  String get countryMajorCities => 'Major Cities';
+
+  @override
+  String get countryMapPreview => 'Map Preview';
+
+  @override
+  String rateDialogTitle(String name) {
+    return 'Rate $name';
+  }
+
+  @override
+  String get cityDiscover => 'What to discover';
+
+  @override
+  String get catHistorical => 'Historical Sights';
+
+  @override
+  String get catArtLovers => 'For the Art Lovers';
+
+  @override
+  String get catAtmosphere => 'Atmosphere & experience';
+
+  @override
+  String get catHiddenGems => 'Hidden Gems';
+
+  @override
+  String get catCloseBy => 'Close by';
+
+  @override
+  String get catMyPlaces => 'My places';
+
+  @override
+  String get categoryPlaces => 'Places';
+
+  @override
+  String get placeMarkVisited => 'Mark visited';
+
+  @override
+  String get markShort => 'Mark';
+
+  @override
+  String get detailsAbout => 'About this place';
+
+  @override
+  String get detailsLocation => 'Location';
+
+  @override
+  String get detailsWebsiteError => 'Could not open website';
+
+  @override
+  String get detailsVisitedAdded => 'Marked as visited!';
+
+  @override
+  String get detailsVisitedRemoved => 'Removed visited status';
+
+  @override
+  String get detailsMarkAsVisited => 'Mark as Visited';
+
+  @override
+  String get visitedLabel => 'Visited';
+
+  @override
+  String wishlistAdded(String name) {
+    return '$name added to wishlist';
+  }
+
+  @override
+  String wishlistRemoved(String name) {
+    return '$name removed from wishlist';
+  }
 }

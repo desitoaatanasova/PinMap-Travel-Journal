@@ -88,5 +88,82 @@
   "authGenderMale": "Masculino",
   "authGenderFemale": "Femenino",
   "authGenderNonBinary": "No binario",
-  "authGenderPrefer": "Prefiero no decirlo"
+  "authGenderPrefer": "Prefiero no decirlo",
+  "homeSearchHint": "Buscar país o ciudad...",
+  "homeCountriesTitle": "Países",
+  "homeCountriesCount": "{n, plural, =1{1 país} other{{n} países}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "No se pudieron cargar los países",
+  "homeTapRetry": "Toca para reintentar",
+  "progressTitle": "Progreso del viaje",
+  "progressCount": "{v} / {t} países",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Valorar",
+  "countryVisitedPrompt": "¿Visitado?",
+  "countryWishlist": "Deseos",
+  "countryWishlisted": "En deseos",
+  "countryMarkedVisited": "{name} marcado como visitado",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name} ya no está marcado como visitado",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "Sobre {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Ciudades principales",
+  "countryMapPreview": "Vista del mapa",
+  "rateDialogTitle": "Valora {name}",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "Qué descubrir",
+  "catHistorical": "Lugares históricos",
+  "catArtLovers": "Para los amantes del arte",
+  "catAtmosphere": "Ambiente y experiencias",
+  "catHiddenGems": "Joyas ocultas",
+  "catCloseBy": "Cerca",
+  "catMyPlaces": "Mis lugares",
+  "categoryPlaces": "Lugares",
+  "placeMarkVisited": "Marcar como visitado",
+  "markShort": "Marcar",
+  "detailsAbout": "Sobre este lugar",
+  "detailsLocation": "Ubicación",
+  "detailsWebsiteError": "No se pudo abrir el sitio web",
+  "detailsVisitedAdded": "¡Marcado como visitado!",
+  "detailsVisitedRemoved": "Estado de visitado eliminado",
+  "detailsMarkAsVisited": "Marcar como visitado",
+  "visitedLabel": "Visitado",
+  "wishlistAdded": "{name} añadido a la lista de deseos",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name} eliminado de la lista de deseos",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

@@ -88,5 +88,82 @@
   "authGenderMale": "男性",
   "authGenderFemale": "女性",
   "authGenderNonBinary": "ノンバイナリー",
-  "authGenderPrefer": "回答しない"
+  "authGenderPrefer": "回答しない",
+  "homeSearchHint": "国や都市を検索...",
+  "homeCountriesTitle": "国",
+  "homeCountriesCount": "{n, plural, other{{n}か国}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "国を読み込めませんでした",
+  "homeTapRetry": "タップして再試行",
+  "progressTitle": "旅行の進捗",
+  "progressCount": "{v} / {t}か国",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "評価する",
+  "countryVisitedPrompt": "訪問済み？",
+  "countryWishlist": "行きたいリスト",
+  "countryWishlisted": "リスト済み",
+  "countryMarkedVisited": "{name}を訪問済みにしました",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name}の訪問済みを解除しました",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "{name}について",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "主要都市",
+  "countryMapPreview": "地図プレビュー",
+  "rateDialogTitle": "{name}を評価する",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "見つけるもの",
+  "catHistorical": "歴史的名所",
+  "catArtLovers": "アート好きのために",
+  "catAtmosphere": "雰囲気と体験",
+  "catHiddenGems": "隠れた名所",
+  "catCloseBy": "近隣",
+  "catMyPlaces": "マイプレイス",
+  "categoryPlaces": "場所",
+  "placeMarkVisited": "訪問済みにする",
+  "markShort": "記録",
+  "detailsAbout": "この場所について",
+  "detailsLocation": "所在地",
+  "detailsWebsiteError": "ウェブサイトを開けませんでした",
+  "detailsVisitedAdded": "訪問済みにしました！",
+  "detailsVisitedRemoved": "訪問済みを解除しました",
+  "detailsMarkAsVisited": "訪問済みにする",
+  "visitedLabel": "訪問済み",
+  "wishlistAdded": "{name}をウィッシュリストに追加しました",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name}をウィッシュリストから削除しました",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

@@ -583,6 +583,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prefer not to say'**
   String get authGenderPrefer;
+
+  /// No description provided for @homeSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country or city...'**
+  String get homeSearchHint;
+
+  /// No description provided for @homeCountriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Countries'**
+  String get homeCountriesTitle;
+
+  /// No description provided for @homeCountriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 country} other{{n} countries}}'**
+  String homeCountriesCount(int n);
+
+  /// No description provided for @homeLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load countries'**
+  String get homeLoadError;
+
+  /// No description provided for @homeTapRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to retry'**
+  String get homeTapRetry;
+
+  /// No description provided for @progressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel Progress'**
+  String get progressTitle;
+
+  /// No description provided for @progressCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{v} / {t} countries'**
+  String progressCount(int v, int t);
+
+  /// No description provided for @countryRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate'**
+  String get countryRate;
+
+  /// No description provided for @countryVisitedPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Visited?'**
+  String get countryVisitedPrompt;
+
+  /// No description provided for @countryWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Wishlist'**
+  String get countryWishlist;
+
+  /// No description provided for @countryWishlisted.
+  ///
+  /// In en, this message translates to:
+  /// **'Wishlisted'**
+  String get countryWishlisted;
+
+  /// No description provided for @countryMarkedVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} marked as visited'**
+  String countryMarkedVisited(String name);
+
+  /// No description provided for @countryUnmarkedVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} no longer marked as visited'**
+  String countryUnmarkedVisited(String name);
+
+  /// No description provided for @countryAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About {name}'**
+  String countryAbout(String name);
+
+  /// No description provided for @countryMajorCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Major Cities'**
+  String get countryMajorCities;
+
+  /// No description provided for @countryMapPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Preview'**
+  String get countryMapPreview;
+
+  /// No description provided for @rateDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate {name}'**
+  String rateDialogTitle(String name);
+
+  /// No description provided for @cityDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'What to discover'**
+  String get cityDiscover;
+
+  /// No description provided for @catHistorical.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical Sights'**
+  String get catHistorical;
+
+  /// No description provided for @catArtLovers.
+  ///
+  /// In en, this message translates to:
+  /// **'For the Art Lovers'**
+  String get catArtLovers;
+
+  /// No description provided for @catAtmosphere.
+  ///
+  /// In en, this message translates to:
+  /// **'Atmosphere & experience'**
+  String get catAtmosphere;
+
+  /// No description provided for @catHiddenGems.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden Gems'**
+  String get catHiddenGems;
+
+  /// No description provided for @catCloseBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Close by'**
+  String get catCloseBy;
+
+  /// No description provided for @catMyPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'My places'**
+  String get catMyPlaces;
+
+  /// No description provided for @categoryPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get categoryPlaces;
+
+  /// No description provided for @placeMarkVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark visited'**
+  String get placeMarkVisited;
+
+  /// No description provided for @markShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark'**
+  String get markShort;
+
+  /// No description provided for @detailsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About this place'**
+  String get detailsAbout;
+
+  /// No description provided for @detailsLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get detailsLocation;
+
+  /// No description provided for @detailsWebsiteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open website'**
+  String get detailsWebsiteError;
+
+  /// No description provided for @detailsVisitedAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as visited!'**
+  String get detailsVisitedAdded;
+
+  /// No description provided for @detailsVisitedRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed visited status'**
+  String get detailsVisitedRemoved;
+
+  /// No description provided for @detailsMarkAsVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Visited'**
+  String get detailsMarkAsVisited;
+
+  /// No description provided for @visitedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visited'**
+  String get visitedLabel;
+
+  /// No description provided for @wishlistAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added to wishlist'**
+  String wishlistAdded(String name);
+
+  /// No description provided for @wishlistRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed from wishlist'**
+  String wishlistRemoved(String name);
 }
 
 class _AppLocalizationsDelegate

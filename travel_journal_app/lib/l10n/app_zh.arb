@@ -88,5 +88,82 @@
   "authGenderMale": "男",
   "authGenderFemale": "女",
   "authGenderNonBinary": "非二元性别",
-  "authGenderPrefer": "不愿透露"
+  "authGenderPrefer": "不愿透露",
+  "homeSearchHint": "搜索国家或城市...",
+  "homeCountriesTitle": "国家",
+  "homeCountriesCount": "{n, plural, other{{n} 个国家}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "无法加载国家",
+  "homeTapRetry": "点击重试",
+  "progressTitle": "旅行进度",
+  "progressCount": "{v} / {t} 个国家",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "评分",
+  "countryVisitedPrompt": "去过？",
+  "countryWishlist": "心愿单",
+  "countryWishlisted": "已在心愿单",
+  "countryMarkedVisited": "已将{name}标记为去过",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "已取消{name}的去过标记",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "关于{name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "主要城市",
+  "countryMapPreview": "地图预览",
+  "rateDialogTitle": "为{name}评分",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "值得探索",
+  "catHistorical": "历史名胜",
+  "catArtLovers": "艺术爱好者",
+  "catAtmosphere": "氛围与体验",
+  "catHiddenGems": "隐藏瑰宝",
+  "catCloseBy": "附近",
+  "catMyPlaces": "我的地点",
+  "categoryPlaces": "地点",
+  "placeMarkVisited": "标记为去过",
+  "markShort": "标记",
+  "detailsAbout": "关于这个地方",
+  "detailsLocation": "位置",
+  "detailsWebsiteError": "无法打开网站",
+  "detailsVisitedAdded": "已标记为去过！",
+  "detailsVisitedRemoved": "已取消去过标记",
+  "detailsMarkAsVisited": "标记为去过",
+  "visitedLabel": "去过",
+  "wishlistAdded": "已将{name}加入心愿单",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "已将{name}移出心愿单",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

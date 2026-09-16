@@ -176,6 +176,96 @@ void main() {
         }
       }
     });
+
+    test('home/places keys exist in all 8 ARBs', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      const expected = [
+        'homeSearchHint',
+        'homeCountriesTitle',
+        'homeCountriesCount',
+        'homeLoadError',
+        'homeTapRetry',
+        'progressTitle',
+        'progressCount',
+        'countryRate',
+        'countryVisitedPrompt',
+        'countryWishlist',
+        'countryWishlisted',
+        'countryMarkedVisited',
+        'countryUnmarkedVisited',
+        'countryAbout',
+        'countryMajorCities',
+        'countryMapPreview',
+        'rateDialogTitle',
+        'cityDiscover',
+        'catHistorical',
+        'catArtLovers',
+        'catAtmosphere',
+        'catHiddenGems',
+        'catCloseBy',
+        'catMyPlaces',
+        'categoryPlaces',
+        'placeMarkVisited',
+        'markShort',
+        'detailsAbout',
+        'detailsLocation',
+        'detailsWebsiteError',
+        'detailsVisitedAdded',
+        'detailsVisitedRemoved',
+        'detailsMarkAsVisited',
+        'visitedLabel',
+        'wishlistAdded',
+        'wishlistRemoved',
+      ];
+      expect(expected, hasLength(36));
+      for (final code in codes) {
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in expected) {
+          expect(map[key], isNotNull, reason: 'app_$code.arb missing $key');
+          expect(
+            map[key],
+            isA<String>(),
+            reason: 'app_$code.arb $key must be a string',
+          );
+        }
+      }
+    });
+
+    test('home/places keys resolve without English placeholders', () {
+      expect(
+        lookupAppLocalizations(const Locale('bg')).homeCountriesTitle,
+        'Държави',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).homeCountriesCount(1),
+        '1 държава',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).homeCountriesCount(5),
+        '5 държави',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('en')).homeCountriesCount(1),
+        '1 country',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ja')).homeCountriesCount(3),
+        '3か国',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('zh')).progressCount(2, 10),
+        '2 / 10 个国家',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).wishlistAdded('Paris'),
+        'Paris zur Wunschliste hinzugefügt',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('fr')).countryAbout('Paris'),
+        'À propos de Paris',
+      );
+    });
   });
 
   group('Localization widgets', () {

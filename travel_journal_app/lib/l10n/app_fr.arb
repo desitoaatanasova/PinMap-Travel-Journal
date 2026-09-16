@@ -88,5 +88,82 @@
   "authGenderMale": "Homme",
   "authGenderFemale": "Femme",
   "authGenderNonBinary": "Non binaire",
-  "authGenderPrefer": "Je préfère ne pas le dire"
+  "authGenderPrefer": "Je préfère ne pas le dire",
+  "homeSearchHint": "Rechercher un pays ou une ville...",
+  "homeCountriesTitle": "Pays",
+  "homeCountriesCount": "{n, plural, =1{1 pays} other{{n} pays}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "Impossible de charger les pays",
+  "homeTapRetry": "Touchez pour réessayer",
+  "progressTitle": "Progression du voyage",
+  "progressCount": "{v} / {t} pays",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Noter",
+  "countryVisitedPrompt": "Visité ?",
+  "countryWishlist": "Envies",
+  "countryWishlisted": "Dans les envies",
+  "countryMarkedVisited": "{name} marqué comme visité",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name} n'est plus marqué comme visité",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "À propos de {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Villes principales",
+  "countryMapPreview": "Aperçu de la carte",
+  "rateDialogTitle": "Notez {name}",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "À découvrir",
+  "catHistorical": "Sites historiques",
+  "catArtLovers": "Pour les amateurs d'art",
+  "catAtmosphere": "Ambiance et expériences",
+  "catHiddenGems": "Pépites cachées",
+  "catCloseBy": "À proximité",
+  "catMyPlaces": "Mes lieux",
+  "categoryPlaces": "Lieux",
+  "placeMarkVisited": "Marquer comme visité",
+  "markShort": "Marquer",
+  "detailsAbout": "À propos de ce lieu",
+  "detailsLocation": "Emplacement",
+  "detailsWebsiteError": "Impossible d'ouvrir le site web",
+  "detailsVisitedAdded": "Marqué comme visité !",
+  "detailsVisitedRemoved": "Statut visité retiré",
+  "detailsMarkAsVisited": "Marquer comme visité",
+  "visitedLabel": "Visité",
+  "wishlistAdded": "{name} ajouté à la liste d'envies",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name} retiré de la liste d'envies",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

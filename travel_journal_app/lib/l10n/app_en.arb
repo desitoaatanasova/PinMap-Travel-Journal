@@ -88,5 +88,82 @@
   "authGenderMale": "Male",
   "authGenderFemale": "Female",
   "authGenderNonBinary": "Non-binary",
-  "authGenderPrefer": "Prefer not to say"
+  "authGenderPrefer": "Prefer not to say",
+  "homeSearchHint": "Search country or city...",
+  "homeCountriesTitle": "Countries",
+  "homeCountriesCount": "{n, plural, =1{1 country} other{{n} countries}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "Could not load countries",
+  "homeTapRetry": "Tap to retry",
+  "progressTitle": "Travel Progress",
+  "progressCount": "{v} / {t} countries",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Rate",
+  "countryVisitedPrompt": "Visited?",
+  "countryWishlist": "Wishlist",
+  "countryWishlisted": "Wishlisted",
+  "countryMarkedVisited": "{name} marked as visited",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name} no longer marked as visited",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "About {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Major Cities",
+  "countryMapPreview": "Map Preview",
+  "rateDialogTitle": "Rate {name}",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "What to discover",
+  "catHistorical": "Historical Sights",
+  "catArtLovers": "For the Art Lovers",
+  "catAtmosphere": "Atmosphere & experience",
+  "catHiddenGems": "Hidden Gems",
+  "catCloseBy": "Close by",
+  "catMyPlaces": "My places",
+  "categoryPlaces": "Places",
+  "placeMarkVisited": "Mark visited",
+  "markShort": "Mark",
+  "detailsAbout": "About this place",
+  "detailsLocation": "Location",
+  "detailsWebsiteError": "Could not open website",
+  "detailsVisitedAdded": "Marked as visited!",
+  "detailsVisitedRemoved": "Removed visited status",
+  "detailsMarkAsVisited": "Mark as Visited",
+  "visitedLabel": "Visited",
+  "wishlistAdded": "{name} added to wishlist",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name} removed from wishlist",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

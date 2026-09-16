@@ -88,5 +88,82 @@
   "authGenderMale": "Männlich",
   "authGenderFemale": "Weiblich",
   "authGenderNonBinary": "Nicht-binär",
-  "authGenderPrefer": "Keine Angabe"
+  "authGenderPrefer": "Keine Angabe",
+  "homeSearchHint": "Land oder Stadt suchen ...",
+  "homeCountriesTitle": "Länder",
+  "homeCountriesCount": "{n, plural, =1{1 Land} other{{n} Länder}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "Länder konnten nicht geladen werden",
+  "homeTapRetry": "Zum Wiederholen tippen",
+  "progressTitle": "Reisefortschritt",
+  "progressCount": "{v} / {t} Länder",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Bewerten",
+  "countryVisitedPrompt": "Besucht?",
+  "countryWishlist": "Wunschliste",
+  "countryWishlisted": "Auf Wunschliste",
+  "countryMarkedVisited": "{name} als besucht markiert",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name} nicht mehr als besucht markiert",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "Über {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Großstädte",
+  "countryMapPreview": "Kartenvorschau",
+  "rateDialogTitle": "{name} bewerten",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "Was es zu entdecken gibt",
+  "catHistorical": "Historische Sehenswürdigkeiten",
+  "catArtLovers": "Für Kunstliebhaber",
+  "catAtmosphere": "Atmosphäre & Erlebnisse",
+  "catHiddenGems": "Geheimtipps",
+  "catCloseBy": "In der Nähe",
+  "catMyPlaces": "Meine Orte",
+  "categoryPlaces": "Orte",
+  "placeMarkVisited": "Als besucht markieren",
+  "markShort": "Markieren",
+  "detailsAbout": "Über diesen Ort",
+  "detailsLocation": "Standort",
+  "detailsWebsiteError": "Website konnte nicht geöffnet werden",
+  "detailsVisitedAdded": "Als besucht markiert!",
+  "detailsVisitedRemoved": "Besucht-Status entfernt",
+  "detailsMarkAsVisited": "Als besucht markieren",
+  "visitedLabel": "Besucht",
+  "wishlistAdded": "{name} zur Wunschliste hinzugefügt",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name} von der Wunschliste entfernt",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

@@ -257,4 +257,134 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get authGenderPrefer => 'Предпочитам да не казвам';
+
+  @override
+  String get homeSearchHint => 'Търси държава или град...';
+
+  @override
+  String get homeCountriesTitle => 'Държави';
+
+  @override
+  String homeCountriesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n държави',
+      one: '1 държава',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLoadError => 'Държавите не можаха да се заредят';
+
+  @override
+  String get homeTapRetry => 'Докоснете, за да опитате отново';
+
+  @override
+  String get progressTitle => 'Прогрес на пътуванията';
+
+  @override
+  String progressCount(int v, int t) {
+    return '$v / $t държави';
+  }
+
+  @override
+  String get countryRate => 'Оцени';
+
+  @override
+  String get countryVisitedPrompt => 'Посетено?';
+
+  @override
+  String get countryWishlist => 'Желания';
+
+  @override
+  String get countryWishlisted => 'В желанията';
+
+  @override
+  String countryMarkedVisited(String name) {
+    return 'Посетихте $name';
+  }
+
+  @override
+  String countryUnmarkedVisited(String name) {
+    return 'Премахнахте $name от посетените';
+  }
+
+  @override
+  String countryAbout(String name) {
+    return 'За $name';
+  }
+
+  @override
+  String get countryMajorCities => 'Големи градове';
+
+  @override
+  String get countryMapPreview => 'Преглед на картата';
+
+  @override
+  String rateDialogTitle(String name) {
+    return 'Оценете $name';
+  }
+
+  @override
+  String get cityDiscover => 'Какво да откриете';
+
+  @override
+  String get catHistorical => 'Исторически забележителности';
+
+  @override
+  String get catArtLovers => 'За любителите на изкуството';
+
+  @override
+  String get catAtmosphere => 'Атмосфера и изживявания';
+
+  @override
+  String get catHiddenGems => 'Скрити съкровища';
+
+  @override
+  String get catCloseBy => 'Наблизо';
+
+  @override
+  String get catMyPlaces => 'Моите места';
+
+  @override
+  String get categoryPlaces => 'Места';
+
+  @override
+  String get placeMarkVisited => 'Отбележи като посетено';
+
+  @override
+  String get markShort => 'Отбележи';
+
+  @override
+  String get detailsAbout => 'За това място';
+
+  @override
+  String get detailsLocation => 'Местоположение';
+
+  @override
+  String get detailsWebsiteError => 'Уебсайтът не можа да се отвори';
+
+  @override
+  String get detailsVisitedAdded => 'Отбелязано като посетено!';
+
+  @override
+  String get detailsVisitedRemoved => 'Статусът „посетено“ е премахнат';
+
+  @override
+  String get detailsMarkAsVisited => 'Отбележи като посетено';
+
+  @override
+  String get visitedLabel => 'Посетено';
+
+  @override
+  String wishlistAdded(String name) {
+    return 'Добавихте $name в желанията';
+  }
+
+  @override
+  String wishlistRemoved(String name) {
+    return 'Премахнахте $name от желанията';
+  }
 }

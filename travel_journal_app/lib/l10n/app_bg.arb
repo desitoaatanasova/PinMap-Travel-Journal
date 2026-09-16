@@ -88,5 +88,82 @@
   "authGenderMale": "Мъж",
   "authGenderFemale": "Жена",
   "authGenderNonBinary": "Небинарен",
-  "authGenderPrefer": "Предпочитам да не казвам"
+  "authGenderPrefer": "Предпочитам да не казвам",
+  "homeSearchHint": "Търси държава или град...",
+  "homeCountriesTitle": "Държави",
+  "homeCountriesCount": "{n, plural, =1{1 държава} other{{n} държави}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "Държавите не можаха да се заредят",
+  "homeTapRetry": "Докоснете, за да опитате отново",
+  "progressTitle": "Прогрес на пътуванията",
+  "progressCount": "{v} / {t} държави",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Оцени",
+  "countryVisitedPrompt": "Посетено?",
+  "countryWishlist": "Желания",
+  "countryWishlisted": "В желанията",
+  "countryMarkedVisited": "Посетихте {name}",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "Премахнахте {name} от посетените",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "За {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Големи градове",
+  "countryMapPreview": "Преглед на картата",
+  "rateDialogTitle": "Оценете {name}",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "Какво да откриете",
+  "catHistorical": "Исторически забележителности",
+  "catArtLovers": "За любителите на изкуството",
+  "catAtmosphere": "Атмосфера и изживявания",
+  "catHiddenGems": "Скрити съкровища",
+  "catCloseBy": "Наблизо",
+  "catMyPlaces": "Моите места",
+  "categoryPlaces": "Места",
+  "placeMarkVisited": "Отбележи като посетено",
+  "markShort": "Отбележи",
+  "detailsAbout": "За това място",
+  "detailsLocation": "Местоположение",
+  "detailsWebsiteError": "Уебсайтът не можа да се отвори",
+  "detailsVisitedAdded": "Отбелязано като посетено!",
+  "detailsVisitedRemoved": "Статусът „посетено“ е премахнат",
+  "detailsMarkAsVisited": "Отбележи като посетено",
+  "visitedLabel": "Посетено",
+  "wishlistAdded": "Добавихте {name} в желанията",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "Премахнахте {name} от желанията",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

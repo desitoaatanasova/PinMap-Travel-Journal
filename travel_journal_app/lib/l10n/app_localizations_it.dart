@@ -255,4 +255,134 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get authGenderPrefer => 'Preferisco non dirlo';
+
+  @override
+  String get homeSearchHint => 'Cerca paese o città...';
+
+  @override
+  String get homeCountriesTitle => 'Paesi';
+
+  @override
+  String homeCountriesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n paesi',
+      one: '1 paese',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLoadError => 'Impossibile caricare i paesi';
+
+  @override
+  String get homeTapRetry => 'Tocca per riprovare';
+
+  @override
+  String get progressTitle => 'Progresso di viaggio';
+
+  @override
+  String progressCount(int v, int t) {
+    return '$v / $t paesi';
+  }
+
+  @override
+  String get countryRate => 'Valuta';
+
+  @override
+  String get countryVisitedPrompt => 'Visitato?';
+
+  @override
+  String get countryWishlist => 'Desideri';
+
+  @override
+  String get countryWishlisted => 'Nei desideri';
+
+  @override
+  String countryMarkedVisited(String name) {
+    return '$name segnato come visitato';
+  }
+
+  @override
+  String countryUnmarkedVisited(String name) {
+    return '$name non più segnato come visitato';
+  }
+
+  @override
+  String countryAbout(String name) {
+    return 'Su $name';
+  }
+
+  @override
+  String get countryMajorCities => 'Città principali';
+
+  @override
+  String get countryMapPreview => 'Anteprima mappa';
+
+  @override
+  String rateDialogTitle(String name) {
+    return 'Valuta $name';
+  }
+
+  @override
+  String get cityDiscover => 'Cosa scoprire';
+
+  @override
+  String get catHistorical => 'Siti storici';
+
+  @override
+  String get catArtLovers => 'Per gli amanti dell\'arte';
+
+  @override
+  String get catAtmosphere => 'Atmosfera ed esperienze';
+
+  @override
+  String get catHiddenGems => 'Gemme nascoste';
+
+  @override
+  String get catCloseBy => 'Vicino';
+
+  @override
+  String get catMyPlaces => 'I miei luoghi';
+
+  @override
+  String get categoryPlaces => 'Luoghi';
+
+  @override
+  String get placeMarkVisited => 'Segna come visitato';
+
+  @override
+  String get markShort => 'Segna';
+
+  @override
+  String get detailsAbout => 'Su questo luogo';
+
+  @override
+  String get detailsLocation => 'Posizione';
+
+  @override
+  String get detailsWebsiteError => 'Impossibile aprire il sito web';
+
+  @override
+  String get detailsVisitedAdded => 'Segnato come visitato!';
+
+  @override
+  String get detailsVisitedRemoved => 'Stato di visitato rimosso';
+
+  @override
+  String get detailsMarkAsVisited => 'Segna come visitato';
+
+  @override
+  String get visitedLabel => 'Visitato';
+
+  @override
+  String wishlistAdded(String name) {
+    return '$name aggiunto alla lista dei desideri';
+  }
+
+  @override
+  String wishlistRemoved(String name) {
+    return '$name rimosso dalla lista dei desideri';
+  }
 }

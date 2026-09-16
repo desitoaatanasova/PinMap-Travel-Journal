@@ -88,5 +88,82 @@
   "authGenderMale": "Uomo",
   "authGenderFemale": "Donna",
   "authGenderNonBinary": "Non binario",
-  "authGenderPrefer": "Preferisco non dirlo"
+  "authGenderPrefer": "Preferisco non dirlo",
+  "homeSearchHint": "Cerca paese o città...",
+  "homeCountriesTitle": "Paesi",
+  "homeCountriesCount": "{n, plural, =1{1 paese} other{{n} paesi}}",
+  "@homeCountriesCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "homeLoadError": "Impossibile caricare i paesi",
+  "homeTapRetry": "Tocca per riprovare",
+  "progressTitle": "Progresso di viaggio",
+  "progressCount": "{v} / {t} paesi",
+  "@progressCount": {
+    "placeholders": {
+      "v": { "type": "int" },
+      "t": { "type": "int" }
+    }
+  },
+  "countryRate": "Valuta",
+  "countryVisitedPrompt": "Visitato?",
+  "countryWishlist": "Desideri",
+  "countryWishlisted": "Nei desideri",
+  "countryMarkedVisited": "{name} segnato come visitato",
+  "@countryMarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryUnmarkedVisited": "{name} non più segnato come visitato",
+  "@countryUnmarkedVisited": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryAbout": "Su {name}",
+  "@countryAbout": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "countryMajorCities": "Città principali",
+  "countryMapPreview": "Anteprima mappa",
+  "rateDialogTitle": "Valuta {name}",
+  "@rateDialogTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cityDiscover": "Cosa scoprire",
+  "catHistorical": "Siti storici",
+  "catArtLovers": "Per gli amanti dell'arte",
+  "catAtmosphere": "Atmosfera ed esperienze",
+  "catHiddenGems": "Gemme nascoste",
+  "catCloseBy": "Vicino",
+  "catMyPlaces": "I miei luoghi",
+  "categoryPlaces": "Luoghi",
+  "placeMarkVisited": "Segna come visitato",
+  "markShort": "Segna",
+  "detailsAbout": "Su questo luogo",
+  "detailsLocation": "Posizione",
+  "detailsWebsiteError": "Impossibile aprire il sito web",
+  "detailsVisitedAdded": "Segnato come visitato!",
+  "detailsVisitedRemoved": "Stato di visitato rimosso",
+  "detailsMarkAsVisited": "Segna come visitato",
+  "visitedLabel": "Visitato",
+  "wishlistAdded": "{name} aggiunto alla lista dei desideri",
+  "@wishlistAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wishlistRemoved": "{name} rimosso dalla lista dei desideri",
+  "@wishlistRemoved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

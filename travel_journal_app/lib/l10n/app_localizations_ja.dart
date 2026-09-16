@@ -250,4 +250,129 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get authGenderPrefer => '回答しない';
+
+  @override
+  String get homeSearchHint => '国や都市を検索...';
+
+  @override
+  String get homeCountriesTitle => '国';
+
+  @override
+  String homeCountriesCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$nか国');
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLoadError => '国を読み込めませんでした';
+
+  @override
+  String get homeTapRetry => 'タップして再試行';
+
+  @override
+  String get progressTitle => '旅行の進捗';
+
+  @override
+  String progressCount(int v, int t) {
+    return '$v / $tか国';
+  }
+
+  @override
+  String get countryRate => '評価する';
+
+  @override
+  String get countryVisitedPrompt => '訪問済み？';
+
+  @override
+  String get countryWishlist => '行きたいリスト';
+
+  @override
+  String get countryWishlisted => 'リスト済み';
+
+  @override
+  String countryMarkedVisited(String name) {
+    return '$nameを訪問済みにしました';
+  }
+
+  @override
+  String countryUnmarkedVisited(String name) {
+    return '$nameの訪問済みを解除しました';
+  }
+
+  @override
+  String countryAbout(String name) {
+    return '$nameについて';
+  }
+
+  @override
+  String get countryMajorCities => '主要都市';
+
+  @override
+  String get countryMapPreview => '地図プレビュー';
+
+  @override
+  String rateDialogTitle(String name) {
+    return '$nameを評価する';
+  }
+
+  @override
+  String get cityDiscover => '見つけるもの';
+
+  @override
+  String get catHistorical => '歴史的名所';
+
+  @override
+  String get catArtLovers => 'アート好きのために';
+
+  @override
+  String get catAtmosphere => '雰囲気と体験';
+
+  @override
+  String get catHiddenGems => '隠れた名所';
+
+  @override
+  String get catCloseBy => '近隣';
+
+  @override
+  String get catMyPlaces => 'マイプレイス';
+
+  @override
+  String get categoryPlaces => '場所';
+
+  @override
+  String get placeMarkVisited => '訪問済みにする';
+
+  @override
+  String get markShort => '記録';
+
+  @override
+  String get detailsAbout => 'この場所について';
+
+  @override
+  String get detailsLocation => '所在地';
+
+  @override
+  String get detailsWebsiteError => 'ウェブサイトを開けませんでした';
+
+  @override
+  String get detailsVisitedAdded => '訪問済みにしました！';
+
+  @override
+  String get detailsVisitedRemoved => '訪問済みを解除しました';
+
+  @override
+  String get detailsMarkAsVisited => '訪問済みにする';
+
+  @override
+  String get visitedLabel => '訪問済み';
+
+  @override
+  String wishlistAdded(String name) {
+    return '$nameをウィッシュリストに追加しました';
+  }
+
+  @override
+  String wishlistRemoved(String name) {
+    return '$nameをウィッシュリストから削除しました';
+  }
 }
