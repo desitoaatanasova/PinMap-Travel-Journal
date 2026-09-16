@@ -232,7 +232,8 @@ class AppLocalizationsBg extends AppLocalizations {
   String get authRegisterFailed => 'Регистрацията не бе успешна';
 
   @override
-  String get authSessionFailed => 'Сесията не можа да стартира. Опитайте отново.';
+  String get authSessionFailed =>
+      'Сесията не можа да стартира. Опитайте отново.';
 
   @override
   String authPartialFail(String failed) {
