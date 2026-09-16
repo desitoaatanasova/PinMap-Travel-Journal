@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/pdf_download.dart';
@@ -44,7 +45,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       return Scaffold(
         body: Center(
           child: Text(
-            'Trip not found',
+            AppLocalizations.of(context).planNotFound,
             style: GoogleFonts.playfairDisplay(
               fontSize: 20,
               color: AppTheme.warmGray,
@@ -68,7 +69,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                   _buildActionButtons(context, trip),
                   const SizedBox(height: AppTheme.space6),
                   Text(
-                    'Day-by-Day Itinerary',
+                    AppLocalizations.of(context).planItineraryTitle,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -140,12 +141,13 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   Widget _buildActionButtons(BuildContext context, Trip trip) {
+    final l10n = AppLocalizations.of(context);
     final rowChildren = <Widget>[
       Expanded(
         child: OutlinedButton.icon(
           onPressed: () => _openMapView(context, trip),
           icon: const Icon(Icons.map, size: 18),
-          label: const Text('Map View'),
+          label: Text(l10n.planMapView),
         ),
       ),
       const SizedBox(width: AppTheme.space2),
@@ -160,7 +162,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                   : const Icon(Icons.picture_as_pdf, size: 18),
-          label: Text(_isExporting ? 'Exporting...' : 'Export PDF'),
+          label: Text(_isExporting ? l10n.planExporting : l10n.planExportPdf),
         ),
       ),
       const SizedBox(width: AppTheme.space2),
@@ -176,7 +178,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                     : const Icon(Icons.refresh, size: 18),
-            label: const Text('Regenerate'),
+            label: Text(l10n.planRegenerate),
           ),
         )
       else
@@ -184,7 +186,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           child: OutlinedButton.icon(
             onPressed: () => _openEditScreen(context, trip),
             icon: const Icon(Icons.edit, size: 18),
-            label: const Text('Edit'),
+            label: Text(l10n.commonEdit),
           ),
         ),
       const SizedBox(width: AppTheme.space2),
@@ -193,7 +195,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           child: OutlinedButton.icon(
             onPressed: () => _confirmDiscard(context),
             icon: const Icon(Icons.close, size: 18),
-            label: const Text('Discard'),
+            label: Text(l10n.planDiscard),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.red,
               side: const BorderSide(color: Colors.red),
@@ -205,7 +207,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           child: OutlinedButton.icon(
             onPressed: () => _confirmDelete(context, trip.tripId),
             icon: const Icon(Icons.delete, size: 18),
-            label: const Text('Delete'),
+            label: Text(l10n.settingsDelete),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.red,
               side: const BorderSide(color: Colors.red),
@@ -231,7 +233,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                       ),
                     )
                     : const Icon(Icons.save),
-            label: Text(_saving ? 'Saving...' : 'Save Trip'),
+            label: Text(_saving ? l10n.planSaving : l10n.tripSave),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
             ),
@@ -243,7 +245,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           const SizedBox(height: AppTheme.space2),
           Center(
             child: Text(
-              'AI draft — not saved to your trips yet',
+              l10n.planDraftNote,
               style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
             ),
           ),
@@ -253,6 +255,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   Future<void> _saveDraft(BuildContext context, Trip trip) async {
+    final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _saving = true);
     try {
@@ -265,7 +268,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            'Trip saved to your trips!',
+            l10n.planSaved,
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -274,7 +277,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
-      final message = e is ApiException ? e.message : 'Could not save the trip';
+      final message = e is ApiException ? e.message : l10n.planSaveError;
       messenger.showSnackBar(
         SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
       );
@@ -282,6 +285,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   Future<void> _regenerate(BuildContext context, Trip trip) async {
+    final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _regenerating = true);
     try {
@@ -358,7 +362,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       });
       messenger.showSnackBar(
         SnackBar(
-          content: Text('New itinerary generated', style: GoogleFonts.dmSans()),
+          content: Text(l10n.planRegenerated, style: GoogleFonts.dmSans()),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -366,7 +370,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       if (!mounted) return;
       setState(() => _regenerating = false);
       final message =
-          e is ApiException ? e.message : 'Could not regenerate the trip';
+          e is ApiException ? e.message : l10n.planRegenError;
       messenger.showSnackBar(
         SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
       );
@@ -374,6 +378,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   Future<void> _exportPdf(BuildContext context, Trip trip) async {
+    final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _isExporting = true);
     try {
@@ -387,7 +392,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
           if (!mounted) return;
           setState(() => _isExporting = false);
           final message =
-              e is ApiException ? e.message : 'Could not load trip details';
+              e is ApiException ? e.message : l10n.planLoadError;
           messenger.showSnackBar(
             SnackBar(content: Text(message, style: GoogleFonts.dmSans())),
           );
@@ -415,7 +420,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       setState(() => _isExporting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('PDF downloaded', style: GoogleFonts.dmSans()),
+          content: Text(l10n.planPdfDone, style: GoogleFonts.dmSans()),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -424,33 +429,34 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
       setState(() => _isExporting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Could not export PDF', style: GoogleFonts.dmSans()),
+          content: Text(l10n.planPdfError, style: GoogleFonts.dmSans()),
         ),
       );
     }
   }
 
   void _confirmDiscard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Discard Draft?',
+              l10n.planDiscardTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'This AI-generated draft will be removed.',
+              l10n.planDiscardText,
               style: GoogleFonts.dmSans(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -464,7 +470,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: Text('Discard', style: GoogleFonts.dmSans()),
+                child: Text(l10n.planDiscard, style: GoogleFonts.dmSans()),
               ),
             ],
           ),
@@ -479,6 +485,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   Widget _buildDayCard(BuildContext context, TripDay day) {
+    final l10n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -505,7 +512,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                 borderRadius: BorderRadius.circular(AppTheme.radiusFull),
               ),
               child: Text(
-                'DAY ${day.dayNumber}',
+                l10n.planDayNumber(day.dayNumber),
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -515,7 +522,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
             ),
             const SizedBox(height: AppTheme.space3),
             if (day.morning.isNotEmpty) ...[
-              _buildSectionHeader(context, 'Morning', Icons.wb_sunny),
+              _buildSectionHeader(context, l10n.planMorning, Icons.wb_sunny),
               const SizedBox(height: AppTheme.space2),
               ...day.morning.map(
                 (activity) => _buildActivityRow(context, activity),
@@ -523,7 +530,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
               const SizedBox(height: AppTheme.space3),
             ],
             if (day.afternoon.isNotEmpty) ...[
-              _buildSectionHeader(context, 'Afternoon', Icons.light_mode),
+              _buildSectionHeader(context, l10n.planAfternoon, Icons.light_mode),
               const SizedBox(height: AppTheme.space2),
               ...day.afternoon.map(
                 (activity) => _buildActivityRow(context, activity),
@@ -531,7 +538,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
               const SizedBox(height: AppTheme.space3),
             ],
             if (day.evening.isNotEmpty) ...[
-              _buildSectionHeader(context, 'Evening', Icons.nightlight),
+              _buildSectionHeader(context, l10n.planEvening, Icons.nightlight),
               const SizedBox(height: AppTheme.space2),
               ...day.evening.map(
                 (activity) => _buildActivityRow(context, activity),
@@ -584,7 +591,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  activity.placeName ?? 'Activity',
+                  activity.placeName ?? AppLocalizations.of(context).planActivityFallback,
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -625,26 +632,27 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
   }
 
   void _confirmDelete(BuildContext context, int tripId) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Delete Trip',
+              l10n.planDeleteTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'Are you sure you want to delete this trip?',
+              l10n.planDeleteText,
               style: GoogleFonts.dmSans(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -658,7 +666,7 @@ class _TripPlanScreenState extends State<TripPlanScreen> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: Text('Delete', style: GoogleFonts.dmSans()),
+                child: Text(l10n.settingsDelete, style: GoogleFonts.dmSans()),
               ),
             ],
           ),

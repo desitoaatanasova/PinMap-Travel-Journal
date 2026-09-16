@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/screens/place_details_page.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/place_service.dart';
@@ -176,6 +177,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   void _showActivitySheet(TripActivity activity, int dayNumber) {
+    final l10n = AppLocalizations.of(context);
     final hasPlace = activity.placeId != null;
     showModalBottomSheet(
       context: context,
@@ -221,7 +223,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            activity.placeName ?? 'Activity',
+                            activity.placeName ?? l10n.planActivityFallback,
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -248,13 +250,13 @@ class _TripMapScreenState extends State<TripMapScreen> {
                   children: [
                     _InfoChip(
                       icon: Icons.calendar_today,
-                      label: 'Day $dayNumber',
+                      label: l10n.mapDay(dayNumber),
                     ),
                     _InfoChip(icon: Icons.wb_sunny, label: activity.timeSlot),
                     if (activity.categoryId != null)
                       _InfoChip(
                         icon: Icons.category,
-                        label: 'Category ${activity.categoryId}',
+                        label: l10n.mapCategory(activity.categoryId!),
                       ),
                   ],
                 ),
@@ -274,7 +276,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('Close', style: GoogleFonts.dmSans()),
+                        child: Text(l10n.commonClose, style: GoogleFonts.dmSans()),
                       ),
                     ),
                     const SizedBox(width: AppTheme.space3),
@@ -288,7 +290,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                                 }
                                 : null,
                         child: Text(
-                          'View details',
+                          l10n.mapViewDetails,
                           style: GoogleFonts.dmSans(),
                         ),
                       ),
@@ -310,7 +312,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Could not load place details',
+            AppLocalizations.of(context).mapPlaceError,
             style: GoogleFonts.dmSans(),
           ),
         ),
@@ -342,6 +344,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final points = _pointsForDays(_visibleDays);
     final center = _centerOrNull(points);
     final polylines = _buildPolylines();
@@ -351,7 +354,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          'Trip Map',
+          l10n.mapTitle,
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -405,7 +408,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                             ),
                             const SizedBox(height: AppTheme.space3),
                             Text(
-                              'No mapped locations',
+                              l10n.mapEmptyTitle,
                               style: GoogleFonts.playfairDisplay(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -414,7 +417,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                             ),
                             const SizedBox(height: AppTheme.space2),
                             Text(
-                              'This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.',
+                              l10n.mapEmptyText,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.dmSans(
                                 fontSize: 13,
@@ -433,6 +436,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   Widget _buildDaySelector() {
+    final l10n = AppLocalizations.of(context);
     final days = widget.trip.itinerary.map((d) => d.dayNumber).toList();
     return SizedBox(
       height: 56,
@@ -444,14 +448,14 @@ class _TripMapScreenState extends State<TripMapScreen> {
         ),
         children: [
           _DayChip(
-            label: 'All',
+            label: l10n.mapAllDays,
             selected: _selectedDay == null,
             color: AppTheme.primary,
             onTap: () => _selectDay(null),
           ),
           for (final d in days)
             _DayChip(
-              label: 'Day $d',
+              label: l10n.mapDay(d),
               selected: _selectedDay == d,
               color: _dayColor(d),
               onTap: () => _selectDay(d),
@@ -462,6 +466,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   Widget _buildLegend() {
+    final l10n = AppLocalizations.of(context);
     final days = widget.trip.itinerary;
     return Container(
       padding: const EdgeInsets.all(AppTheme.space3),
@@ -491,7 +496,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
                           ),
                           const SizedBox(width: AppTheme.space1),
                           Text(
-                            'Day ${day.dayNumber}',
+                            l10n.mapDay(day.dayNumber),
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               color: AppTheme.warmGray,
@@ -506,7 +511,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
             const SizedBox(height: AppTheme.space2),
           ],
           Text(
-            '$_validCount places shown${_validCount == 0 ? " — no coordinates" : ""}',
+            '${l10n.mapPlacesShown(_validCount)}${_validCount == 0 ? " ${l10n.mapNoCoordsSuffix}" : ""}',
             textAlign: TextAlign.center,
             style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
           ),
