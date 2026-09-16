@@ -55,5 +55,38 @@
   "commonRetry": "重试",
   "commonLoading": "加载中...",
   "commonError": "出错了",
-  "commonOffline": "无网络连接"
+  "commonOffline": "无网络连接",
+  "commonOk": "确定",
+  "commonYes": "是",
+  "commonNo": "否",
+  "commonEdit": "编辑",
+  "authWelcomeBack": "欢迎回来",
+  "authSignInSubtitle": "登录以继续您的旅程",
+  "authEmail": "电子邮箱",
+  "authPassword": "密码",
+  "authForgotPassword": "忘记密码？",
+  "authLogin": "登录",
+  "authNoAccount": "还没有帐户？ ",
+  "authSignUp": "注册",
+  "authCreateAccount": "创建帐户",
+  "authCreateSubtitle": "开始您的旅行日记",
+  "authFullName": "全名",
+  "authHaveAccount": "已有帐户？ ",
+  "authEnterValid": "请输入有效的凭据",
+  "authFillRequired": "请填写所有必填字段",
+  "authInvalid": "凭据无效",
+  "authRegisterFailed": "注册失败",
+  "authSessionFailed": "无法启动会话，请重试。",
+  "authPartialFail": "部分数据加载失败（{failed}）。下拉重试。",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "旅行日记",
+  "splashGetStarted": "开始使用",
+  "authGenderMale": "男",
+  "authGenderFemale": "女",
+  "authGenderNonBinary": "非二元性别",
+  "authGenderPrefer": "不愿透露"
 }

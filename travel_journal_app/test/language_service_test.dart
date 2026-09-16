@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
@@ -127,6 +130,54 @@ void main() {
     });
   });
 
+  group('ARB parity', () {
+    test('all 8 ARBs share the same key set', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      Set<String>? reference;
+      for (final code in codes) {
+        final raw = File(
+          'lib/l10n/app_$code.arb',
+        ).readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        final keys =
+            map.keys.where((k) => !k.startsWith('@')).toSet();
+        if (reference == null) {
+          reference = keys;
+        } else {
+          expect(keys, reference, reason: 'app_$code.arb key mismatch');
+        }
+      }
+      expect(reference, contains('authWelcomeBack'));
+      expect(reference, contains('authPartialFail'));
+      expect(reference, contains('splashGetStarted'));
+      expect(reference, contains('commonOk'));
+      expect(reference, contains('commonYes'));
+      expect(reference, contains('commonNo'));
+      expect(reference, contains('commonEdit'));
+    });
+
+    test('no ARB uses English placeholders for translated keys', () {
+      const translated = ['bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      final enRaw = File(
+        'lib/l10n/app_en.arb',
+      ).readAsStringSync();
+      final enMap = jsonDecode(enRaw) as Map<String, dynamic>;
+      for (final code in translated) {
+        final raw = File(
+          'lib/l10n/app_$code.arb',
+        ).readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in ['authWelcomeBack', 'authLogin', 'splashGetStarted']) {
+          expect(
+            map[key],
+            isNot(equals(enMap[key])),
+            reason: 'app_$code.arb $key must be translated',
+          );
+        }
+      }
+    });
+  });
+
   group('Localization widgets', () {
     Future<void> pumpLocalized(
       WidgetTester tester, {
@@ -167,6 +218,33 @@ void main() {
       await tester.pump();
       expect(find.text('Начало'), findsOneWidget);
       expect(find.text('Home'), findsNothing);
+    });
+
+    testWidgets('auth strings resolve across locales', (tester) async {
+      Future<String> welcomeFor(Locale locale) async {
+        String? value;
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: locale,
+            supportedLocales: LanguageService.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            home: Builder(
+              builder: (context) {
+                value = AppLocalizations.of(context).authWelcomeBack;
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+        await tester.pump();
+        return value!;
+      }
+
+      expect(await welcomeFor(const Locale('en')), 'Welcome Back');
+      expect(await welcomeFor(const Locale('bg')), 'Добре дошли отново');
+      expect(await welcomeFor(const Locale('de')), 'Willkommen zurück');
+      expect(await welcomeFor(const Locale('ja')), 'おかえりなさい');
+      expect(await welcomeFor(const Locale('zh')), '欢迎回来');
     });
   });
 }

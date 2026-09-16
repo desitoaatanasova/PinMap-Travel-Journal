@@ -415,6 +415,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No internet connection'**
   String get commonOffline;
+
+  /// No description provided for @commonOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get commonOk;
+
+  /// No description provided for @commonYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get commonYes;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get commonNo;
+
+  /// No description provided for @commonEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// No description provided for @authWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get authWelcomeBack;
+
+  /// No description provided for @authSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue your journey'**
+  String get authSignInSubtitle;
+
+  /// No description provided for @authEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmail;
+
+  /// No description provided for @authPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPassword;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get authForgotPassword;
+
+  /// No description provided for @authLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get authLogin;
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don't have an account? '**
+  String get authNoAccount;
+
+  /// No description provided for @authSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get authSignUp;
+
+  /// No description provided for @authCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get authCreateAccount;
+
+  /// No description provided for @authCreateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your travel journal'**
+  String get authCreateSubtitle;
+
+  /// No description provided for @authFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get authFullName;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get authHaveAccount;
+
+  /// No description provided for @authEnterValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid credentials'**
+  String get authEnterValid;
+
+  /// No description provided for @authFillRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all required fields'**
+  String get authFillRequired;
+
+  /// No description provided for @authInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid credentials'**
+  String get authInvalid;
+
+  /// No description provided for @authRegisterFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed'**
+  String get authRegisterFailed;
+
+  /// No description provided for @authSessionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start session. Try again.'**
+  String get authSessionFailed;
+
+  /// No description provided for @authPartialFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Some data failed to load ({failed}). Pull to retry.'**
+  String authPartialFail(String failed);
+
+  /// No description provided for @splashTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel journal'**
+  String get splashTagline;
+
+  /// No description provided for @splashGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get splashGetStarted;
+
+  /// No description provided for @authGenderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get authGenderMale;
+
+  /// No description provided for @authGenderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get authGenderFemale;
+
+  /// No description provided for @authGenderNonBinary.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-binary'**
+  String get authGenderNonBinary;
+
+  /// No description provided for @authGenderPrefer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get authGenderPrefer;
 }
 
 class _AppLocalizationsDelegate

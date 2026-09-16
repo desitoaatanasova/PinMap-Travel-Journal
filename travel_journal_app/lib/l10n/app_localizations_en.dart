@@ -167,4 +167,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonOffline => 'No internet connection';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get authWelcomeBack => 'Welcome Back';
+
+  @override
+  String get authSignInSubtitle => 'Sign in to continue your journey';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authForgotPassword => 'Forgot Password?';
+
+  @override
+  String get authLogin => 'Log In';
+
+  @override
+  String get authNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get authSignUp => 'Sign Up';
+
+  @override
+  String get authCreateAccount => 'Create Account';
+
+  @override
+  String get authCreateSubtitle => 'Start your travel journal';
+
+  @override
+  String get authFullName => 'Full Name';
+
+  @override
+  String get authHaveAccount => 'Already have an account? ';
+
+  @override
+  String get authEnterValid => 'Please enter valid credentials';
+
+  @override
+  String get authFillRequired => 'Please fill all required fields';
+
+  @override
+  String get authInvalid => 'Invalid credentials';
+
+  @override
+  String get authRegisterFailed => 'Registration failed';
+
+  @override
+  String get authSessionFailed => 'Could not start session. Try again.';
+
+  @override
+  String authPartialFail(String failed) {
+    return 'Some data failed to load ($failed). Pull to retry.';
+  }
+
+  @override
+  String get splashTagline => 'Travel journal';
+
+  @override
+  String get splashGetStarted => 'Get Started';
+
+  @override
+  String get authGenderMale => 'Male';
+
+  @override
+  String get authGenderFemale => 'Female';
+
+  @override
+  String get authGenderNonBinary => 'Non-binary';
+
+  @override
+  String get authGenderPrefer => 'Prefer not to say';
 }

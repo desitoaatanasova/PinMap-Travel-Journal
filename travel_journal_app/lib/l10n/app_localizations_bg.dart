@@ -170,4 +170,90 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get commonOffline => 'Няма интернет връзка';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'Да';
+
+  @override
+  String get commonNo => 'Не';
+
+  @override
+  String get commonEdit => 'Редактирай';
+
+  @override
+  String get authWelcomeBack => 'Добре дошли отново';
+
+  @override
+  String get authSignInSubtitle => 'Влезте, за да продължите пътуването си';
+
+  @override
+  String get authEmail => 'Имейл';
+
+  @override
+  String get authPassword => 'Парола';
+
+  @override
+  String get authForgotPassword => 'Забравена парола?';
+
+  @override
+  String get authLogin => 'Вход';
+
+  @override
+  String get authNoAccount => 'Нямате акаунт? ';
+
+  @override
+  String get authSignUp => 'Регистрация';
+
+  @override
+  String get authCreateAccount => 'Създаване на акаунт';
+
+  @override
+  String get authCreateSubtitle => 'Започнете своя дневник за пътувания';
+
+  @override
+  String get authFullName => 'Пълно име';
+
+  @override
+  String get authHaveAccount => 'Вече имате акаунт? ';
+
+  @override
+  String get authEnterValid => 'Моля, въведете валидни данни';
+
+  @override
+  String get authFillRequired => 'Моля, попълнете всички задължителни полета';
+
+  @override
+  String get authInvalid => 'Невалидни данни';
+
+  @override
+  String get authRegisterFailed => 'Регистрацията не бе успешна';
+
+  @override
+  String get authSessionFailed => 'Сесията не можа да стартира. Опитайте отново.';
+
+  @override
+  String authPartialFail(String failed) {
+    return 'Някои данни не се заредиха ($failed). Дръпнете, за да опитате отново.';
+  }
+
+  @override
+  String get splashTagline => 'Дневник за пътувания';
+
+  @override
+  String get splashGetStarted => 'Започнете';
+
+  @override
+  String get authGenderMale => 'Мъж';
+
+  @override
+  String get authGenderFemale => 'Жена';
+
+  @override
+  String get authGenderNonBinary => 'Небинарен';
+
+  @override
+  String get authGenderPrefer => 'Предпочитам да не казвам';
 }

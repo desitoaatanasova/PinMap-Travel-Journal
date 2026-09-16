@@ -55,5 +55,38 @@
   "commonRetry": "Опитай отново",
   "commonLoading": "Зареждане...",
   "commonError": "Нещо се обърка",
-  "commonOffline": "Няма интернет връзка"
+  "commonOffline": "Няма интернет връзка",
+  "commonOk": "OK",
+  "commonYes": "Да",
+  "commonNo": "Не",
+  "commonEdit": "Редактирай",
+  "authWelcomeBack": "Добре дошли отново",
+  "authSignInSubtitle": "Влезте, за да продължите пътуването си",
+  "authEmail": "Имейл",
+  "authPassword": "Парола",
+  "authForgotPassword": "Забравена парола?",
+  "authLogin": "Вход",
+  "authNoAccount": "Нямате акаунт? ",
+  "authSignUp": "Регистрация",
+  "authCreateAccount": "Създаване на акаунт",
+  "authCreateSubtitle": "Започнете своя дневник за пътувания",
+  "authFullName": "Пълно име",
+  "authHaveAccount": "Вече имате акаунт? ",
+  "authEnterValid": "Моля, въведете валидни данни",
+  "authFillRequired": "Моля, попълнете всички задължителни полета",
+  "authInvalid": "Невалидни данни",
+  "authRegisterFailed": "Регистрацията не бе успешна",
+  "authSessionFailed": "Сесията не можа да стартира. Опитайте отново.",
+  "authPartialFail": "Някои данни не се заредиха ({failed}). Дръпнете, за да опитате отново.",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "Дневник за пътувания",
+  "splashGetStarted": "Започнете",
+  "authGenderMale": "Мъж",
+  "authGenderFemale": "Жена",
+  "authGenderNonBinary": "Небинарен",
+  "authGenderPrefer": "Предпочитам да не казвам"
 }

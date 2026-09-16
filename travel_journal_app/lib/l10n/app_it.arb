@@ -55,5 +55,38 @@
   "commonRetry": "Riprova",
   "commonLoading": "Caricamento...",
   "commonError": "Si è verificato un errore",
-  "commonOffline": "Nessuna connessione Internet"
+  "commonOffline": "Nessuna connessione Internet",
+  "commonOk": "OK",
+  "commonYes": "Sì",
+  "commonNo": "No",
+  "commonEdit": "Modifica",
+  "authWelcomeBack": "Bentornato",
+  "authSignInSubtitle": "Accedi per continuare il tuo viaggio",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authForgotPassword": "Password dimenticata?",
+  "authLogin": "Accedi",
+  "authNoAccount": "Non hai un account? ",
+  "authSignUp": "Registrati",
+  "authCreateAccount": "Crea account",
+  "authCreateSubtitle": "Inizia il tuo diario di viaggio",
+  "authFullName": "Nome completo",
+  "authHaveAccount": "Hai già un account? ",
+  "authEnterValid": "Inserisci credenziali valide",
+  "authFillRequired": "Compila tutti i campi obbligatori",
+  "authInvalid": "Credenziali non valide",
+  "authRegisterFailed": "Registrazione non riuscita",
+  "authSessionFailed": "Impossibile avviare la sessione. Riprova.",
+  "authPartialFail": "Alcuni dati non sono stati caricati ({failed}). Trascina per riprovare.",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "Diario di viaggio",
+  "splashGetStarted": "Inizia",
+  "authGenderMale": "Uomo",
+  "authGenderFemale": "Donna",
+  "authGenderNonBinary": "Non binario",
+  "authGenderPrefer": "Preferisco non dirlo"
 }

@@ -55,5 +55,38 @@
   "commonRetry": "Wiederholen",
   "commonLoading": "Wird geladen...",
   "commonError": "Etwas ist schiefgelaufen",
-  "commonOffline": "Keine Internetverbindung"
+  "commonOffline": "Keine Internetverbindung",
+  "commonOk": "OK",
+  "commonYes": "Ja",
+  "commonNo": "Nein",
+  "commonEdit": "Bearbeiten",
+  "authWelcomeBack": "Willkommen zurück",
+  "authSignInSubtitle": "Melde dich an, um deine Reise fortzusetzen",
+  "authEmail": "E-Mail",
+  "authPassword": "Passwort",
+  "authForgotPassword": "Passwort vergessen?",
+  "authLogin": "Anmelden",
+  "authNoAccount": "Noch kein Konto? ",
+  "authSignUp": "Registrieren",
+  "authCreateAccount": "Konto erstellen",
+  "authCreateSubtitle": "Starte dein Reisetagebuch",
+  "authFullName": "Vollständiger Name",
+  "authHaveAccount": "Hast du bereits ein Konto? ",
+  "authEnterValid": "Bitte gib gültige Anmeldedaten ein",
+  "authFillRequired": "Bitte fülle alle Pflichtfelder aus",
+  "authInvalid": "Ungültige Anmeldedaten",
+  "authRegisterFailed": "Registrierung fehlgeschlagen",
+  "authSessionFailed": "Sitzung konnte nicht gestartet werden. Versuche es erneut.",
+  "authPartialFail": "Einige Daten konnten nicht geladen werden ({failed}). Zum Wiederholen ziehen.",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "Reisetagebuch",
+  "splashGetStarted": "Los geht's",
+  "authGenderMale": "Männlich",
+  "authGenderFemale": "Weiblich",
+  "authGenderNonBinary": "Nicht-binär",
+  "authGenderPrefer": "Keine Angabe"
 }

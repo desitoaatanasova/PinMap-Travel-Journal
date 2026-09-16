@@ -55,5 +55,38 @@
   "commonRetry": "Retry",
   "commonLoading": "Loading...",
   "commonError": "Something went wrong",
-  "commonOffline": "No internet connection"
+  "commonOffline": "No internet connection",
+  "commonOk": "OK",
+  "commonYes": "Yes",
+  "commonNo": "No",
+  "commonEdit": "Edit",
+  "authWelcomeBack": "Welcome Back",
+  "authSignInSubtitle": "Sign in to continue your journey",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authForgotPassword": "Forgot Password?",
+  "authLogin": "Log In",
+  "authNoAccount": "Don't have an account? ",
+  "authSignUp": "Sign Up",
+  "authCreateAccount": "Create Account",
+  "authCreateSubtitle": "Start your travel journal",
+  "authFullName": "Full Name",
+  "authHaveAccount": "Already have an account? ",
+  "authEnterValid": "Please enter valid credentials",
+  "authFillRequired": "Please fill all required fields",
+  "authInvalid": "Invalid credentials",
+  "authRegisterFailed": "Registration failed",
+  "authSessionFailed": "Could not start session. Try again.",
+  "authPartialFail": "Some data failed to load ({failed}). Pull to retry.",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "Travel journal",
+  "splashGetStarted": "Get Started",
+  "authGenderMale": "Male",
+  "authGenderFemale": "Female",
+  "authGenderNonBinary": "Non-binary",
+  "authGenderPrefer": "Prefer not to say"
 }

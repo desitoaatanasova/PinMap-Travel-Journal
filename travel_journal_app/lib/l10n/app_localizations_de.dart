@@ -168,4 +168,91 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get commonOffline => 'Keine Internetverbindung';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'Ja';
+
+  @override
+  String get commonNo => 'Nein';
+
+  @override
+  String get commonEdit => 'Bearbeiten';
+
+  @override
+  String get authWelcomeBack => 'Willkommen zurück';
+
+  @override
+  String get authSignInSubtitle => 'Melde dich an, um deine Reise fortzusetzen';
+
+  @override
+  String get authEmail => 'E-Mail';
+
+  @override
+  String get authPassword => 'Passwort';
+
+  @override
+  String get authForgotPassword => 'Passwort vergessen?';
+
+  @override
+  String get authLogin => 'Anmelden';
+
+  @override
+  String get authNoAccount => 'Noch kein Konto? ';
+
+  @override
+  String get authSignUp => 'Registrieren';
+
+  @override
+  String get authCreateAccount => 'Konto erstellen';
+
+  @override
+  String get authCreateSubtitle => 'Starte dein Reisetagebuch';
+
+  @override
+  String get authFullName => 'Vollständiger Name';
+
+  @override
+  String get authHaveAccount => 'Hast du bereits ein Konto? ';
+
+  @override
+  String get authEnterValid => 'Bitte gib gültige Anmeldedaten ein';
+
+  @override
+  String get authFillRequired => 'Bitte fülle alle Pflichtfelder aus';
+
+  @override
+  String get authInvalid => 'Ungültige Anmeldedaten';
+
+  @override
+  String get authRegisterFailed => 'Registrierung fehlgeschlagen';
+
+  @override
+  String get authSessionFailed =>
+      'Sitzung konnte nicht gestartet werden. Versuche es erneut.';
+
+  @override
+  String authPartialFail(String failed) {
+    return 'Einige Daten konnten nicht geladen werden ($failed). Zum Wiederholen ziehen.';
+  }
+
+  @override
+  String get splashTagline => 'Reisetagebuch';
+
+  @override
+  String get splashGetStarted => 'Los geht\'s';
+
+  @override
+  String get authGenderMale => 'Männlich';
+
+  @override
+  String get authGenderFemale => 'Weiblich';
+
+  @override
+  String get authGenderNonBinary => 'Nicht-binär';
+
+  @override
+  String get authGenderPrefer => 'Keine Angabe';
 }

@@ -163,4 +163,90 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonOffline => '无网络连接';
+
+  @override
+  String get commonOk => '确定';
+
+  @override
+  String get commonYes => '是';
+
+  @override
+  String get commonNo => '否';
+
+  @override
+  String get commonEdit => '编辑';
+
+  @override
+  String get authWelcomeBack => '欢迎回来';
+
+  @override
+  String get authSignInSubtitle => '登录以继续您的旅程';
+
+  @override
+  String get authEmail => '电子邮箱';
+
+  @override
+  String get authPassword => '密码';
+
+  @override
+  String get authForgotPassword => '忘记密码？';
+
+  @override
+  String get authLogin => '登录';
+
+  @override
+  String get authNoAccount => '还没有帐户？ ';
+
+  @override
+  String get authSignUp => '注册';
+
+  @override
+  String get authCreateAccount => '创建帐户';
+
+  @override
+  String get authCreateSubtitle => '开始您的旅行日记';
+
+  @override
+  String get authFullName => '全名';
+
+  @override
+  String get authHaveAccount => '已有帐户？ ';
+
+  @override
+  String get authEnterValid => '请输入有效的凭据';
+
+  @override
+  String get authFillRequired => '请填写所有必填字段';
+
+  @override
+  String get authInvalid => '凭据无效';
+
+  @override
+  String get authRegisterFailed => '注册失败';
+
+  @override
+  String get authSessionFailed => '无法启动会话，请重试。';
+
+  @override
+  String authPartialFail(String failed) {
+    return '部分数据加载失败（$failed）。下拉重试。';
+  }
+
+  @override
+  String get splashTagline => '旅行日记';
+
+  @override
+  String get splashGetStarted => '开始使用';
+
+  @override
+  String get authGenderMale => '男';
+
+  @override
+  String get authGenderFemale => '女';
+
+  @override
+  String get authGenderNonBinary => '非二元性别';
+
+  @override
+  String get authGenderPrefer => '不愿透露';
 }

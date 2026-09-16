@@ -55,5 +55,38 @@
   "commonRetry": "再試行",
   "commonLoading": "読み込み中...",
   "commonError": "問題が発生しました",
-  "commonOffline": "インターネット接続がありません"
+  "commonOffline": "インターネット接続がありません",
+  "commonOk": "OK",
+  "commonYes": "はい",
+  "commonNo": "いいえ",
+  "commonEdit": "編集",
+  "authWelcomeBack": "おかえりなさい",
+  "authSignInSubtitle": "旅を続けるにはサインインしてください",
+  "authEmail": "メールアドレス",
+  "authPassword": "パスワード",
+  "authForgotPassword": "パスワードをお忘れですか？",
+  "authLogin": "ログイン",
+  "authNoAccount": "アカウントをお持ちでないですか？ ",
+  "authSignUp": "登録する",
+  "authCreateAccount": "アカウント作成",
+  "authCreateSubtitle": "旅行日記を始めよう",
+  "authFullName": "氏名",
+  "authHaveAccount": "すでにアカウントをお持ちですか？ ",
+  "authEnterValid": "有効な認証情報を入力してください",
+  "authFillRequired": "すべての必須項目を入力してください",
+  "authInvalid": "認証情報が無効です",
+  "authRegisterFailed": "登録に失敗しました",
+  "authSessionFailed": "セッションを開始できませんでした。もう一度お試しください。",
+  "authPartialFail": "一部のデータの読み込みに失敗しました（{failed}）。引っ張って再試行してください。",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "旅行日記",
+  "splashGetStarted": "はじめる",
+  "authGenderMale": "男性",
+  "authGenderFemale": "女性",
+  "authGenderNonBinary": "ノンバイナリー",
+  "authGenderPrefer": "回答しない"
 }

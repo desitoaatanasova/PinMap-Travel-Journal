@@ -164,4 +164,90 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get commonOffline => 'インターネット接続がありません';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'はい';
+
+  @override
+  String get commonNo => 'いいえ';
+
+  @override
+  String get commonEdit => '編集';
+
+  @override
+  String get authWelcomeBack => 'おかえりなさい';
+
+  @override
+  String get authSignInSubtitle => '旅を続けるにはサインインしてください';
+
+  @override
+  String get authEmail => 'メールアドレス';
+
+  @override
+  String get authPassword => 'パスワード';
+
+  @override
+  String get authForgotPassword => 'パスワードをお忘れですか？';
+
+  @override
+  String get authLogin => 'ログイン';
+
+  @override
+  String get authNoAccount => 'アカウントをお持ちでないですか？ ';
+
+  @override
+  String get authSignUp => '登録する';
+
+  @override
+  String get authCreateAccount => 'アカウント作成';
+
+  @override
+  String get authCreateSubtitle => '旅行日記を始めよう';
+
+  @override
+  String get authFullName => '氏名';
+
+  @override
+  String get authHaveAccount => 'すでにアカウントをお持ちですか？ ';
+
+  @override
+  String get authEnterValid => '有効な認証情報を入力してください';
+
+  @override
+  String get authFillRequired => 'すべての必須項目を入力してください';
+
+  @override
+  String get authInvalid => '認証情報が無効です';
+
+  @override
+  String get authRegisterFailed => '登録に失敗しました';
+
+  @override
+  String get authSessionFailed => 'セッションを開始できませんでした。もう一度お試しください。';
+
+  @override
+  String authPartialFail(String failed) {
+    return '一部のデータの読み込みに失敗しました（$failed）。引っ張って再試行してください。';
+  }
+
+  @override
+  String get splashTagline => '旅行日記';
+
+  @override
+  String get splashGetStarted => 'はじめる';
+
+  @override
+  String get authGenderMale => '男性';
+
+  @override
+  String get authGenderFemale => '女性';
+
+  @override
+  String get authGenderNonBinary => 'ノンバイナリー';
+
+  @override
+  String get authGenderPrefer => '回答しない';
 }

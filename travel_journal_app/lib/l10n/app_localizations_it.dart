@@ -169,4 +169,90 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get commonOffline => 'Nessuna connessione Internet';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'Sì';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String get commonEdit => 'Modifica';
+
+  @override
+  String get authWelcomeBack => 'Bentornato';
+
+  @override
+  String get authSignInSubtitle => 'Accedi per continuare il tuo viaggio';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authForgotPassword => 'Password dimenticata?';
+
+  @override
+  String get authLogin => 'Accedi';
+
+  @override
+  String get authNoAccount => 'Non hai un account? ';
+
+  @override
+  String get authSignUp => 'Registrati';
+
+  @override
+  String get authCreateAccount => 'Crea account';
+
+  @override
+  String get authCreateSubtitle => 'Inizia il tuo diario di viaggio';
+
+  @override
+  String get authFullName => 'Nome completo';
+
+  @override
+  String get authHaveAccount => 'Hai già un account? ';
+
+  @override
+  String get authEnterValid => 'Inserisci credenziali valide';
+
+  @override
+  String get authFillRequired => 'Compila tutti i campi obbligatori';
+
+  @override
+  String get authInvalid => 'Credenziali non valide';
+
+  @override
+  String get authRegisterFailed => 'Registrazione non riuscita';
+
+  @override
+  String get authSessionFailed => 'Impossibile avviare la sessione. Riprova.';
+
+  @override
+  String authPartialFail(String failed) {
+    return 'Alcuni dati non sono stati caricati ($failed). Trascina per riprovare.';
+  }
+
+  @override
+  String get splashTagline => 'Diario di viaggio';
+
+  @override
+  String get splashGetStarted => 'Inizia';
+
+  @override
+  String get authGenderMale => 'Uomo';
+
+  @override
+  String get authGenderFemale => 'Donna';
+
+  @override
+  String get authGenderNonBinary => 'Non binario';
+
+  @override
+  String get authGenderPrefer => 'Preferisco non dirlo';
 }

@@ -55,5 +55,38 @@
   "commonRetry": "Réessayer",
   "commonLoading": "Chargement...",
   "commonError": "Une erreur s'est produite",
-  "commonOffline": "Pas de connexion Internet"
+  "commonOffline": "Pas de connexion Internet",
+  "commonOk": "OK",
+  "commonYes": "Oui",
+  "commonNo": "Non",
+  "commonEdit": "Modifier",
+  "authWelcomeBack": "Bon retour",
+  "authSignInSubtitle": "Connectez-vous pour poursuivre votre voyage",
+  "authEmail": "E-mail",
+  "authPassword": "Mot de passe",
+  "authForgotPassword": "Mot de passe oublié ?",
+  "authLogin": "Se connecter",
+  "authNoAccount": "Pas encore de compte ? ",
+  "authSignUp": "S'inscrire",
+  "authCreateAccount": "Créer un compte",
+  "authCreateSubtitle": "Commencez votre journal de voyage",
+  "authFullName": "Nom complet",
+  "authHaveAccount": "Vous avez déjà un compte ? ",
+  "authEnterValid": "Veuillez saisir des identifiants valides",
+  "authFillRequired": "Veuillez remplir tous les champs obligatoires",
+  "authInvalid": "Identifiants invalides",
+  "authRegisterFailed": "Inscription échouée",
+  "authSessionFailed": "Impossible de démarrer la session. Réessayez.",
+  "authPartialFail": "Certaines données n'ont pas pu être chargées ({failed}). Tirez pour réessayer.",
+  "@authPartialFail": {
+    "placeholders": {
+      "failed": { "type": "String" }
+    }
+  },
+  "splashTagline": "Journal de voyage",
+  "splashGetStarted": "Commencer",
+  "authGenderMale": "Homme",
+  "authGenderFemale": "Femme",
+  "authGenderNonBinary": "Non binaire",
+  "authGenderPrefer": "Je préfère ne pas le dire"
 }
