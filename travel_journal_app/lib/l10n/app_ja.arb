@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "新しい旅行",
+  "tripsEmptyTitle": "まだ旅行がありません",
+  "tripsEmptyHint": "「新しい旅行」をタップして計画を始めましょう",
+  "tripsDraftHint": "AI下書きの準備完了 — タップして確認・保存",
+  "tripDurationDays": "{n, plural, other{{n}日間}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "一人旅",
+  "tripStyleGroup": "グループ",
+  "tripTypeHistorical": "歴史",
+  "tripTypeArt": "アート",
+  "tripTypeMixed": "ミックス",
+  "tripFormTitleNew": "新しい旅行",
+  "tripFormTitleEdit": "旅行を編集",
+  "tripSectionDestination": "目的地",
+  "tripSectionDates": "日程",
+  "tripSectionVacationType": "旅行のタイプ",
+  "tripSectionTravelStyle": "旅行スタイル",
+  "tripSectionCompanions": "同行者",
+  "tripChooseCountry": "国を選択",
+  "tripChooseCities": "訪れる都市を選択（任意）",
+  "tripArrivalCity": "到着都市",
+  "tripDepartureCity": "出発都市",
+  "tripStartDate": "開始日",
+  "tripEndDate": "終了日",
+  "tripSelect": "選択",
+  "tripDurationLabel": "{n, plural, other{期間：{n}日間}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "まだ友達が見つかりません。他の旅行者をフォローして（フォロー返ししてもらうと）、同行者としてここに表示されます。",
+  "tripCountryFirst": "先に国を選択してください",
+  "tripSheetCities": "訪れる都市を選択",
+  "tripSelectedCount": "{n, plural, other{{n}件選択中}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "{name}の都市",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "近隣諸国の都市",
+  "tripSearchCities": "都市を検索",
+  "tripSheetDone": "完了",
+  "tripAddCities": "{n, plural, other{{n}都市を追加}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "生成中...",
+  "tripSave": "旅行を保存",
+  "tripGenerate": "旅行プランを生成",
+  "tripDurationLocked": "ここでは期間を変更できません。日数を変更するには新しい旅行を作成してください。",
+  "tripGenFailTitle": "旅行を生成できませんでした",
+  "tripGenFailFallback": "旅行の生成中に問題が発生しました。",
+  "tripGenBasic": "AIなしで基本行程を作成",
+  "planNotFound": "旅行が見つかりません",
+  "planItineraryTitle": "日別行程",
+  "planMapView": "地図表示",
+  "planExporting": "エクスポート中...",
+  "planExportPdf": "PDFをエクスポート",
+  "planRegenerate": "再生成",
+  "planDiscard": "破棄",
+  "planSaving": "保存中...",
+  "planDraftNote": "AI下書き — まだ旅行に保存されていません",
+  "planSaved": "旅行を保存しました！",
+  "planSaveError": "旅行を保存できませんでした",
+  "planRegenerated": "新しい行程を生成しました",
+  "planRegenError": "旅行を再生成できませんでした",
+  "planLoadError": "旅行の詳細を読み込めませんでした",
+  "planPdfDone": "PDFをダウンロードしました",
+  "planPdfError": "PDFをエクスポートできませんでした",
+  "planDiscardTitle": "下書きを破棄しますか？",
+  "planDiscardText": "このAI下書きは削除されます。",
+  "planDeleteTitle": "旅行を削除",
+  "planDeleteText": "この旅行を削除してもよろしいですか？",
+  "planDayNumber": "{n}日目",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "午前",
+  "planAfternoon": "午後",
+  "planEvening": "夜",
+  "planActivityFallback": "アクティビティ",
+  "mapTitle": "旅行マップ",
+  "mapDay": "{n}日目",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "すべて",
+  "mapViewDetails": "詳細を見る",
+  "mapCategory": "カテゴリー{id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "場所の詳細を読み込めませんでした",
+  "mapEmptyTitle": "地図上の場所がありません",
+  "mapEmptyText": "この行程には座標のある場所が含まれていません。基本行程や空の日は地図に表示されません。",
+  "mapPlacesShown": "{n, plural, other{{n}件表示中}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "— 座標なし"
 }

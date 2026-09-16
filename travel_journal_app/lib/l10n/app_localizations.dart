@@ -799,6 +799,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} removed from wishlist'**
   String wishlistRemoved(String name);
+
+  /// No description provided for @tripsNewTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'New Trip'**
+  String get tripsNewTrip;
+
+  /// No description provided for @tripsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No trips yet'**
+  String get tripsEmptyTitle;
+
+  /// No description provided for @tripsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"New Trip\" to start planning'**
+  String get tripsEmptyHint;
+
+  /// No description provided for @tripsDraftHint.
+  ///
+  /// In en, this message translates to:
+  /// **'AI draft ready — tap to review & save'**
+  String get tripsDraftHint;
+
+  /// No description provided for @tripDurationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 day} other{{n} days}}'**
+  String tripDurationDays(int n);
+
+  /// No description provided for @tripStyleSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo'**
+  String get tripStyleSolo;
+
+  /// No description provided for @tripStyleGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get tripStyleGroup;
+
+  /// No description provided for @tripTypeHistorical.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical'**
+  String get tripTypeHistorical;
+
+  /// No description provided for @tripTypeArt.
+  ///
+  /// In en, this message translates to:
+  /// **'Art'**
+  String get tripTypeArt;
+
+  /// No description provided for @tripTypeMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed'**
+  String get tripTypeMixed;
+
+  /// No description provided for @tripFormTitleNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New Trip'**
+  String get tripFormTitleNew;
+
+  /// No description provided for @tripFormTitleEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Trip'**
+  String get tripFormTitleEdit;
+
+  /// No description provided for @tripSectionDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination'**
+  String get tripSectionDestination;
+
+  /// No description provided for @tripSectionDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get tripSectionDates;
+
+  /// No description provided for @tripSectionVacationType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of Vacation'**
+  String get tripSectionVacationType;
+
+  /// No description provided for @tripSectionTravelStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel Style'**
+  String get tripSectionTravelStyle;
+
+  /// No description provided for @tripSectionCompanions.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel Companions'**
+  String get tripSectionCompanions;
+
+  /// No description provided for @tripChooseCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a country'**
+  String get tripChooseCountry;
+
+  /// No description provided for @tripChooseCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose cities to visit (optional)'**
+  String get tripChooseCities;
+
+  /// No description provided for @tripArrivalCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrival city'**
+  String get tripArrivalCity;
+
+  /// No description provided for @tripDepartureCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure city'**
+  String get tripDepartureCity;
+
+  /// No description provided for @tripStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get tripStartDate;
+
+  /// No description provided for @tripEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get tripEndDate;
+
+  /// No description provided for @tripSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get tripSelect;
+
+  /// No description provided for @tripDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Duration: 1 day} other{Duration: {n} days}}'**
+  String tripDurationLabel(int n);
+
+  /// No description provided for @tripNoFriendsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends found yet. Follow other travellers (and let them follow you back) and they will appear here to add as trip companions.'**
+  String get tripNoFriendsHint;
+
+  /// No description provided for @tripCountryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a country first'**
+  String get tripCountryFirst;
+
+  /// No description provided for @tripSheetCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose cities to visit'**
+  String get tripSheetCities;
+
+  /// No description provided for @tripSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 selected} other{{n} selected}}'**
+  String tripSelectedCount(int n);
+
+  /// No description provided for @tripCitiesIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cities in {name}'**
+  String tripCitiesIn(String name);
+
+  /// No description provided for @tripNearbyCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby in neighbouring countries'**
+  String get tripNearbyCities;
+
+  /// No description provided for @tripSearchCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Search cities'**
+  String get tripSearchCities;
+
+  /// No description provided for @tripSheetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tripSheetDone;
+
+  /// No description provided for @tripAddCities.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Add 1 city} other{Add {n} cities}}'**
+  String tripAddCities(int n);
+
+  /// No description provided for @tripGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating...'**
+  String get tripGenerating;
+
+  /// No description provided for @tripSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Trip'**
+  String get tripSave;
+
+  /// No description provided for @tripGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Trip Plan'**
+  String get tripGenerate;
+
+  /// No description provided for @tripDurationLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot change trip duration here. Please create a new trip to change days.'**
+  String get tripDurationLocked;
+
+  /// No description provided for @tripGenFailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t Generate Trip'**
+  String get tripGenFailTitle;
+
+  /// No description provided for @tripGenFailFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong generating your trip.'**
+  String get tripGenFailFallback;
+
+  /// No description provided for @tripGenBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Create basic itinerary without AI'**
+  String get tripGenBasic;
+
+  /// No description provided for @planNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip not found'**
+  String get planNotFound;
+
+  /// No description provided for @planItineraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Day-by-Day Itinerary'**
+  String get planItineraryTitle;
+
+  /// No description provided for @planMapView.
+  ///
+  /// In en, this message translates to:
+  /// **'Map View'**
+  String get planMapView;
+
+  /// No description provided for @planExporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting...'**
+  String get planExporting;
+
+  /// No description provided for @planExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get planExportPdf;
+
+  /// No description provided for @planRegenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get planRegenerate;
+
+  /// No description provided for @planDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get planDiscard;
+
+  /// No description provided for @planSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get planSaving;
+
+  /// No description provided for @planDraftNote.
+  ///
+  /// In en, this message translates to:
+  /// **'AI draft — not saved to your trips yet'**
+  String get planDraftNote;
+
+  /// No description provided for @planSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip saved to your trips!'**
+  String get planSaved;
+
+  /// No description provided for @planSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the trip'**
+  String get planSaveError;
+
+  /// No description provided for @planRegenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'New itinerary generated'**
+  String get planRegenerated;
+
+  /// No description provided for @planRegenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not regenerate the trip'**
+  String get planRegenError;
+
+  /// No description provided for @planLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load trip details'**
+  String get planLoadError;
+
+  /// No description provided for @planPdfDone.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF downloaded'**
+  String get planPdfDone;
+
+  /// No description provided for @planPdfError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export PDF'**
+  String get planPdfError;
+
+  /// No description provided for @planDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Draft?'**
+  String get planDiscardTitle;
+
+  /// No description provided for @planDiscardText.
+  ///
+  /// In en, this message translates to:
+  /// **'This AI-generated draft will be removed.'**
+  String get planDiscardText;
+
+  /// No description provided for @planDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Trip'**
+  String get planDeleteTitle;
+
+  /// No description provided for @planDeleteText.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this trip?'**
+  String get planDeleteText;
+
+  /// No description provided for @planDayNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'DAY {n}'**
+  String planDayNumber(int n);
+
+  /// No description provided for @planMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get planMorning;
+
+  /// No description provided for @planAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon'**
+  String get planAfternoon;
+
+  /// No description provided for @planEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening'**
+  String get planEvening;
+
+  /// No description provided for @planActivityFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get planActivityFallback;
+
+  /// No description provided for @mapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Map'**
+  String get mapTitle;
+
+  /// No description provided for @mapDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String mapDay(int n);
+
+  /// No description provided for @mapAllDays.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get mapAllDays;
+
+  /// No description provided for @mapViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get mapViewDetails;
+
+  /// No description provided for @mapCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category {id}'**
+  String mapCategory(int id);
+
+  /// No description provided for @mapPlaceError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load place details'**
+  String get mapPlaceError;
+
+  /// No description provided for @mapEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No mapped locations'**
+  String get mapEmptyTitle;
+
+  /// No description provided for @mapEmptyText.
+  ///
+  /// In en, this message translates to:
+  /// **'This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.'**
+  String get mapEmptyText;
+
+  /// No description provided for @mapPlacesShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 place shown} other{{n} places shown}}'**
+  String mapPlacesShown(int n);
+
+  /// No description provided for @mapNoCoordsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'— no coordinates'**
+  String get mapNoCoordsSuffix;
 }
 
 class _AppLocalizationsDelegate

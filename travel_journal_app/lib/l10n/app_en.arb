@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "New Trip",
+  "tripsEmptyTitle": "No trips yet",
+  "tripsEmptyHint": "Tap \"New Trip\" to start planning",
+  "tripsDraftHint": "AI draft ready — tap to review & save",
+  "tripDurationDays": "{n, plural, =1{1 day} other{{n} days}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "Solo",
+  "tripStyleGroup": "Group",
+  "tripTypeHistorical": "Historical",
+  "tripTypeArt": "Art",
+  "tripTypeMixed": "Mixed",
+  "tripFormTitleNew": "New Trip",
+  "tripFormTitleEdit": "Edit Trip",
+  "tripSectionDestination": "Destination",
+  "tripSectionDates": "Dates",
+  "tripSectionVacationType": "Type of Vacation",
+  "tripSectionTravelStyle": "Travel Style",
+  "tripSectionCompanions": "Travel Companions",
+  "tripChooseCountry": "Choose a country",
+  "tripChooseCities": "Choose cities to visit (optional)",
+  "tripArrivalCity": "Arrival city",
+  "tripDepartureCity": "Departure city",
+  "tripStartDate": "Start Date",
+  "tripEndDate": "End Date",
+  "tripSelect": "Select",
+  "tripDurationLabel": "{n, plural, =1{Duration: 1 day} other{Duration: {n} days}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "No friends found yet. Follow other travellers (and let them follow you back) and they will appear here to add as trip companions.",
+  "tripCountryFirst": "Choose a country first",
+  "tripSheetCities": "Choose cities to visit",
+  "tripSelectedCount": "{n, plural, =1{1 selected} other{{n} selected}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "Cities in {name}",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "Nearby in neighbouring countries",
+  "tripSearchCities": "Search cities",
+  "tripSheetDone": "Done",
+  "tripAddCities": "{n, plural, =1{Add 1 city} other{Add {n} cities}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "Generating...",
+  "tripSave": "Save Trip",
+  "tripGenerate": "Generate Trip Plan",
+  "tripDurationLocked": "Cannot change trip duration here. Please create a new trip to change days.",
+  "tripGenFailTitle": "Couldn't Generate Trip",
+  "tripGenFailFallback": "Something went wrong generating your trip.",
+  "tripGenBasic": "Create basic itinerary without AI",
+  "planNotFound": "Trip not found",
+  "planItineraryTitle": "Day-by-Day Itinerary",
+  "planMapView": "Map View",
+  "planExporting": "Exporting...",
+  "planExportPdf": "Export PDF",
+  "planRegenerate": "Regenerate",
+  "planDiscard": "Discard",
+  "planSaving": "Saving...",
+  "planDraftNote": "AI draft — not saved to your trips yet",
+  "planSaved": "Trip saved to your trips!",
+  "planSaveError": "Could not save the trip",
+  "planRegenerated": "New itinerary generated",
+  "planRegenError": "Could not regenerate the trip",
+  "planLoadError": "Could not load trip details",
+  "planPdfDone": "PDF downloaded",
+  "planPdfError": "Could not export PDF",
+  "planDiscardTitle": "Discard Draft?",
+  "planDiscardText": "This AI-generated draft will be removed.",
+  "planDeleteTitle": "Delete Trip",
+  "planDeleteText": "Are you sure you want to delete this trip?",
+  "planDayNumber": "DAY {n}",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "Morning",
+  "planAfternoon": "Afternoon",
+  "planEvening": "Evening",
+  "planActivityFallback": "Activity",
+  "mapTitle": "Trip Map",
+  "mapDay": "Day {n}",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "All",
+  "mapViewDetails": "View details",
+  "mapCategory": "Category {id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "Could not load place details",
+  "mapEmptyTitle": "No mapped locations",
+  "mapEmptyText": "This itinerary does not contain places with coordinates. Basic itineraries and empty days are not shown on the map.",
+  "mapPlacesShown": "{n, plural, =1{1 place shown} other{{n} places shown}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "— no coordinates"
 }

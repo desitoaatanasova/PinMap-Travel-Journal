@@ -389,4 +389,286 @@ class AppLocalizationsFr extends AppLocalizations {
   String wishlistRemoved(String name) {
     return '$name retiré de la liste d\'envies';
   }
+
+  @override
+  String get tripsNewTrip => 'Nouveau voyage';
+
+  @override
+  String get tripsEmptyTitle => 'Aucun voyage pour l\'instant';
+
+  @override
+  String get tripsEmptyHint => 'Touchez « Nouveau voyage » pour commencer';
+
+  @override
+  String get tripsDraftHint =>
+      'Brouillon IA prêt : touchez pour relire et enregistrer';
+
+  @override
+  String tripDurationDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n jours',
+      one: '1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripStyleSolo => 'Solo';
+
+  @override
+  String get tripStyleGroup => 'En groupe';
+
+  @override
+  String get tripTypeHistorical => 'Historique';
+
+  @override
+  String get tripTypeArt => 'Art';
+
+  @override
+  String get tripTypeMixed => 'Mixte';
+
+  @override
+  String get tripFormTitleNew => 'Nouveau voyage';
+
+  @override
+  String get tripFormTitleEdit => 'Modifier le voyage';
+
+  @override
+  String get tripSectionDestination => 'Destination';
+
+  @override
+  String get tripSectionDates => 'Dates';
+
+  @override
+  String get tripSectionVacationType => 'Type de vacances';
+
+  @override
+  String get tripSectionTravelStyle => 'Style de voyage';
+
+  @override
+  String get tripSectionCompanions => 'Compagnons de voyage';
+
+  @override
+  String get tripChooseCountry => 'Choisissez un pays';
+
+  @override
+  String get tripChooseCities => 'Choisissez des villes (facultatif)';
+
+  @override
+  String get tripArrivalCity => 'Ville d\'arrivée';
+
+  @override
+  String get tripDepartureCity => 'Ville de départ';
+
+  @override
+  String get tripStartDate => 'Date de début';
+
+  @override
+  String get tripEndDate => 'Date de fin';
+
+  @override
+  String get tripSelect => 'Sélectionner';
+
+  @override
+  String tripDurationLabel(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Durée : $n jours',
+      one: 'Durée : 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripNoFriendsHint =>
+      'Aucun ami pour l\'instant. Suivez d\'autres voyageurs (et laissez-les vous suivre) : ils apparaîtront ici comme compagnons.';
+
+  @override
+  String get tripCountryFirst => 'Choisissez d\'abord un pays';
+
+  @override
+  String get tripSheetCities => 'Choisissez des villes à visiter';
+
+  @override
+  String tripSelectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sélectionnées',
+      one: '1 sélectionnée',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripCitiesIn(String name) {
+    return 'Villes dans $name';
+  }
+
+  @override
+  String get tripNearbyCities => 'À proximité dans les pays voisins';
+
+  @override
+  String get tripSearchCities => 'Rechercher des villes';
+
+  @override
+  String get tripSheetDone => 'Terminé';
+
+  @override
+  String tripAddCities(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Ajouter $n villes',
+      one: 'Ajouter 1 ville',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripGenerating => 'Génération...';
+
+  @override
+  String get tripSave => 'Enregistrer le voyage';
+
+  @override
+  String get tripGenerate => 'Générer le plan de voyage';
+
+  @override
+  String get tripDurationLocked =>
+      'Impossible de modifier la durée ici. Créez un nouveau voyage pour changer les jours.';
+
+  @override
+  String get tripGenFailTitle => 'Impossible de générer le voyage';
+
+  @override
+  String get tripGenFailFallback =>
+      'Une erreur s\'est produite lors de la génération.';
+
+  @override
+  String get tripGenBasic => 'Créer un itinéraire simple sans IA';
+
+  @override
+  String get planNotFound => 'Voyage introuvable';
+
+  @override
+  String get planItineraryTitle => 'Itinéraire jour par jour';
+
+  @override
+  String get planMapView => 'Voir la carte';
+
+  @override
+  String get planExporting => 'Exportation...';
+
+  @override
+  String get planExportPdf => 'Exporter le PDF';
+
+  @override
+  String get planRegenerate => 'Régénérer';
+
+  @override
+  String get planDiscard => 'Abandonner';
+
+  @override
+  String get planSaving => 'Enregistrement...';
+
+  @override
+  String get planDraftNote =>
+      'Brouillon IA – pas encore enregistré dans vos voyages';
+
+  @override
+  String get planSaved => 'Voyage enregistré !';
+
+  @override
+  String get planSaveError => 'Impossible d\'enregistrer le voyage';
+
+  @override
+  String get planRegenerated => 'Nouvel itinéraire généré';
+
+  @override
+  String get planRegenError => 'Impossible de régénérer le voyage';
+
+  @override
+  String get planLoadError => 'Impossible de charger les détails';
+
+  @override
+  String get planPdfDone => 'PDF téléchargé';
+
+  @override
+  String get planPdfError => 'Impossible d\'exporter le PDF';
+
+  @override
+  String get planDiscardTitle => 'Abandonner le brouillon ?';
+
+  @override
+  String get planDiscardText => 'Ce brouillon IA sera supprimé.';
+
+  @override
+  String get planDeleteTitle => 'Supprimer le voyage';
+
+  @override
+  String get planDeleteText => 'Voulez-vous vraiment supprimer ce voyage ?';
+
+  @override
+  String planDayNumber(int n) {
+    return 'JOUR $n';
+  }
+
+  @override
+  String get planMorning => 'Matin';
+
+  @override
+  String get planAfternoon => 'Après-midi';
+
+  @override
+  String get planEvening => 'Soir';
+
+  @override
+  String get planActivityFallback => 'Activité';
+
+  @override
+  String get mapTitle => 'Carte du voyage';
+
+  @override
+  String mapDay(int n) {
+    return 'Jour $n';
+  }
+
+  @override
+  String get mapAllDays => 'Tous';
+
+  @override
+  String get mapViewDetails => 'Voir les détails';
+
+  @override
+  String mapCategory(int id) {
+    return 'Catégorie $id';
+  }
+
+  @override
+  String get mapPlaceError => 'Impossible de charger les détails du lieu';
+
+  @override
+  String get mapEmptyTitle => 'Aucun lieu sur la carte';
+
+  @override
+  String get mapEmptyText =>
+      'Cet itinéraire ne contient aucun lieu avec coordonnées. Les itinéraires simples et les jours vides ne s\'affichent pas sur la carte.';
+
+  @override
+  String mapPlacesShown(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n lieux affichés',
+      one: '1 lieu affiché',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mapNoCoordsSuffix => '– sans coordonnées';
 }

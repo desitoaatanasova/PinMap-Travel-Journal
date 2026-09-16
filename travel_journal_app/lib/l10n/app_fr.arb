@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "Nouveau voyage",
+  "tripsEmptyTitle": "Aucun voyage pour l'instant",
+  "tripsEmptyHint": "Touchez « Nouveau voyage » pour commencer",
+  "tripsDraftHint": "Brouillon IA prêt : touchez pour relire et enregistrer",
+  "tripDurationDays": "{n, plural, =1{1 jour} other{{n} jours}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "Solo",
+  "tripStyleGroup": "En groupe",
+  "tripTypeHistorical": "Historique",
+  "tripTypeArt": "Art",
+  "tripTypeMixed": "Mixte",
+  "tripFormTitleNew": "Nouveau voyage",
+  "tripFormTitleEdit": "Modifier le voyage",
+  "tripSectionDestination": "Destination",
+  "tripSectionDates": "Dates",
+  "tripSectionVacationType": "Type de vacances",
+  "tripSectionTravelStyle": "Style de voyage",
+  "tripSectionCompanions": "Compagnons de voyage",
+  "tripChooseCountry": "Choisissez un pays",
+  "tripChooseCities": "Choisissez des villes (facultatif)",
+  "tripArrivalCity": "Ville d'arrivée",
+  "tripDepartureCity": "Ville de départ",
+  "tripStartDate": "Date de début",
+  "tripEndDate": "Date de fin",
+  "tripSelect": "Sélectionner",
+  "tripDurationLabel": "{n, plural, =1{Durée : 1 jour} other{Durée : {n} jours}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "Aucun ami pour l'instant. Suivez d'autres voyageurs (et laissez-les vous suivre) : ils apparaîtront ici comme compagnons.",
+  "tripCountryFirst": "Choisissez d'abord un pays",
+  "tripSheetCities": "Choisissez des villes à visiter",
+  "tripSelectedCount": "{n, plural, =1{1 sélectionnée} other{{n} sélectionnées}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "Villes dans {name}",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "À proximité dans les pays voisins",
+  "tripSearchCities": "Rechercher des villes",
+  "tripSheetDone": "Terminé",
+  "tripAddCities": "{n, plural, =1{Ajouter 1 ville} other{Ajouter {n} villes}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "Génération...",
+  "tripSave": "Enregistrer le voyage",
+  "tripGenerate": "Générer le plan de voyage",
+  "tripDurationLocked": "Impossible de modifier la durée ici. Créez un nouveau voyage pour changer les jours.",
+  "tripGenFailTitle": "Impossible de générer le voyage",
+  "tripGenFailFallback": "Une erreur s'est produite lors de la génération.",
+  "tripGenBasic": "Créer un itinéraire simple sans IA",
+  "planNotFound": "Voyage introuvable",
+  "planItineraryTitle": "Itinéraire jour par jour",
+  "planMapView": "Voir la carte",
+  "planExporting": "Exportation...",
+  "planExportPdf": "Exporter le PDF",
+  "planRegenerate": "Régénérer",
+  "planDiscard": "Abandonner",
+  "planSaving": "Enregistrement...",
+  "planDraftNote": "Brouillon IA – pas encore enregistré dans vos voyages",
+  "planSaved": "Voyage enregistré !",
+  "planSaveError": "Impossible d'enregistrer le voyage",
+  "planRegenerated": "Nouvel itinéraire généré",
+  "planRegenError": "Impossible de régénérer le voyage",
+  "planLoadError": "Impossible de charger les détails",
+  "planPdfDone": "PDF téléchargé",
+  "planPdfError": "Impossible d'exporter le PDF",
+  "planDiscardTitle": "Abandonner le brouillon ?",
+  "planDiscardText": "Ce brouillon IA sera supprimé.",
+  "planDeleteTitle": "Supprimer le voyage",
+  "planDeleteText": "Voulez-vous vraiment supprimer ce voyage ?",
+  "planDayNumber": "JOUR {n}",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "Matin",
+  "planAfternoon": "Après-midi",
+  "planEvening": "Soir",
+  "planActivityFallback": "Activité",
+  "mapTitle": "Carte du voyage",
+  "mapDay": "Jour {n}",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "Tous",
+  "mapViewDetails": "Voir les détails",
+  "mapCategory": "Catégorie {id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "Impossible de charger les détails du lieu",
+  "mapEmptyTitle": "Aucun lieu sur la carte",
+  "mapEmptyText": "Cet itinéraire ne contient aucun lieu avec coordonnées. Les itinéraires simples et les jours vides ne s'affichent pas sur la carte.",
+  "mapPlacesShown": "{n, plural, =1{1 lieu affiché} other{{n} lieux affichés}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "– sans coordonnées"
 }

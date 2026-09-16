@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "新建行程",
+  "tripsEmptyTitle": "还没有行程",
+  "tripsEmptyHint": "点击“新建行程”开始规划",
+  "tripsDraftHint": "AI草稿已就绪 — 点击查看并保存",
+  "tripDurationDays": "{n, plural, other{{n} 天}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "独自出行",
+  "tripStyleGroup": "结伴出行",
+  "tripTypeHistorical": "历史",
+  "tripTypeArt": "艺术",
+  "tripTypeMixed": "混合",
+  "tripFormTitleNew": "新建行程",
+  "tripFormTitleEdit": "编辑行程",
+  "tripSectionDestination": "目的地",
+  "tripSectionDates": "日期",
+  "tripSectionVacationType": "度假类型",
+  "tripSectionTravelStyle": "出行方式",
+  "tripSectionCompanions": "同行伙伴",
+  "tripChooseCountry": "选择国家",
+  "tripChooseCities": "选择要去的城市（可选）",
+  "tripArrivalCity": "到达城市",
+  "tripDepartureCity": "出发城市",
+  "tripStartDate": "开始日期",
+  "tripEndDate": "结束日期",
+  "tripSelect": "选择",
+  "tripDurationLabel": "{n, plural, other{时长：{n} 天}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "还没有找到好友。关注其他旅行者（并让他们回关你），他们就会显示在这里，成为同行伙伴。",
+  "tripCountryFirst": "请先选择国家",
+  "tripSheetCities": "选择要去的城市",
+  "tripSelectedCount": "{n, plural, other{已选 {n} 项}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "{name}的城市",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "邻国的附近城市",
+  "tripSearchCities": "搜索城市",
+  "tripSheetDone": "完成",
+  "tripAddCities": "{n, plural, other{添加 {n} 个城市}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "生成中...",
+  "tripSave": "保存行程",
+  "tripGenerate": "生成行程计划",
+  "tripDurationLocked": "此处无法更改行程时长。如需更改天数，请新建行程。",
+  "tripGenFailTitle": "无法生成行程",
+  "tripGenFailFallback": "生成行程时出了问题。",
+  "tripGenBasic": "不使用AI创建基础行程",
+  "planNotFound": "未找到行程",
+  "planItineraryTitle": "逐日行程",
+  "planMapView": "地图视图",
+  "planExporting": "导出中...",
+  "planExportPdf": "导出PDF",
+  "planRegenerate": "重新生成",
+  "planDiscard": "放弃",
+  "planSaving": "保存中...",
+  "planDraftNote": "AI草稿 — 尚未保存到你的行程中",
+  "planSaved": "行程已保存！",
+  "planSaveError": "无法保存行程",
+  "planRegenerated": "已生成新的行程",
+  "planRegenError": "无法重新生成行程",
+  "planLoadError": "无法加载行程详情",
+  "planPdfDone": "PDF已下载",
+  "planPdfError": "无法导出PDF",
+  "planDiscardTitle": "放弃草稿？",
+  "planDiscardText": "该AI草稿将被删除。",
+  "planDeleteTitle": "删除行程",
+  "planDeleteText": "确定要删除该行程吗？",
+  "planDayNumber": "第 {n} 天",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "上午",
+  "planAfternoon": "下午",
+  "planEvening": "晚上",
+  "planActivityFallback": "活动",
+  "mapTitle": "行程地图",
+  "mapDay": "第 {n} 天",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "全部",
+  "mapViewDetails": "查看详情",
+  "mapCategory": "类别 {id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "无法加载地点详情",
+  "mapEmptyTitle": "地图上没有地点",
+  "mapEmptyText": "该行程不包含有坐标的地点。基础行程和空白日期不会显示在地图上。",
+  "mapPlacesShown": "{n, plural, other{显示 {n} 个地点}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "— 无坐标"
 }

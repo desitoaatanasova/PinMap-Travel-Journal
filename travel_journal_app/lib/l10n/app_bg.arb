@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "Ново пътуване",
+  "tripsEmptyTitle": "Все още няма пътувания",
+  "tripsEmptyHint": "Докоснете \"Ново пътуване\", за да започнете планиране",
+  "tripsDraftHint": "AI черновата е готова — докоснете, за да прегледате и запазите",
+  "tripDurationDays": "{n, plural, =1{1 ден} other{{n} дни}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "Сам",
+  "tripStyleGroup": "Група",
+  "tripTypeHistorical": "Историческо",
+  "tripTypeArt": "Изкуство",
+  "tripTypeMixed": "Смесено",
+  "tripFormTitleNew": "Ново пътуване",
+  "tripFormTitleEdit": "Редактиране на пътуване",
+  "tripSectionDestination": "Дестинация",
+  "tripSectionDates": "Дати",
+  "tripSectionVacationType": "Вид почивка",
+  "tripSectionTravelStyle": "Стил на пътуване",
+  "tripSectionCompanions": "Спътници",
+  "tripChooseCountry": "Изберете държава",
+  "tripChooseCities": "Изберете градове за посещение (по избор)",
+  "tripArrivalCity": "Град на пристигане",
+  "tripDepartureCity": "Град на заминаване",
+  "tripStartDate": "Начална дата",
+  "tripEndDate": "Крайна дата",
+  "tripSelect": "Изберете",
+  "tripDurationLabel": "{n, plural, =1{Продължителност: 1 ден} other{Продължителност: {n} дни}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "Все още няма намерени приятели. Последвайте други пътешественици (и ги оставете да ви последват) и те ще се появят тук като спътници.",
+  "tripCountryFirst": "Първо изберете държава",
+  "tripSheetCities": "Изберете градове за посещение",
+  "tripSelectedCount": "{n, plural, =1{1 избран} other{{n} избрани}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "Градове в {name}",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "Наблизо в съседни държави",
+  "tripSearchCities": "Търси градове",
+  "tripSheetDone": "Готово",
+  "tripAddCities": "{n, plural, =1{Добави 1 град} other{Добави {n} града}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "Генериране...",
+  "tripSave": "Запази пътуването",
+  "tripGenerate": "Генерирай план на пътуването",
+  "tripDurationLocked": "Продължителността не може да се променя тук. Създайте ново пътуване, за да промените дните.",
+  "tripGenFailTitle": "Пътуването не можа да се генерира",
+  "tripGenFailFallback": "Нещо се обърка при генерирането на пътуването.",
+  "tripGenBasic": "Създай основен маршрут без AI",
+  "planNotFound": "Пътуването не е намерено",
+  "planItineraryTitle": "Програма по дни",
+  "planMapView": "Изглед карта",
+  "planExporting": "Експортиране...",
+  "planExportPdf": "Експорт PDF",
+  "planRegenerate": "Регенерирай",
+  "planDiscard": "Отхвърли",
+  "planSaving": "Запазване...",
+  "planDraftNote": "AI чернова — все още не е запазена в пътуванията ви",
+  "planSaved": "Пътуването е запазено!",
+  "planSaveError": "Пътуването не можа да се запази",
+  "planRegenerated": "Генерирана е нова програма",
+  "planRegenError": "Пътуването не можа да се регенерира",
+  "planLoadError": "Детайлите за пътуването не можаха да се заредят",
+  "planPdfDone": "PDF е изтеглен",
+  "planPdfError": "PDF не можа да се експортира",
+  "planDiscardTitle": "Да се отхвърли ли черновата?",
+  "planDiscardText": "Тази AI чернова ще бъде премахната.",
+  "planDeleteTitle": "Изтриване на пътуване",
+  "planDeleteText": "Сигурни ли сте, че искате да изтриете това пътуване?",
+  "planDayNumber": "ДЕН {n}",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "Сутрин",
+  "planAfternoon": "Следобед",
+  "planEvening": "Вечер",
+  "planActivityFallback": "Активност",
+  "mapTitle": "Карта на пътуването",
+  "mapDay": "Ден {n}",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "Всички",
+  "mapViewDetails": "Виж детайли",
+  "mapCategory": "Категория {id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "Детайлите за мястото не можаха да се заредят",
+  "mapEmptyTitle": "Няма отбелязани места",
+  "mapEmptyText": "Този маршрут не съдържа места с координати. Основните маршрути и празните дни не се показват на картата.",
+  "mapPlacesShown": "{n, plural, =1{1 място е показано} other{{n} места са показани}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "— без координати"
 }

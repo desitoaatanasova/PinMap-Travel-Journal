@@ -387,4 +387,288 @@ class AppLocalizationsBg extends AppLocalizations {
   String wishlistRemoved(String name) {
     return 'Премахнахте $name от желанията';
   }
+
+  @override
+  String get tripsNewTrip => 'Ново пътуване';
+
+  @override
+  String get tripsEmptyTitle => 'Все още няма пътувания';
+
+  @override
+  String get tripsEmptyHint =>
+      'Докоснете \"Ново пътуване\", за да започнете планиране';
+
+  @override
+  String get tripsDraftHint =>
+      'AI черновата е готова — докоснете, за да прегледате и запазите';
+
+  @override
+  String tripDurationDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n дни',
+      one: '1 ден',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripStyleSolo => 'Сам';
+
+  @override
+  String get tripStyleGroup => 'Група';
+
+  @override
+  String get tripTypeHistorical => 'Историческо';
+
+  @override
+  String get tripTypeArt => 'Изкуство';
+
+  @override
+  String get tripTypeMixed => 'Смесено';
+
+  @override
+  String get tripFormTitleNew => 'Ново пътуване';
+
+  @override
+  String get tripFormTitleEdit => 'Редактиране на пътуване';
+
+  @override
+  String get tripSectionDestination => 'Дестинация';
+
+  @override
+  String get tripSectionDates => 'Дати';
+
+  @override
+  String get tripSectionVacationType => 'Вид почивка';
+
+  @override
+  String get tripSectionTravelStyle => 'Стил на пътуване';
+
+  @override
+  String get tripSectionCompanions => 'Спътници';
+
+  @override
+  String get tripChooseCountry => 'Изберете държава';
+
+  @override
+  String get tripChooseCities => 'Изберете градове за посещение (по избор)';
+
+  @override
+  String get tripArrivalCity => 'Град на пристигане';
+
+  @override
+  String get tripDepartureCity => 'Град на заминаване';
+
+  @override
+  String get tripStartDate => 'Начална дата';
+
+  @override
+  String get tripEndDate => 'Крайна дата';
+
+  @override
+  String get tripSelect => 'Изберете';
+
+  @override
+  String tripDurationLabel(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Продължителност: $n дни',
+      one: 'Продължителност: 1 ден',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripNoFriendsHint =>
+      'Все още няма намерени приятели. Последвайте други пътешественици (и ги оставете да ви последват) и те ще се появят тук като спътници.';
+
+  @override
+  String get tripCountryFirst => 'Първо изберете държава';
+
+  @override
+  String get tripSheetCities => 'Изберете градове за посещение';
+
+  @override
+  String tripSelectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n избрани',
+      one: '1 избран',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripCitiesIn(String name) {
+    return 'Градове в $name';
+  }
+
+  @override
+  String get tripNearbyCities => 'Наблизо в съседни държави';
+
+  @override
+  String get tripSearchCities => 'Търси градове';
+
+  @override
+  String get tripSheetDone => 'Готово';
+
+  @override
+  String tripAddCities(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Добави $n града',
+      one: 'Добави 1 град',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripGenerating => 'Генериране...';
+
+  @override
+  String get tripSave => 'Запази пътуването';
+
+  @override
+  String get tripGenerate => 'Генерирай план на пътуването';
+
+  @override
+  String get tripDurationLocked =>
+      'Продължителността не може да се променя тук. Създайте ново пътуване, за да промените дните.';
+
+  @override
+  String get tripGenFailTitle => 'Пътуването не можа да се генерира';
+
+  @override
+  String get tripGenFailFallback =>
+      'Нещо се обърка при генерирането на пътуването.';
+
+  @override
+  String get tripGenBasic => 'Създай основен маршрут без AI';
+
+  @override
+  String get planNotFound => 'Пътуването не е намерено';
+
+  @override
+  String get planItineraryTitle => 'Програма по дни';
+
+  @override
+  String get planMapView => 'Изглед карта';
+
+  @override
+  String get planExporting => 'Експортиране...';
+
+  @override
+  String get planExportPdf => 'Експорт PDF';
+
+  @override
+  String get planRegenerate => 'Регенерирай';
+
+  @override
+  String get planDiscard => 'Отхвърли';
+
+  @override
+  String get planSaving => 'Запазване...';
+
+  @override
+  String get planDraftNote =>
+      'AI чернова — все още не е запазена в пътуванията ви';
+
+  @override
+  String get planSaved => 'Пътуването е запазено!';
+
+  @override
+  String get planSaveError => 'Пътуването не можа да се запази';
+
+  @override
+  String get planRegenerated => 'Генерирана е нова програма';
+
+  @override
+  String get planRegenError => 'Пътуването не можа да се регенерира';
+
+  @override
+  String get planLoadError => 'Детайлите за пътуването не можаха да се заредят';
+
+  @override
+  String get planPdfDone => 'PDF е изтеглен';
+
+  @override
+  String get planPdfError => 'PDF не можа да се експортира';
+
+  @override
+  String get planDiscardTitle => 'Да се отхвърли ли черновата?';
+
+  @override
+  String get planDiscardText => 'Тази AI чернова ще бъде премахната.';
+
+  @override
+  String get planDeleteTitle => 'Изтриване на пътуване';
+
+  @override
+  String get planDeleteText =>
+      'Сигурни ли сте, че искате да изтриете това пътуване?';
+
+  @override
+  String planDayNumber(int n) {
+    return 'ДЕН $n';
+  }
+
+  @override
+  String get planMorning => 'Сутрин';
+
+  @override
+  String get planAfternoon => 'Следобед';
+
+  @override
+  String get planEvening => 'Вечер';
+
+  @override
+  String get planActivityFallback => 'Активност';
+
+  @override
+  String get mapTitle => 'Карта на пътуването';
+
+  @override
+  String mapDay(int n) {
+    return 'Ден $n';
+  }
+
+  @override
+  String get mapAllDays => 'Всички';
+
+  @override
+  String get mapViewDetails => 'Виж детайли';
+
+  @override
+  String mapCategory(int id) {
+    return 'Категория $id';
+  }
+
+  @override
+  String get mapPlaceError => 'Детайлите за мястото не можаха да се заредят';
+
+  @override
+  String get mapEmptyTitle => 'Няма отбелязани места';
+
+  @override
+  String get mapEmptyText =>
+      'Този маршрут не съдържа места с координати. Основните маршрути и празните дни не се показват на картата.';
+
+  @override
+  String mapPlacesShown(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n места са показани',
+      one: '1 място е показано',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mapNoCoordsSuffix => '— без координати';
 }

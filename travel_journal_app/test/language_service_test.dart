@@ -233,6 +233,145 @@ void main() {
       }
     });
 
+    test('trip keys exist in all 8 ARBs', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      const expected = [
+        'tripsNewTrip',
+        'tripsEmptyTitle',
+        'tripsEmptyHint',
+        'tripsDraftHint',
+        'tripDurationDays',
+        'tripStyleSolo',
+        'tripStyleGroup',
+        'tripTypeHistorical',
+        'tripTypeArt',
+        'tripTypeMixed',
+        'tripFormTitleNew',
+        'tripFormTitleEdit',
+        'tripSectionDestination',
+        'tripSectionDates',
+        'tripSectionVacationType',
+        'tripSectionTravelStyle',
+        'tripSectionCompanions',
+        'tripChooseCountry',
+        'tripChooseCities',
+        'tripArrivalCity',
+        'tripDepartureCity',
+        'tripStartDate',
+        'tripEndDate',
+        'tripSelect',
+        'tripDurationLabel',
+        'tripNoFriendsHint',
+        'tripCountryFirst',
+        'tripSheetCities',
+        'tripSelectedCount',
+        'tripCitiesIn',
+        'tripNearbyCities',
+        'tripSearchCities',
+        'tripSheetDone',
+        'tripAddCities',
+        'tripGenerating',
+        'tripSave',
+        'tripGenerate',
+        'tripDurationLocked',
+        'tripGenFailTitle',
+        'tripGenFailFallback',
+        'tripGenBasic',
+        'planNotFound',
+        'planItineraryTitle',
+        'planMapView',
+        'planExporting',
+        'planExportPdf',
+        'planRegenerate',
+        'planDiscard',
+        'planSaving',
+        'planDraftNote',
+        'planSaved',
+        'planSaveError',
+        'planRegenerated',
+        'planRegenError',
+        'planLoadError',
+        'planPdfDone',
+        'planPdfError',
+        'planDiscardTitle',
+        'planDiscardText',
+        'planDeleteTitle',
+        'planDeleteText',
+        'planDayNumber',
+        'planMorning',
+        'planAfternoon',
+        'planEvening',
+        'planActivityFallback',
+        'mapTitle',
+        'mapDay',
+        'mapAllDays',
+        'mapViewDetails',
+        'mapCategory',
+        'mapPlaceError',
+        'mapEmptyTitle',
+        'mapEmptyText',
+        'mapPlacesShown',
+        'mapNoCoordsSuffix',
+      ];
+      expect(expected, hasLength(76));
+      for (final code in codes) {
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in expected) {
+          expect(map[key], isNotNull, reason: 'app_$code.arb missing $key');
+          expect(
+            map[key],
+            isA<String>(),
+            reason: 'app_$code.arb $key must be a string',
+          );
+        }
+      }
+    });
+
+    test('trip plurals and placeholders resolve', () {
+      expect(
+        lookupAppLocalizations(const Locale('en')).tripDurationDays(1),
+        '1 day',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('en')).tripDurationDays(5),
+        '5 days',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).tripDurationDays(1),
+        '1 ден',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ja')).tripDurationDays(3),
+        '3日間',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).tripAddCities(1),
+        '1 Stadt hinzufügen',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).tripAddCities(4),
+        '4 Städte hinzufügen',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('fr')).mapPlacesShown(1),
+        '1 lieu affiché',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('zh')).tripDurationLabel(2),
+        '时长：2 天',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('es')).tripCitiesIn('Francia'),
+        'Ciudades en Francia',
+      );
+      expect(lookupAppLocalizations(const Locale('it')).mapDay(2), 'Giorno 2');
+      expect(
+        lookupAppLocalizations(const Locale('bg')).planDayNumber(3),
+        'ДЕН 3',
+      );
+    });
+
     test('home/places keys resolve without English placeholders', () {
       expect(
         lookupAppLocalizations(const Locale('bg')).homeCountriesTitle,

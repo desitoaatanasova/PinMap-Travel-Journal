@@ -165,5 +165,126 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "tripsNewTrip": "Neue Reise",
+  "tripsEmptyTitle": "Noch keine Reisen",
+  "tripsEmptyHint": "Tippe auf \"Neue Reise\", um mit der Planung zu beginnen",
+  "tripsDraftHint": "KI-Entwurf bereit – zum Prüfen & Speichern tippen",
+  "tripDurationDays": "{n, plural, =1{1 Tag} other{{n} Tage}}",
+  "@tripDurationDays": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripStyleSolo": "Allein",
+  "tripStyleGroup": "Gruppe",
+  "tripTypeHistorical": "Historisch",
+  "tripTypeArt": "Kunst",
+  "tripTypeMixed": "Gemischt",
+  "tripFormTitleNew": "Neue Reise",
+  "tripFormTitleEdit": "Reise bearbeiten",
+  "tripSectionDestination": "Reiseziel",
+  "tripSectionDates": "Daten",
+  "tripSectionVacationType": "Art des Urlaubs",
+  "tripSectionTravelStyle": "Reisestil",
+  "tripSectionCompanions": "Reisebegleitung",
+  "tripChooseCountry": "Land wählen",
+  "tripChooseCities": "Städte wählen (optional)",
+  "tripArrivalCity": "Ankunftsstadt",
+  "tripDepartureCity": "Abflugstadt",
+  "tripStartDate": "Startdatum",
+  "tripEndDate": "Enddatum",
+  "tripSelect": "Auswählen",
+  "tripDurationLabel": "{n, plural, =1{Dauer: 1 Tag} other{Dauer: {n} Tage}}",
+  "@tripDurationLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripNoFriendsHint": "Noch keine Freunde gefunden. Folge anderen Reisenden (und lass sie dir zurückfolgen), dann erscheinen sie hier als Reisebegleitung.",
+  "tripCountryFirst": "Wähle zuerst ein Land",
+  "tripSheetCities": "Städte zur Besichtigung wählen",
+  "tripSelectedCount": "{n, plural, =1{1 ausgewählt} other{{n} ausgewählt}}",
+  "@tripSelectedCount": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripCitiesIn": "Städte in {name}",
+  "@tripCitiesIn": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tripNearbyCities": "In der Nähe in Nachbarländern",
+  "tripSearchCities": "Städte suchen",
+  "tripSheetDone": "Fertig",
+  "tripAddCities": "{n, plural, =1{1 Stadt hinzufügen} other{{n} Städte hinzufügen}}",
+  "@tripAddCities": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "tripGenerating": "Wird generiert ...",
+  "tripSave": "Reise speichern",
+  "tripGenerate": "Reiseplan generieren",
+  "tripDurationLocked": "Die Reisedauer kann hier nicht geändert werden. Erstelle eine neue Reise, um die Tage zu ändern.",
+  "tripGenFailTitle": "Reise konnte nicht generiert werden",
+  "tripGenFailFallback": "Beim Generieren deiner Reise ist etwas schiefgelaufen.",
+  "tripGenBasic": "Einfache Route ohne KI erstellen",
+  "planNotFound": "Reise nicht gefunden",
+  "planItineraryTitle": "Tagesprogramm",
+  "planMapView": "Kartenansicht",
+  "planExporting": "Wird exportiert ...",
+  "planExportPdf": "PDF exportieren",
+  "planRegenerate": "Neu generieren",
+  "planDiscard": "Verwerfen",
+  "planSaving": "Wird gespeichert ...",
+  "planDraftNote": "KI-Entwurf – noch nicht in deinen Reisen gespeichert",
+  "planSaved": "Reise wurde gespeichert!",
+  "planSaveError": "Reise konnte nicht gespeichert werden",
+  "planRegenerated": "Neue Route generiert",
+  "planRegenError": "Reise konnte nicht neu generiert werden",
+  "planLoadError": "Reisedetails konnten nicht geladen werden",
+  "planPdfDone": "PDF heruntergeladen",
+  "planPdfError": "PDF konnte nicht exportiert werden",
+  "planDiscardTitle": "Entwurf verwerfen?",
+  "planDiscardText": "Dieser KI-Entwurf wird entfernt.",
+  "planDeleteTitle": "Reise löschen",
+  "planDeleteText": "Möchtest du diese Reise wirklich löschen?",
+  "planDayNumber": "TAG {n}",
+  "@planDayNumber": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "planMorning": "Morgens",
+  "planAfternoon": "Nachmittags",
+  "planEvening": "Abends",
+  "planActivityFallback": "Aktivität",
+  "mapTitle": "Reisekarte",
+  "mapDay": "Tag {n}",
+  "@mapDay": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapAllDays": "Alle",
+  "mapViewDetails": "Details ansehen",
+  "mapCategory": "Kategorie {id}",
+  "@mapCategory": {
+    "placeholders": {
+      "id": { "type": "int" }
+    }
+  },
+  "mapPlaceError": "Ortsdetails konnten nicht geladen werden",
+  "mapEmptyTitle": "Keine Orte auf der Karte",
+  "mapEmptyText": "Diese Route enthält keine Orte mit Koordinaten. Einfache Routen und leere Tage werden nicht auf der Karte angezeigt.",
+  "mapPlacesShown": "{n, plural, =1{1 Ort wird gezeigt} other{{n} Orte werden gezeigt}}",
+  "@mapPlacesShown": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "mapNoCoordsSuffix": "– ohne Koordinaten"
 }

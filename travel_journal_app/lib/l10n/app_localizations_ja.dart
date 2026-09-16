@@ -375,4 +375,272 @@ class AppLocalizationsJa extends AppLocalizations {
   String wishlistRemoved(String name) {
     return '$nameをウィッシュリストから削除しました';
   }
+
+  @override
+  String get tripsNewTrip => '新しい旅行';
+
+  @override
+  String get tripsEmptyTitle => 'まだ旅行がありません';
+
+  @override
+  String get tripsEmptyHint => '「新しい旅行」をタップして計画を始めましょう';
+
+  @override
+  String get tripsDraftHint => 'AI下書きの準備完了 — タップして確認・保存';
+
+  @override
+  String tripDurationDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n日間');
+    return '$_temp0';
+  }
+
+  @override
+  String get tripStyleSolo => '一人旅';
+
+  @override
+  String get tripStyleGroup => 'グループ';
+
+  @override
+  String get tripTypeHistorical => '歴史';
+
+  @override
+  String get tripTypeArt => 'アート';
+
+  @override
+  String get tripTypeMixed => 'ミックス';
+
+  @override
+  String get tripFormTitleNew => '新しい旅行';
+
+  @override
+  String get tripFormTitleEdit => '旅行を編集';
+
+  @override
+  String get tripSectionDestination => '目的地';
+
+  @override
+  String get tripSectionDates => '日程';
+
+  @override
+  String get tripSectionVacationType => '旅行のタイプ';
+
+  @override
+  String get tripSectionTravelStyle => '旅行スタイル';
+
+  @override
+  String get tripSectionCompanions => '同行者';
+
+  @override
+  String get tripChooseCountry => '国を選択';
+
+  @override
+  String get tripChooseCities => '訪れる都市を選択（任意）';
+
+  @override
+  String get tripArrivalCity => '到着都市';
+
+  @override
+  String get tripDepartureCity => '出発都市';
+
+  @override
+  String get tripStartDate => '開始日';
+
+  @override
+  String get tripEndDate => '終了日';
+
+  @override
+  String get tripSelect => '選択';
+
+  @override
+  String tripDurationLabel(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '期間：$n日間',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripNoFriendsHint =>
+      'まだ友達が見つかりません。他の旅行者をフォローして（フォロー返ししてもらうと）、同行者としてここに表示されます。';
+
+  @override
+  String get tripCountryFirst => '先に国を選択してください';
+
+  @override
+  String get tripSheetCities => '訪れる都市を選択';
+
+  @override
+  String tripSelectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n件選択中',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripCitiesIn(String name) {
+    return '$nameの都市';
+  }
+
+  @override
+  String get tripNearbyCities => '近隣諸国の都市';
+
+  @override
+  String get tripSearchCities => '都市を検索';
+
+  @override
+  String get tripSheetDone => '完了';
+
+  @override
+  String tripAddCities(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n都市を追加',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripGenerating => '生成中...';
+
+  @override
+  String get tripSave => '旅行を保存';
+
+  @override
+  String get tripGenerate => '旅行プランを生成';
+
+  @override
+  String get tripDurationLocked => 'ここでは期間を変更できません。日数を変更するには新しい旅行を作成してください。';
+
+  @override
+  String get tripGenFailTitle => '旅行を生成できませんでした';
+
+  @override
+  String get tripGenFailFallback => '旅行の生成中に問題が発生しました。';
+
+  @override
+  String get tripGenBasic => 'AIなしで基本行程を作成';
+
+  @override
+  String get planNotFound => '旅行が見つかりません';
+
+  @override
+  String get planItineraryTitle => '日別行程';
+
+  @override
+  String get planMapView => '地図表示';
+
+  @override
+  String get planExporting => 'エクスポート中...';
+
+  @override
+  String get planExportPdf => 'PDFをエクスポート';
+
+  @override
+  String get planRegenerate => '再生成';
+
+  @override
+  String get planDiscard => '破棄';
+
+  @override
+  String get planSaving => '保存中...';
+
+  @override
+  String get planDraftNote => 'AI下書き — まだ旅行に保存されていません';
+
+  @override
+  String get planSaved => '旅行を保存しました！';
+
+  @override
+  String get planSaveError => '旅行を保存できませんでした';
+
+  @override
+  String get planRegenerated => '新しい行程を生成しました';
+
+  @override
+  String get planRegenError => '旅行を再生成できませんでした';
+
+  @override
+  String get planLoadError => '旅行の詳細を読み込めませんでした';
+
+  @override
+  String get planPdfDone => 'PDFをダウンロードしました';
+
+  @override
+  String get planPdfError => 'PDFをエクスポートできませんでした';
+
+  @override
+  String get planDiscardTitle => '下書きを破棄しますか？';
+
+  @override
+  String get planDiscardText => 'このAI下書きは削除されます。';
+
+  @override
+  String get planDeleteTitle => '旅行を削除';
+
+  @override
+  String get planDeleteText => 'この旅行を削除してもよろしいですか？';
+
+  @override
+  String planDayNumber(int n) {
+    return '$n日目';
+  }
+
+  @override
+  String get planMorning => '午前';
+
+  @override
+  String get planAfternoon => '午後';
+
+  @override
+  String get planEvening => '夜';
+
+  @override
+  String get planActivityFallback => 'アクティビティ';
+
+  @override
+  String get mapTitle => '旅行マップ';
+
+  @override
+  String mapDay(int n) {
+    return '$n日目';
+  }
+
+  @override
+  String get mapAllDays => 'すべて';
+
+  @override
+  String get mapViewDetails => '詳細を見る';
+
+  @override
+  String mapCategory(int id) {
+    return 'カテゴリー$id';
+  }
+
+  @override
+  String get mapPlaceError => '場所の詳細を読み込めませんでした';
+
+  @override
+  String get mapEmptyTitle => '地図上の場所がありません';
+
+  @override
+  String get mapEmptyText => 'この行程には座標のある場所が含まれていません。基本行程や空の日は地図に表示されません。';
+
+  @override
+  String mapPlacesShown(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n件表示中',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mapNoCoordsSuffix => '— 座標なし';
 }

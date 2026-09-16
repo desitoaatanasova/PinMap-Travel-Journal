@@ -378,4 +378,271 @@ class AppLocalizationsZh extends AppLocalizations {
   String wishlistRemoved(String name) {
     return '已将$name移出心愿单';
   }
+
+  @override
+  String get tripsNewTrip => '新建行程';
+
+  @override
+  String get tripsEmptyTitle => '还没有行程';
+
+  @override
+  String get tripsEmptyHint => '点击“新建行程”开始规划';
+
+  @override
+  String get tripsDraftHint => 'AI草稿已就绪 — 点击查看并保存';
+
+  @override
+  String tripDurationDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n 天');
+    return '$_temp0';
+  }
+
+  @override
+  String get tripStyleSolo => '独自出行';
+
+  @override
+  String get tripStyleGroup => '结伴出行';
+
+  @override
+  String get tripTypeHistorical => '历史';
+
+  @override
+  String get tripTypeArt => '艺术';
+
+  @override
+  String get tripTypeMixed => '混合';
+
+  @override
+  String get tripFormTitleNew => '新建行程';
+
+  @override
+  String get tripFormTitleEdit => '编辑行程';
+
+  @override
+  String get tripSectionDestination => '目的地';
+
+  @override
+  String get tripSectionDates => '日期';
+
+  @override
+  String get tripSectionVacationType => '度假类型';
+
+  @override
+  String get tripSectionTravelStyle => '出行方式';
+
+  @override
+  String get tripSectionCompanions => '同行伙伴';
+
+  @override
+  String get tripChooseCountry => '选择国家';
+
+  @override
+  String get tripChooseCities => '选择要去的城市（可选）';
+
+  @override
+  String get tripArrivalCity => '到达城市';
+
+  @override
+  String get tripDepartureCity => '出发城市';
+
+  @override
+  String get tripStartDate => '开始日期';
+
+  @override
+  String get tripEndDate => '结束日期';
+
+  @override
+  String get tripSelect => '选择';
+
+  @override
+  String tripDurationLabel(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '时长：$n 天',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripNoFriendsHint => '还没有找到好友。关注其他旅行者（并让他们回关你），他们就会显示在这里，成为同行伙伴。';
+
+  @override
+  String get tripCountryFirst => '请先选择国家';
+
+  @override
+  String get tripSheetCities => '选择要去的城市';
+
+  @override
+  String tripSelectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '已选 $n 项',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripCitiesIn(String name) {
+    return '$name的城市';
+  }
+
+  @override
+  String get tripNearbyCities => '邻国的附近城市';
+
+  @override
+  String get tripSearchCities => '搜索城市';
+
+  @override
+  String get tripSheetDone => '完成';
+
+  @override
+  String tripAddCities(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '添加 $n 个城市',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripGenerating => '生成中...';
+
+  @override
+  String get tripSave => '保存行程';
+
+  @override
+  String get tripGenerate => '生成行程计划';
+
+  @override
+  String get tripDurationLocked => '此处无法更改行程时长。如需更改天数，请新建行程。';
+
+  @override
+  String get tripGenFailTitle => '无法生成行程';
+
+  @override
+  String get tripGenFailFallback => '生成行程时出了问题。';
+
+  @override
+  String get tripGenBasic => '不使用AI创建基础行程';
+
+  @override
+  String get planNotFound => '未找到行程';
+
+  @override
+  String get planItineraryTitle => '逐日行程';
+
+  @override
+  String get planMapView => '地图视图';
+
+  @override
+  String get planExporting => '导出中...';
+
+  @override
+  String get planExportPdf => '导出PDF';
+
+  @override
+  String get planRegenerate => '重新生成';
+
+  @override
+  String get planDiscard => '放弃';
+
+  @override
+  String get planSaving => '保存中...';
+
+  @override
+  String get planDraftNote => 'AI草稿 — 尚未保存到你的行程中';
+
+  @override
+  String get planSaved => '行程已保存！';
+
+  @override
+  String get planSaveError => '无法保存行程';
+
+  @override
+  String get planRegenerated => '已生成新的行程';
+
+  @override
+  String get planRegenError => '无法重新生成行程';
+
+  @override
+  String get planLoadError => '无法加载行程详情';
+
+  @override
+  String get planPdfDone => 'PDF已下载';
+
+  @override
+  String get planPdfError => '无法导出PDF';
+
+  @override
+  String get planDiscardTitle => '放弃草稿？';
+
+  @override
+  String get planDiscardText => '该AI草稿将被删除。';
+
+  @override
+  String get planDeleteTitle => '删除行程';
+
+  @override
+  String get planDeleteText => '确定要删除该行程吗？';
+
+  @override
+  String planDayNumber(int n) {
+    return '第 $n 天';
+  }
+
+  @override
+  String get planMorning => '上午';
+
+  @override
+  String get planAfternoon => '下午';
+
+  @override
+  String get planEvening => '晚上';
+
+  @override
+  String get planActivityFallback => '活动';
+
+  @override
+  String get mapTitle => '行程地图';
+
+  @override
+  String mapDay(int n) {
+    return '第 $n 天';
+  }
+
+  @override
+  String get mapAllDays => '全部';
+
+  @override
+  String get mapViewDetails => '查看详情';
+
+  @override
+  String mapCategory(int id) {
+    return '类别 $id';
+  }
+
+  @override
+  String get mapPlaceError => '无法加载地点详情';
+
+  @override
+  String get mapEmptyTitle => '地图上没有地点';
+
+  @override
+  String get mapEmptyText => '该行程不包含有坐标的地点。基础行程和空白日期不会显示在地图上。';
+
+  @override
+  String mapPlacesShown(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '显示 $n 个地点',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mapNoCoordsSuffix => '— 无坐标';
 }
