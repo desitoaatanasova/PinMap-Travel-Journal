@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/category_label.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/place_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
@@ -61,13 +63,14 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final categoryColor = _getCategoryColor(widget.categoryName);
 
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          widget.categoryName,
+          categoryLabel(widget.categoryName, l10n),
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -97,7 +100,7 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
-            child: const SectionHeader(title: 'Places'),
+            child: SectionHeader(title: l10n.categoryPlaces),
           ),
           Expanded(
             child: FutureBuilder<List<Place>>(
@@ -164,6 +167,7 @@ class _CategoryPageState extends State<CategoryPage> {
     bool isVisited,
     Color categoryColor,
   ) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
       decoration: BoxDecoration(
@@ -251,8 +255,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                   SnackBar(
                                     content: Text(
                                       inWish
-                                          ? '${place.name} removed from wishlist'
-                                          : '${place.name} added to wishlist',
+                                          ? l10n.wishlistRemoved(place.name)
+                                          : l10n.wishlistAdded(place.name),
                                     ),
                                     duration: const Duration(seconds: 2),
                                   ),
@@ -285,7 +289,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Visited',
+                                    l10n.visitedLabel,
                                     style: GoogleFonts.dmSans(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -333,7 +337,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             ),
                           ),
                           child: Text(
-                            isVisited ? 'Visited' : 'Mark visited',
+                            isVisited ? l10n.visitedLabel : l10n.placeMarkVisited,
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,

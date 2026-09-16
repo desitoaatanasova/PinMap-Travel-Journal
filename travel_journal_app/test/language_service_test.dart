@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/language_service.dart';
+import 'package:pinmap_travel_journal/utils/category_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -265,6 +266,44 @@ void main() {
         lookupAppLocalizations(const Locale('fr')).countryAbout('Paris'),
         'À propos de Paris',
       );
+    });
+  });
+
+  group('categoryLabel', () {
+    const identifiers = [
+      'Historical Sights',
+      'For the Art Lovers',
+      'Atmosphere & experience',
+      'Hidden Gems',
+      'Close by',
+      'My places',
+    ];
+
+    test('canonical English identifiers stay unchanged in English', () {
+      final l10n = lookupAppLocalizations(const Locale('en'));
+      for (final id in identifiers) {
+        expect(categoryLabel(id, l10n), id);
+      }
+    });
+
+    test('supported identifiers map to translated labels', () {
+      final bg = lookupAppLocalizations(const Locale('bg'));
+      expect(categoryLabel('Historical Sights', bg), 'Исторически забележителности');
+      expect(categoryLabel('Hidden Gems', bg), 'Скрити съкровища');
+      expect(categoryLabel('My places', bg), 'Моите места');
+      final ja = lookupAppLocalizations(const Locale('ja'));
+      expect(categoryLabel('Close by', ja), '近隣');
+      final de = lookupAppLocalizations(const Locale('de'));
+      expect(
+        categoryLabel('For the Art Lovers', de),
+        'Für Kunstliebhaber',
+      );
+    });
+
+    test('unknown identifiers fall back to the identifier itself', () {
+      final bg = lookupAppLocalizations(const Locale('bg'));
+      expect(categoryLabel('Unknown Category', bg), 'Unknown Category');
+      expect(categoryLabel('', bg), '');
     });
   });
 

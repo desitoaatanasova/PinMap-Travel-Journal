@@ -4,6 +4,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pinmap_travel_journal/models/place.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/category_label.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/services/marker_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
@@ -43,6 +45,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   }
 
   Future<void> _toggleWishlist() async {
+    final l10n = AppLocalizations.of(context);
     if (_isInWishlist) {
       final item =
           WishlistService.getAllItems()
@@ -62,8 +65,8 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
         SnackBar(
           content: Text(
             _isInWishlist
-                ? '${widget.place.name} added to wishlist'
-                : '${widget.place.name} removed from wishlist',
+                ? l10n.wishlistAdded(widget.place.name)
+                : l10n.wishlistRemoved(widget.place.name),
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -84,10 +87,11 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Could not open website',
+              l10n.detailsWebsiteError,
               style: GoogleFonts.dmSans(),
             ),
           ),
@@ -95,10 +99,11 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       }
     } catch (_) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Could not open website',
+              l10n.detailsWebsiteError,
               style: GoogleFonts.dmSans(),
             ),
           ),
@@ -143,6 +148,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final place = widget.place;
     final categoryColor = _getCategoryColor();
 
@@ -183,13 +189,17 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           children: [
             _buildPhotoCarousel(context, place, categoryColor),
             const SizedBox(height: AppTheme.space4),
-            _buildCategoryBadge(context, categoryColor, widget.categoryName),
+            _buildCategoryBadge(
+              context,
+              categoryColor,
+              categoryLabel(widget.categoryName, l10n),
+            ),
             const SizedBox(height: AppTheme.space4),
             _buildPlaceNameAndLocation(place),
             const SizedBox(height: AppTheme.space6),
             if (place.shortDescription != null ||
                 place.fullDescription != null) ...[
-              const SectionHeader(title: 'About this place'),
+              SectionHeader(title: l10n.detailsAbout),
               const SizedBox(height: AppTheme.space3),
               Text(
                 place.fullDescription ?? place.shortDescription ?? '',
@@ -285,7 +295,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
               ),
               const SizedBox(height: AppTheme.space4),
             ],
-            const SectionHeader(title: 'Location'),
+            SectionHeader(title: l10n.detailsLocation),
             const SizedBox(height: AppTheme.space3),
             _buildMapPreview(place, categoryColor),
             const SizedBox(height: AppTheme.space8),
@@ -475,6 +485,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
   }
 
   Widget _buildVisitedButton(Color categoryColor) {
+    final l10n = AppLocalizations.of(context);
     return ElevatedButton.icon(
       onPressed: () async {
         await VisitedService.togglePlace(
@@ -492,7 +503,9 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                _isVisited ? 'Marked as visited!' : 'Removed visited status',
+                _isVisited
+                    ? l10n.detailsVisitedAdded
+                    : l10n.detailsVisitedRemoved,
                 style: GoogleFonts.dmSans(),
               ),
               backgroundColor: _isVisited ? Colors.green : categoryColor,
@@ -511,7 +524,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
       ),
       icon: Icon(_isVisited ? Icons.check_circle : Icons.check_circle_outline),
       label: Text(
-        _isVisited ? 'Visited' : 'Mark as Visited',
+        _isVisited ? l10n.visitedLabel : l10n.detailsMarkAsVisited,
         style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );

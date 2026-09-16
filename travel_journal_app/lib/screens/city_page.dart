@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/city_category.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/category_label.dart';
 import 'package:pinmap_travel_journal/screens/category_page.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -62,6 +64,7 @@ class _CityPageState extends State<CityPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       extendBody: true,
       body: CustomScrollView(
@@ -75,7 +78,7 @@ class _CityPageState extends State<CityPage> {
                 AppTheme.space4,
                 AppTheme.space2,
               ),
-              child: const SectionHeader(title: 'What to discover'),
+              child: SectionHeader(title: l10n.cityDiscover),
             ),
           ),
           SliverPadding(
@@ -178,6 +181,7 @@ class _CityPageState extends State<CityPage> {
   }
 
   Widget _buildCategoryCard(BuildContext context, CityCategory cat) {
+    final label = categoryLabel(cat.name, AppLocalizations.of(context));
     return Container(
       decoration: BoxDecoration(
         color: cat.color.withValues(alpha: 0.12),
@@ -223,7 +227,7 @@ class _CityPageState extends State<CityPage> {
                 ),
                 const SizedBox(height: AppTheme.space3),
                 Text(
-                  cat.name,
+                  label,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.dmSans(
                     color: _categoryFg(context, cat.color),
