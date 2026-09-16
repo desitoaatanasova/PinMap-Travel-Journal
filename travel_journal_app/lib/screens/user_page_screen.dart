@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/screens/journal_view_screen.dart';
@@ -65,7 +66,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Could not update follow status',
+              AppLocalizations.of(context).userFollowError,
               style: GoogleFonts.dmSans(),
             ),
           ),
@@ -78,6 +79,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       extendBody: true,
       body: CustomScrollView(
@@ -183,7 +185,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                               size: 20,
                             ),
                     label: Text(
-                      _user.isFollowing ? 'Unfollow' : 'Follow',
+                      _user.isFollowing ? l10n.userUnfollow : l10n.userFollow,
                       style: GoogleFonts.dmSans(),
                     ),
                     style:
@@ -218,7 +220,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                         ),
                       ),
                       child: Text(
-                        'This profile is private. Follow ${_user.username} to see their travel photos.',
+                        l10n.userPrivateText(_user.username),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.dmSans(
                           fontSize: 13,
@@ -317,6 +319,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
   }
 
   Widget _buildStatsRow(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
@@ -329,18 +332,18 @@ class _UserPageScreenState extends State<UserPageScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat(context, '${_user.placesVisited}', 'Places', Icons.public),
-          _buildStat(context, '${_user.tripsPlanned}', 'Trips', Icons.luggage),
+          _buildStat(context, '${_user.placesVisited}', l10n.profileStatPlaces, Icons.public),
+          _buildStat(context, '${_user.tripsPlanned}', l10n.profileStatTrips, Icons.luggage),
           _buildStat(
             context,
             '${_user.followersCount}',
-            'Followers',
+            l10n.profileStatFollowers,
             Icons.people,
           ),
           _buildStat(
             context,
             '${_user.followingCount}',
-            'Following',
+            l10n.profileStatFollowing,
             Icons.person_add,
           ),
         ],
@@ -380,7 +383,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Travel Photos',
+          AppLocalizations.of(context).profilePhotos,
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -426,7 +429,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(title: 'Journals'),
+        SectionHeader(
+          title: AppLocalizations.of(context).profileJournals,
+        ),
         const SizedBox(height: AppTheme.space3),
         GridView.builder(
           shrinkWrap: true,

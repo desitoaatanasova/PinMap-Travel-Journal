@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/wishlist_item.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/category_label.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/utils/snackbar_helper.dart';
 import 'package:pinmap_travel_journal/utils/dialog_helper.dart';
@@ -35,6 +37,7 @@ class _WishListScreenState extends State<WishListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       extendBody: true,
       body: ValueListenableBuilder<int>(
@@ -49,7 +52,7 @@ class _WishListScreenState extends State<WishListScreen> {
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
-                    'Wish List',
+                    l10n.navWishlist,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -86,7 +89,7 @@ class _WishListScreenState extends State<WishListScreen> {
                         ),
                         const SizedBox(height: AppTheme.space4),
                         Text(
-                          'No saved destinations',
+                          l10n.wishEmpty,
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 20,
                             color: AppTheme.warmGray,
@@ -94,7 +97,7 @@ class _WishListScreenState extends State<WishListScreen> {
                         ),
                         const SizedBox(height: AppTheme.space2),
                         Text(
-                          'Tap the heart icon on places or countries to save them',
+                          l10n.wishEmptyHint,
                           style: GoogleFonts.dmSans(
                             fontSize: 14,
                             color: AppTheme.warmGray,
@@ -149,6 +152,7 @@ class _WishListScreenState extends State<WishListScreen> {
   }
 
   Widget _buildGridCard(BuildContext context, WishlistItem item) {
+    final l10n = AppLocalizations.of(context);
     return PremiumCard(
       padding: EdgeInsets.zero,
       onTap: () => _openItem(context, item),
@@ -198,7 +202,7 @@ class _WishListScreenState extends State<WishListScreen> {
                 if (item.type == 'country') ...[
                   const SizedBox(height: 2),
                   Text(
-                    'Country',
+                    l10n.wishCountryBadge,
                     style: GoogleFonts.dmSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -210,7 +214,7 @@ class _WishListScreenState extends State<WishListScreen> {
                 ] else if (item.categoryName != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    item.categoryName!,
+                    categoryLabel(item.categoryName!, l10n),
                     style: GoogleFonts.dmSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -246,6 +250,7 @@ class _WishListScreenState extends State<WishListScreen> {
   }
 
   Widget _buildListCard(BuildContext context, WishlistItem item) {
+    final l10n = AppLocalizations.of(context);
     return PremiumCard(
       padding: EdgeInsets.zero,
       onTap: () => _openItem(context, item),
@@ -297,7 +302,7 @@ class _WishListScreenState extends State<WishListScreen> {
                   if (item.type == 'country') ...[
                     const SizedBox(height: 2),
                     Text(
-                      'Country',
+                      l10n.wishCountryBadge,
                       style: GoogleFonts.dmSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -309,7 +314,7 @@ class _WishListScreenState extends State<WishListScreen> {
                   ] else if (item.categoryName != null) ...[
                     const SizedBox(height: 2),
                     Text(
-                      item.categoryName!,
+                      categoryLabel(item.categoryName!, l10n),
                       style: GoogleFonts.dmSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -433,18 +438,20 @@ class _WishListScreenState extends State<WishListScreen> {
   }
 
   Future<void> _confirmRemove(BuildContext context, WishlistItem item) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showAppConfirmDialog(
       context,
-      title: 'Remove from Wishlist',
-      content: 'Remove ${item.name} from your wishlist?',
-      confirmText: 'Remove',
+      title: l10n.wishRemoveTitle,
+      content: l10n.wishRemoveText(item.name),
+      confirmText: l10n.journalRemoveShort,
+      cancelText: l10n.commonCancel,
       confirmColor: Colors.red,
     );
     if (confirmed == true) {
       await WishlistService.removeItem(item.wishlistId);
       if (!mounted) return;
       if (context.mounted) {
-        showAppSnackBar(context, '${item.name} removed from wishlist');
+        showAppSnackBar(context, l10n.wishlistRemoved(item.name));
       }
     }
   }

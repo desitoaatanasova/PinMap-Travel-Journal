@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
 import 'package:pinmap_travel_journal/screens/user_page_screen.dart';
@@ -60,7 +61,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Search failed', style: GoogleFonts.dmSans()),
+          content: Text(
+            AppLocalizations.of(context).searchError,
+            style: GoogleFonts.dmSans(),
+          ),
         ),
       );
     }
@@ -68,11 +72,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppTheme.bg,
       appBar: AppBar(
         title: Text(
-          'Find Travellers',
+          l10n.searchTitle,
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -90,9 +95,9 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
               controller: _controller,
               autofocus: true,
               onChanged: _onChanged,
-              decoration: const InputDecoration(
-                hintText: 'Search by username or name',
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                hintText: l10n.searchHint,
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
@@ -103,13 +108,14 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
   }
 
   Widget _buildResults() {
+    final l10n = AppLocalizations.of(context);
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
     if (!_searched) {
-      return const Center(
+      return Center(
         child: Text(
-          'Start typing to find other travellers',
+          l10n.searchPrompt,
           style: TextStyle(color: AppTheme.warmGray),
         ),
       );
@@ -126,7 +132,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             ),
             const SizedBox(height: AppTheme.space3),
             Text(
-              'No travellers found',
+              l10n.searchEmpty,
               style: GoogleFonts.dmSans(color: AppTheme.warmGray),
             ),
           ],
