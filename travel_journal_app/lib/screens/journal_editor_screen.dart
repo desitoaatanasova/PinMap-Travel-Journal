@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor/canvas_element.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor/editor_page.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor/editor_toolbars.dart';
@@ -61,6 +62,23 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     '#F3E5F5': 'Lavender',
     '#FFFDE7': 'Lemon',
   };
+
+  String _bgLabel(String? key, AppLocalizations l10n) {
+    switch (key) {
+      case '#FFF3E0':
+        return l10n.editorBgPeach;
+      case '#E8F5E9':
+        return l10n.editorBgMint;
+      case '#E3F2FD':
+        return l10n.editorBgSky;
+      case '#F3E5F5':
+        return l10n.editorBgLavender;
+      case '#FFFDE7':
+        return l10n.editorBgLemon;
+      default:
+        return l10n.editorBgCream;
+    }
+  }
 
   static const List<Color> _textColors = [
     Colors.black87,
@@ -204,7 +222,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       return true;
     } catch (e) {
       debugPrint('Journal flush failed: $e');
-      if (mounted) _showSnack('Could not save: $e');
+      if (mounted) {
+        _showSnack(AppLocalizations.of(context).editorSaveError(e.toString()));
+      }
       return false;
     }
   }
@@ -212,13 +232,12 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   Future<void> _toggleEditorVisibility() async {
     final j = _journal;
     if (j == null) return;
+    final l10n = AppLocalizations.of(context);
     final isPublic = j.visibility == 'public';
     final target = isPublic ? 'private' : 'public';
-    final title = isPublic ? 'Remove from Profile?' : 'Post to Profile?';
+    final title = isPublic ? l10n.journalRemoveTitle : l10n.journalPostTitle;
     final content =
-        isPublic
-            ? 'This will make your journal private and hide it from your profile.'
-            : 'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.';
+        isPublic ? l10n.journalRemoveText : l10n.journalPostText;
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
@@ -235,14 +254,14 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  isPublic ? 'Remove' : 'Post',
+                  isPublic ? l10n.journalRemoveShort : l10n.journalPost,
                   style: GoogleFonts.dmSans(),
                 ),
               ),
@@ -253,21 +272,27 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     try {
       final newVis = await JournalService.updateVisibility(j.journalId, target);
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         setState(() => _journal = j.copyWith(visibility: newVis));
         _showSnack(
-          newVis == 'public' ? 'Posted to profile' : 'Removed from profile',
+          newVis == 'public' ? l10n.journalPosted : l10n.journalRemoved,
         );
       }
     } catch (e) {
-      if (mounted) _showSnack('Could not update visibility: $e');
+      if (mounted) {
+        _showSnack(
+          AppLocalizations.of(context).journalVisibilityError(e.toString()),
+        );
+      }
     }
   }
 
   Future<void> _saveNow() async {
     final queued = await _persistJournal();
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     _showSnack(
-      queued ? 'Saved on this device — will sync when online.' : 'Draft saved!',
+      queued ? l10n.editorSavedOffline : l10n.editorDraftSaved,
     );
   }
 
@@ -308,6 +333,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final selected = _selectedElement;
     return PopScope(
       canPop: false,
@@ -326,7 +352,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _journal?.title ?? 'New Journal',
+                _journal?.title ?? l10n.journalNew,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.playfairDisplay(
@@ -336,7 +362,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
               ),
               Text(
-                '${_pages.length} page${_pages.length == 1 ? '' : 's'}',
+                l10n.journalPageCount(_pages.length),
                 style: GoogleFonts.dmSans(
                   fontSize: 11,
                   color: AppTheme.warmGray,
@@ -356,8 +382,8 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 tooltip:
                     _journal!.visibility == 'public'
-                        ? 'Remove from Profile'
-                        : 'Post to Profile',
+                        ? l10n.journalRemoveProfile
+                        : l10n.journalPost,
                 onPressed: _toggleEditorVisibility,
               ),
             if (_saving)
@@ -374,7 +400,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
             else
               IconButton(
                 icon: const Icon(Icons.save_outlined),
-                tooltip: 'Save',
+                tooltip: l10n.commonSave,
                 onPressed: _journal == null ? null : _saveNow,
               ),
           ],
@@ -504,6 +530,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   }
 
   Future<void> _pickImage() async {
+    final l10n = AppLocalizations.of(context);
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       builder:
@@ -514,7 +541,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   child: Text(
-                    'Add a picture',
+                    l10n.editorAddPicture,
                     style: GoogleFonts.dmSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -523,12 +550,12 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library_outlined),
-                  title: const Text('From gallery'),
+                  title: Text(l10n.editorFromGallery),
                   onTap: () => Navigator.pop(context, ImageSource.gallery),
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_camera_outlined),
-                  title: const Text('Take a photo'),
+                  title: Text(l10n.editorTakePhoto),
                   onTap: () => Navigator.pop(context, ImageSource.camera),
                 ),
               ],
@@ -549,6 +576,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
 
   Future<void> _addPhoto(Uint8List bytes) async {
     if (_journal == null) return;
+    final l10n = AppLocalizations.of(context);
     try {
       await _persistJournal();
       if (!mounted) return;
@@ -606,13 +634,13 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
       });
       _scheduleAutosave();
       _showSnack(
-        result.queuedOffline
-            ? 'Picture saved on this device — will sync when online.'
-            : 'Picture added!',
+        result.queuedOffline ? l10n.editorPicOffline : l10n.editorPicAdded,
       );
     } catch (e) {
       debugPrint('Add photo error: $e');
-      if (mounted) _showSnack('Could not add picture: $e');
+      if (mounted) {
+        _showSnack(l10n.editorPicError(e.toString()));
+      }
     }
   }
 
@@ -677,10 +705,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
         final result = preview.saveResult!;
         _addTicketElement(result, preview.processedBytes!);
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           _showSnack(
             result.queuedOffline
-                ? 'Ticket saved on this device. Will sync when online.'
-                : 'Ticket added to your journal!',
+                ? l10n.editorTicketOffline
+                : l10n.editorTicketAdded,
           );
         }
       }
@@ -689,7 +718,11 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     } on TicketScanException catch (e) {
       if (mounted) _showSnack(e.message);
     } catch (e) {
-      if (mounted) _showSnack('Ticket scan failed: $e');
+      if (mounted) {
+        _showSnack(
+          AppLocalizations.of(context).editorTicketError(e.toString()),
+        );
+      }
     }
   }
 
@@ -698,13 +731,16 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
     Uint8List processedBytes,
     bool backgroundRemoved,
   ) async {
+    final l10n = AppLocalizations.of(context);
     await _persistJournal();
-    if (!mounted) throw TicketScanException('Journal editor was closed.');
+    if (!mounted) throw TicketScanException(l10n.editorClosedError);
     if (_journal == null ||
         _pages.isEmpty ||
         _currentIndex < 0 ||
         _currentIndex >= _pages.length) {
-      throw TicketScanException('Journal page is no longer available.');
+      throw TicketScanException(
+        AppLocalizations.of(context).editorPageGoneError,
+      );
     }
     final page = _pages[_currentIndex];
     final n = page.elements.length;
@@ -786,15 +822,16 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
   }
 
   void _showStickerPicker() {
-    const stickers = [
-      {'emoji': '✈️', 'name': 'Airplane'},
-      {'emoji': '🎫', 'name': 'Ticket'},
-      {'emoji': '📸', 'name': 'Camera'},
-      {'emoji': '🎨', 'name': 'Art'},
-      {'emoji': '☕', 'name': 'Coffee'},
-      {'emoji': '🏛️', 'name': 'Building'},
-      {'emoji': '🎭', 'name': 'Theater'},
-      {'emoji': '🍷', 'name': 'Wine'},
+    final l10n = AppLocalizations.of(context);
+    final stickers = [
+      {'emoji': '✈️', 'name': l10n.editorStickerAirplane},
+      {'emoji': '🎫', 'name': l10n.editorStickerTicket},
+      {'emoji': '📸', 'name': l10n.editorStickerCamera},
+      {'emoji': '🎨', 'name': l10n.editorStickerArt},
+      {'emoji': '☕', 'name': l10n.editorStickerCoffee},
+      {'emoji': '🏛️', 'name': l10n.editorStickerBuilding},
+      {'emoji': '🎭', 'name': l10n.editorStickerTheater},
+      {'emoji': '🍷', 'name': l10n.editorStickerWine},
     ];
     showModalBottomSheet(
       context: context,
@@ -805,7 +842,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Add Sticker',
+                  l10n.editorAddSticker,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -876,7 +913,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 if (el.type == 'text')
                   ListTile(
                     leading: const Icon(Icons.edit),
-                    title: const Text('Edit text'),
+                    title: Text(
+                      AppLocalizations.of(context).editorEditText,
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                       setState(() => _editingElementId = el.id);
@@ -884,7 +923,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                   ),
                 ListTile(
                   leading: const Icon(Icons.copy),
-                  title: const Text('Duplicate'),
+                  title: Text(
+                    AppLocalizations.of(context).editorDuplicate,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _duplicateElement(el);
@@ -892,7 +933,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.layers_clear),
-                  title: const Text('Bring forward'),
+                  title: Text(
+                    AppLocalizations.of(context).editorBringForward,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _bringForward(el);
@@ -900,7 +943,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.layers),
-                  title: const Text('Send backward'),
+                  title: Text(
+                    AppLocalizations.of(context).editorSendBackward,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _sendBackward(el);
@@ -908,9 +953,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete_outline, color: Colors.red),
-                  title: const Text(
-                    'Delete',
-                    style: TextStyle(color: Colors.red),
+                  title: Text(
+                    AppLocalizations.of(context).settingsDelete,
+                    style: const TextStyle(color: Colors.red),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -1017,7 +1062,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Text Color',
+                  AppLocalizations.of(context).editorTextColor,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1077,7 +1122,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Font Family',
+                  AppLocalizations.of(context).editorFontFamily,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1151,7 +1196,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
 
   void _deletePage(int index) {
     if (_pages.length <= 1) {
-      _showSnack('A journal needs at least one page.');
+      _showSnack(AppLocalizations.of(context).editorMinPage);
       return;
     }
     setState(() {
@@ -1198,7 +1243,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.copy),
-                  title: const Text('Duplicate page'),
+                  title: Text(
+                    AppLocalizations.of(context).editorDupPage,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _duplicatePage(index);
@@ -1206,7 +1253,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.chevron_left),
-                  title: const Text('Move left'),
+                  title: Text(
+                    AppLocalizations.of(context).editorMoveLeft,
+                  ),
                   enabled: index > 0,
                   onTap: () {
                     Navigator.pop(context);
@@ -1215,7 +1264,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.chevron_right),
-                  title: const Text('Move right'),
+                  title: Text(
+                    AppLocalizations.of(context).editorMoveRight,
+                  ),
                   enabled: index < _pages.length - 1,
                   onTap: () {
                     Navigator.pop(context);
@@ -1224,9 +1275,9 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete_outline, color: Colors.red),
-                  title: const Text(
-                    'Delete page',
-                    style: TextStyle(color: Colors.red),
+                  title: Text(
+                    AppLocalizations.of(context).editorDeletePage,
+                    style: const TextStyle(color: Colors.red),
                   ),
                   enabled: _pages.length > 1,
                   onTap: () {
@@ -1251,7 +1302,7 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Page background',
+                  AppLocalizations.of(context).editorPageBg,
                   style: GoogleFonts.dmSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1287,7 +1338,10 @@ class _JournalEditorScreenState extends State<JournalEditorScreen> {
                               ),
                             ),
                             child: Text(
-                              entry.value,
+                              _bgLabel(
+                                entry.key,
+                                AppLocalizations.of(context),
+                              ),
                               textAlign: TextAlign.center,
                               style: GoogleFonts.dmSans(
                                 fontSize: 11,

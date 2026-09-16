@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:pinmap_travel_journal/services/ticket_scan_service.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 enum TicketPreviewAction { saved, retake }
@@ -185,14 +186,16 @@ class _TicketPreviewScreenState extends State<TicketPreviewScreen> {
                             : () => Navigator.of(context).pop(
                                   TicketPreviewResult(action: TicketPreviewAction.retake),
                                 ),
-                        child: const Text('Retake photo'),
+                        child: Text(
+                          AppLocalizations.of(context).editorRetakePhoto,
+                        ),
                       ),
                     ),
                     const SizedBox(width: AppTheme.space3),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _busy ? null : _save,
-                        child: const Text('Save'),
+                        child: Text(AppLocalizations.of(context).commonSave),
                       ),
                     ),
                   ],

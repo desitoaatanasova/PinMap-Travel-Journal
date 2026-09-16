@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:pinmap_travel_journal/services/ticket_image_processor.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 enum ManualCropAction { cropped, cancelled, retake }
@@ -150,7 +151,7 @@ class _ManualCropScreenState extends State<ManualCropScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _crop,
                     icon: const Icon(Icons.crop),
-                    label: const Text('Crop ticket'),
+                    label: Text(AppLocalizations.of(context).editorCropTicket),
                   ),
                 ),
               ),

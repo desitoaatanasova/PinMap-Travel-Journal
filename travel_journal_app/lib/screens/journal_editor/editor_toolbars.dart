@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 
 /// Horizontal strip of page chips with "add page" and page-background actions.
@@ -23,6 +24,7 @@ class EditorPageStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space2),
@@ -68,13 +70,13 @@ class EditorPageStrip extends StatelessWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Add page',
+            tooltip: l10n.editorAddPage,
             icon: const Icon(Icons.add_circle_outline),
             color: AppTheme.primary,
             onPressed: onAddPage,
           ),
           IconButton(
-            tooltip: 'Page background',
+            tooltip: l10n.editorPageBg,
             icon: const Icon(Icons.format_color_fill),
             color: AppTheme.primary,
             onPressed: onBackground,
@@ -116,6 +118,7 @@ class EditorFormatToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: 52,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space2),
@@ -125,11 +128,21 @@ class EditorFormatToolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _icon(Icons.format_bold, bold, onToggleBold),
-          _icon(Icons.format_italic, italic, onToggleItalic),
-          _icon(Icons.format_underline, underline, onToggleUnderline),
-          _icon(Icons.color_lens, false, onPickColor),
-          _icon(Icons.font_download, false, onPickFont),
+          _icon(Icons.format_bold, bold, onToggleBold, l10n.editorFormatTooltip),
+          _icon(
+            Icons.format_italic,
+            italic,
+            onToggleItalic,
+            l10n.editorFormatTooltip,
+          ),
+          _icon(
+            Icons.format_underline,
+            underline,
+            onToggleUnderline,
+            l10n.editorFormatTooltip,
+          ),
+          _icon(Icons.color_lens, false, onPickColor, l10n.editorTextColor),
+          _icon(Icons.font_download, false, onPickFont, l10n.editorFontFamily),
           const SizedBox(width: AppTheme.space2),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -160,9 +173,14 @@ class EditorFormatToolbar extends StatelessWidget {
     );
   }
 
-  Widget _icon(IconData icon, bool isActive, VoidCallback onTap) {
+  Widget _icon(
+    IconData icon,
+    bool isActive,
+    VoidCallback onTap,
+    String tooltip,
+  ) {
     return IconButton(
-      tooltip: 'Format',
+      tooltip: tooltip,
       icon: Icon(
         icon,
         size: 20,
@@ -202,6 +220,7 @@ class EditorSelectionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space2),
       decoration: BoxDecoration(
@@ -213,16 +232,25 @@ class EditorSelectionToolbar extends StatelessWidget {
         child: Row(
           children: [
             if (canEdit) ...[
-              _action(Icons.edit, 'Edit text', onEdit),
+              _action(Icons.edit, l10n.editorEditText, onEdit),
             ],
-            _action(Icons.rotate_left, 'Rotate left', onRotateLeft),
-            _action(Icons.rotate_right, 'Rotate right', onRotateRight),
-            _action(Icons.zoom_out, 'Smaller', onSmaller),
-            _action(Icons.zoom_in, 'Bigger', onBigger),
-            _action(Icons.layers_clear, 'Bring forward', onBringForward),
-            _action(Icons.layers, 'Send backward', onSendBackward),
-            _action(Icons.copy, 'Duplicate', onDuplicate),
-            _action(Icons.delete_outline, 'Delete', onDelete, color: Colors.red),
+            _action(Icons.rotate_left, l10n.editorRotateLeft, onRotateLeft),
+            _action(Icons.rotate_right, l10n.editorRotateRight, onRotateRight),
+            _action(Icons.zoom_out, l10n.editorSmaller, onSmaller),
+            _action(Icons.zoom_in, l10n.editorBigger, onBigger),
+            _action(
+              Icons.layers_clear,
+              l10n.editorBringForward,
+              onBringForward,
+            ),
+            _action(Icons.layers, l10n.editorSendBackward, onSendBackward),
+            _action(Icons.copy, l10n.editorDuplicate, onDuplicate),
+            _action(
+              Icons.delete_outline,
+              l10n.settingsDelete,
+              onDelete,
+              color: Colors.red,
+            ),
           ],
         ),
       ),
@@ -260,6 +288,7 @@ class EditorBottomPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.space2),
       decoration: BoxDecoration(
@@ -274,10 +303,14 @@ class EditorBottomPanel extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _tool(Icons.text_fields, 'Text', onAddText),
-            _tool(Icons.add_photo_alternate, 'Picture', onPickImage),
-            _tool(Icons.camera_alt_outlined, 'Ticket', onScanTicket),
-            _tool(Icons.emoji_emotions_outlined, 'Sticker', onPickSticker),
+            _tool(Icons.text_fields, l10n.editorToolText, onAddText),
+            _tool(Icons.add_photo_alternate, l10n.editorToolPicture, onPickImage),
+            _tool(Icons.camera_alt_outlined, l10n.editorToolTicket, onScanTicket),
+            _tool(
+              Icons.emoji_emotions_outlined,
+              l10n.editorToolSticker,
+              onPickSticker,
+            ),
           ],
         ),
       ),
