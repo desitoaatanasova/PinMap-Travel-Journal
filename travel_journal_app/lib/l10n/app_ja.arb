@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "フォロー状態を更新できませんでした"
+  "userFollowError": "フォロー状態を更新できませんでした",
+  "journalDeleteAction": "日記を削除",
+  "journalDeleteTitle": "日記を削除しますか？",
+  "journalDeleteText": "「{name}」を完全に削除します。この操作は取り消せません。",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "日記を削除しました",
+  "journalDeleteError": "日記を削除できませんでした"
 }

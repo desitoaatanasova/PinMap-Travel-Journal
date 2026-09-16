@@ -1074,4 +1074,21 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get userFollowError => 'Статусът на следване не можа да се обнови';
+
+  @override
+  String get journalDeleteAction => 'Изтрий дневника';
+
+  @override
+  String get journalDeleteTitle => 'Изтриване на дневника?';
+
+  @override
+  String journalDeleteText(String name) {
+    return 'Това ще изтрие завинаги \"$name\". Това не може да бъде отменено.';
+  }
+
+  @override
+  String get journalDeleted => 'Дневникът е изтрит';
+
+  @override
+  String get journalDeleteError => 'Дневникът не можа да се изтрие';
 }

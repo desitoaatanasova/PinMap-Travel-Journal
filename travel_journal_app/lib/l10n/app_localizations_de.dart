@@ -1071,4 +1071,21 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get userFollowError =>
       'Follow-Status konnte nicht aktualisiert werden';
+
+  @override
+  String get journalDeleteAction => 'Tagebuch löschen';
+
+  @override
+  String get journalDeleteTitle => 'Tagebuch löschen?';
+
+  @override
+  String journalDeleteText(String name) {
+    return 'Dadurch wird „$name“ endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.';
+  }
+
+  @override
+  String get journalDeleted => 'Tagebuch gelöscht';
+
+  @override
+  String get journalDeleteError => 'Tagebuch konnte nicht gelöscht werden';
 }

@@ -1033,4 +1033,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get userFollowError => '无法更新关注状态';
+
+  @override
+  String get journalDeleteAction => '删除日记';
+
+  @override
+  String get journalDeleteTitle => '删除日记？';
+
+  @override
+  String journalDeleteText(String name) {
+    return '这将永久删除“$name”。此操作无法撤销。';
+  }
+
+  @override
+  String get journalDeleted => '日记已删除';
+
+  @override
+  String get journalDeleteError => '无法删除日记';
 }

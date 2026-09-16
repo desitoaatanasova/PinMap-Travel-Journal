@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "Impossible de mettre à jour le suivi"
+  "userFollowError": "Impossible de mettre à jour le suivi",
+  "journalDeleteAction": "Supprimer le journal",
+  "journalDeleteTitle": "Supprimer le journal ?",
+  "journalDeleteText": "Cela supprimera définitivement « {name} ». Cette action est irréversible.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Journal supprimé",
+  "journalDeleteError": "Impossible de supprimer le journal"
 }

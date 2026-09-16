@@ -1066,4 +1066,21 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get userFollowError => 'Impossibile aggiornare lo stato';
+
+  @override
+  String get journalDeleteAction => 'Elimina diario';
+
+  @override
+  String get journalDeleteTitle => 'Eliminare il diario?';
+
+  @override
+  String journalDeleteText(String name) {
+    return 'Questo eliminerà definitivamente \"$name\". L\'azione non può essere annullata.';
+  }
+
+  @override
+  String get journalDeleted => 'Diario eliminato';
+
+  @override
+  String get journalDeleteError => 'Impossibile eliminare il diario';
 }

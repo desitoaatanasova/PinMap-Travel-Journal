@@ -1072,4 +1072,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get userFollowError => 'Impossible de mettre à jour le suivi';
+
+  @override
+  String get journalDeleteAction => 'Supprimer le journal';
+
+  @override
+  String get journalDeleteTitle => 'Supprimer le journal ?';
+
+  @override
+  String journalDeleteText(String name) {
+    return 'Cela supprimera définitivement « $name ». Cette action est irréversible.';
+  }
+
+  @override
+  String get journalDeleted => 'Journal supprimé';
+
+  @override
+  String get journalDeleteError => 'Impossible de supprimer le journal';
 }

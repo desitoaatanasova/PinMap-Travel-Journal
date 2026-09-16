@@ -604,6 +604,52 @@ void main() {
       );
     });
 
+    test('journal delete keys exist in all 8 ARBs', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      const expected = [
+        'journalDeleteAction',
+        'journalDeleteTitle',
+        'journalDeleteText',
+        'journalDeleted',
+        'journalDeleteError',
+      ];
+      for (final code in codes) {
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in expected) {
+          expect(map[key], isNotNull, reason: 'app_$code.arb missing $key');
+          expect(
+            map[key],
+            isA<String>(),
+            reason: 'app_$code.arb $key must be a string',
+          );
+        }
+      }
+    });
+
+    test('journal delete keys resolve without English placeholders', () {
+      expect(
+        lookupAppLocalizations(const Locale('en')).journalDeleteText('Paris'),
+        'This will permanently delete "Paris". This cannot be undone.',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).journalDeleteTitle,
+        'Изтриване на дневника?',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).journalDeleteText('Paris'),
+        'Dadurch wird „Paris“ endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ja')).journalDeleted,
+        '日記を削除しました',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('zh')).journalDeleteError,
+        '无法删除日记',
+      );
+    });
+
     test('home/places keys resolve without English placeholders', () {
       expect(
         lookupAppLocalizations(const Locale('bg')).homeCountriesTitle,

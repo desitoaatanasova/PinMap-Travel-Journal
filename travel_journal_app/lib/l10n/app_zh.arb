@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "无法更新关注状态"
+  "userFollowError": "无法更新关注状态",
+  "journalDeleteAction": "删除日记",
+  "journalDeleteTitle": "删除日记？",
+  "journalDeleteText": "这将永久删除“{name}”。此操作无法撤销。",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "日记已删除",
+  "journalDeleteError": "无法删除日记"
 }

@@ -1064,4 +1064,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userFollowError => 'Could not update follow status';
+
+  @override
+  String get journalDeleteAction => 'Delete Journal';
+
+  @override
+  String get journalDeleteTitle => 'Delete Journal?';
+
+  @override
+  String journalDeleteText(String name) {
+    return 'This will permanently delete \"$name\". This cannot be undone.';
+  }
+
+  @override
+  String get journalDeleted => 'Journal deleted';
+
+  @override
+  String get journalDeleteError => 'Could not delete journal';
 }

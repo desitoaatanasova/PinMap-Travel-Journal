@@ -1969,6 +1969,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not update follow status'**
   String get userFollowError;
+
+  /// No description provided for @journalDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Journal'**
+  String get journalDeleteAction;
+
+  /// No description provided for @journalDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Journal?'**
+  String get journalDeleteTitle;
+
+  /// No description provided for @journalDeleteText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete \"{name}\". This cannot be undone.'**
+  String journalDeleteText(String name);
+
+  /// No description provided for @journalDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal deleted'**
+  String get journalDeleted;
+
+  /// No description provided for @journalDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete journal'**
+  String get journalDeleteError;
 }
 
 class _AppLocalizationsDelegate

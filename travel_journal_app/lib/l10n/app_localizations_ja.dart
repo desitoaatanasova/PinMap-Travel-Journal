@@ -1031,4 +1031,21 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get userFollowError => 'フォロー状態を更新できませんでした';
+
+  @override
+  String get journalDeleteAction => '日記を削除';
+
+  @override
+  String get journalDeleteTitle => '日記を削除しますか？';
+
+  @override
+  String journalDeleteText(String name) {
+    return '「$name」を完全に削除します。この操作は取り消せません。';
+  }
+
+  @override
+  String get journalDeleted => '日記を削除しました';
+
+  @override
+  String get journalDeleteError => '日記を削除できませんでした';
 }

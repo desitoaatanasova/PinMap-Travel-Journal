@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "Follow-Status konnte nicht aktualisiert werden"
+  "userFollowError": "Follow-Status konnte nicht aktualisiert werden",
+  "journalDeleteAction": "Tagebuch löschen",
+  "journalDeleteTitle": "Tagebuch löschen?",
+  "journalDeleteText": "Dadurch wird „{name}“ endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Tagebuch gelöscht",
+  "journalDeleteError": "Tagebuch konnte nicht gelöscht werden"
 }

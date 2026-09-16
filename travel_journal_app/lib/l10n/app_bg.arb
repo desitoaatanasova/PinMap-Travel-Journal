@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "Статусът на следване не можа да се обнови"
+  "userFollowError": "Статусът на следване не можа да се обнови",
+  "journalDeleteAction": "Изтрий дневника",
+  "journalDeleteTitle": "Изтриване на дневника?",
+  "journalDeleteText": "Това ще изтрие завинаги \"{name}\". Това не може да бъде отменено.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Дневникът е изтрит",
+  "journalDeleteError": "Дневникът не можа да се изтрие"
 }

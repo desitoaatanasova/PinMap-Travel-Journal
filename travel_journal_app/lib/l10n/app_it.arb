@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "Impossibile aggiornare lo stato"
+  "userFollowError": "Impossibile aggiornare lo stato",
+  "journalDeleteAction": "Elimina diario",
+  "journalDeleteTitle": "Eliminare il diario?",
+  "journalDeleteText": "Questo eliminerà definitivamente \"{name}\". L'azione non può essere annullata.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Diario eliminato",
+  "journalDeleteError": "Impossibile eliminare il diario"
 }

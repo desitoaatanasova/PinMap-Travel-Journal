@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "No se pudo actualizar el estado de seguimiento"
+  "userFollowError": "No se pudo actualizar el estado de seguimiento",
+  "journalDeleteAction": "Eliminar diario",
+  "journalDeleteTitle": "¿Eliminar diario?",
+  "journalDeleteText": "Esto eliminará permanentemente «{name}». Esta acción no se puede deshacer.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Diario eliminado",
+  "journalDeleteError": "No se pudo eliminar el diario"
 }

@@ -455,5 +455,15 @@
       "username": { "type": "String" }
     }
   },
-  "userFollowError": "Could not update follow status"
+  "userFollowError": "Could not update follow status",
+  "journalDeleteAction": "Delete Journal",
+  "journalDeleteTitle": "Delete Journal?",
+  "journalDeleteText": "This will permanently delete \"{name}\". This cannot be undone.",
+  "@journalDeleteText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journalDeleted": "Journal deleted",
+  "journalDeleteError": "Could not delete journal"
 }
