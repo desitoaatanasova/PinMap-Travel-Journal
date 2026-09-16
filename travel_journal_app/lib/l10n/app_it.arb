@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "Impossibile scaricare il PDF"
+  "journalPdfError": "Impossibile scaricare il PDF",
+  "wishEmpty": "Nessuna destinazione salvata",
+  "wishEmptyHint": "Tocca il cuore su luoghi o paesi per salvarli",
+  "wishCountryBadge": "Paese",
+  "wishRemoveTitle": "Rimuovi dalla lista dei desideri",
+  "wishRemoveText": "Rimuovere {name} dalla tua lista dei desideri?",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "Appassionato di viaggi",
+  "profileStatPlaces": "Luoghi",
+  "profileStatTrips": "Viaggi",
+  "profileStatFollowers": "Follower",
+  "profileStatFollowing": "Seguiti",
+  "profileFindTravellers": "Trova viaggiatori da seguire",
+  "profilePhotos": "Foto di viaggio",
+  "profileJournals": "Diari",
+  "profileAdd": "Aggiungi",
+  "profileEdit": "Modifica profilo",
+  "profileFirstName": "Nome",
+  "profileLastName": "Cognome",
+  "profileBio": "Bio",
+  "profilePhotoDone": "Foto caricata",
+  "profilePhotoError": "Impossibile caricare la foto",
+  "profilePhotoDeleteError": "Impossibile eliminare la foto",
+  "profileSaved": "Profilo aggiornato",
+  "profileDeletePhotoTitle": "Elimina foto",
+  "profileDeletePhotoText": "Rimuovere questa foto dal tuo profilo?",
+  "searchTitle": "Trova viaggiatori",
+  "searchHint": "Cerca per username o nome",
+  "searchError": "Ricerca non riuscita",
+  "searchPrompt": "Digita per trovare altri viaggiatori",
+  "searchEmpty": "Nessun viaggiatore trovato",
+  "userFollow": "Segui",
+  "userUnfollow": "Smetti di seguire",
+  "userPrivateText": "Questo profilo è privato. Segui {username} per vedere le foto di viaggio.",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "Impossibile aggiornare lo stato"
 }

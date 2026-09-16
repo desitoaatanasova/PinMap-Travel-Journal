@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "PDF не можа да се изтегли"
+  "journalPdfError": "PDF не можа да се изтегли",
+  "wishEmpty": "Няма запазени дестинации",
+  "wishEmptyHint": "Докоснете иконата със сърце на места или държави, за да ги запазите",
+  "wishCountryBadge": "Държава",
+  "wishRemoveTitle": "Премахване от желанията",
+  "wishRemoveText": "Да се премахне ли {name} от желанията ви?",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "Любител на пътуванията",
+  "profileStatPlaces": "Места",
+  "profileStatTrips": "Пътувания",
+  "profileStatFollowers": "Последователи",
+  "profileStatFollowing": "Последвани",
+  "profileFindTravellers": "Намерете пътешественици за следване",
+  "profilePhotos": "Снимки от пътувания",
+  "profileJournals": "Дневници",
+  "profileAdd": "Добави",
+  "profileEdit": "Редактирай профила",
+  "profileFirstName": "Първо име",
+  "profileLastName": "Фамилно име",
+  "profileBio": "Биография",
+  "profilePhotoDone": "Снимката е качена",
+  "profilePhotoError": "Снимката не можа да се качи",
+  "profilePhotoDeleteError": "Снимката не можа да се изтрие",
+  "profileSaved": "Профилът е обновен",
+  "profileDeletePhotoTitle": "Изтриване на снимка",
+  "profileDeletePhotoText": "Да се премахне ли тази снимка от профила ви?",
+  "searchTitle": "Намери пътешественици",
+  "searchHint": "Търси по потребителско име или име",
+  "searchError": "Търсенето не бе успешно",
+  "searchPrompt": "Започнете да пишете, за да намерите други пътешественици",
+  "searchEmpty": "Не са намерени пътешественици",
+  "userFollow": "Последвай",
+  "userUnfollow": "Спри да следиш",
+  "userPrivateText": "Този профил е частен. Последвайте {username}, за да видите снимките от пътуванията.",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "Статусът на следване не можа да се обнови"
 }

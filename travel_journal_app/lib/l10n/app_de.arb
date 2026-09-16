@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "PDF konnte nicht heruntergeladen werden"
+  "journalPdfError": "PDF konnte nicht heruntergeladen werden",
+  "wishEmpty": "Keine gespeicherten Ziele",
+  "wishEmptyHint": "Tippe auf das Herz bei Orten oder Ländern, um sie zu speichern",
+  "wishCountryBadge": "Land",
+  "wishRemoveTitle": "Von der Wunschliste entfernen",
+  "wishRemoveText": "{name} von deiner Wunschliste entfernen?",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "Reisebegeisterter",
+  "profileStatPlaces": "Orte",
+  "profileStatTrips": "Reisen",
+  "profileStatFollowers": "Follower",
+  "profileStatFollowing": "Folge ich",
+  "profileFindTravellers": "Finde Reisende zum Folgen",
+  "profilePhotos": "Reisefotos",
+  "profileJournals": "Tagebücher",
+  "profileAdd": "Hinzufügen",
+  "profileEdit": "Profil bearbeiten",
+  "profileFirstName": "Vorname",
+  "profileLastName": "Nachname",
+  "profileBio": "Bio",
+  "profilePhotoDone": "Foto hochgeladen",
+  "profilePhotoError": "Foto konnte nicht hochgeladen werden",
+  "profilePhotoDeleteError": "Foto konnte nicht gelöscht werden",
+  "profileSaved": "Profil aktualisiert",
+  "profileDeletePhotoTitle": "Foto löschen",
+  "profileDeletePhotoText": "Dieses Foto aus deinem Profil entfernen?",
+  "searchTitle": "Reisende finden",
+  "searchHint": "Nach Benutzername oder Name suchen",
+  "searchError": "Suche fehlgeschlagen",
+  "searchPrompt": "Tippe, um andere Reisende zu finden",
+  "searchEmpty": "Keine Reisenden gefunden",
+  "userFollow": "Folgen",
+  "userUnfollow": "Entfolgen",
+  "userPrivateText": "Dieses Profil ist privat. Folge {username}, um die Reisefotos zu sehen.",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "Follow-Status konnte nicht aktualisiert werden"
 }

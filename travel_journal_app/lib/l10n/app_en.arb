@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "Could not download PDF"
+  "journalPdfError": "Could not download PDF",
+  "wishEmpty": "No saved destinations",
+  "wishEmptyHint": "Tap the heart icon on places or countries to save them",
+  "wishCountryBadge": "Country",
+  "wishRemoveTitle": "Remove from Wishlist",
+  "wishRemoveText": "Remove {name} from your wishlist?",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "Travel enthusiast",
+  "profileStatPlaces": "Places",
+  "profileStatTrips": "Trips",
+  "profileStatFollowers": "Followers",
+  "profileStatFollowing": "Following",
+  "profileFindTravellers": "Find travellers to follow",
+  "profilePhotos": "Travel Photos",
+  "profileJournals": "Journals",
+  "profileAdd": "Add",
+  "profileEdit": "Edit Profile",
+  "profileFirstName": "First name",
+  "profileLastName": "Last name",
+  "profileBio": "Bio",
+  "profilePhotoDone": "Photo uploaded",
+  "profilePhotoError": "Could not upload photo",
+  "profilePhotoDeleteError": "Could not delete photo",
+  "profileSaved": "Profile updated",
+  "profileDeletePhotoTitle": "Delete Photo",
+  "profileDeletePhotoText": "Remove this photo from your profile?",
+  "searchTitle": "Find Travellers",
+  "searchHint": "Search by username or name",
+  "searchError": "Search failed",
+  "searchPrompt": "Start typing to find other travellers",
+  "searchEmpty": "No travellers found",
+  "userFollow": "Follow",
+  "userUnfollow": "Unfollow",
+  "userPrivateText": "This profile is private. Follow {username} to see their travel photos.",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "Could not update follow status"
 }

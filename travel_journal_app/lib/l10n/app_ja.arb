@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "PDFをダウンロードできませんでした"
+  "journalPdfError": "PDFをダウンロードできませんでした",
+  "wishEmpty": "保存した目的地がありません",
+  "wishEmptyHint": "場所や国のハートをタップして保存しましょう",
+  "wishCountryBadge": "国",
+  "wishRemoveTitle": "ウィッシュリストから削除",
+  "wishRemoveText": "{name}をウィッシュリストから削除しますか？",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "旅行愛好家",
+  "profileStatPlaces": "場所",
+  "profileStatTrips": "旅行",
+  "profileStatFollowers": "フォロワー",
+  "profileStatFollowing": "フォロー中",
+  "profileFindTravellers": "フォローする旅行者を探す",
+  "profilePhotos": "旅行の写真",
+  "profileJournals": "日記",
+  "profileAdd": "追加",
+  "profileEdit": "プロフィールを編集",
+  "profileFirstName": "名",
+  "profileLastName": "姓",
+  "profileBio": "自己紹介",
+  "profilePhotoDone": "写真をアップロードしました",
+  "profilePhotoError": "写真をアップロードできませんでした",
+  "profilePhotoDeleteError": "写真を削除できませんでした",
+  "profileSaved": "プロフィールを更新しました",
+  "profileDeletePhotoTitle": "写真を削除",
+  "profileDeletePhotoText": "この写真をプロフィールから削除しますか？",
+  "searchTitle": "旅行者を探す",
+  "searchHint": "ユーザー名や名前で検索",
+  "searchError": "検索に失敗しました",
+  "searchPrompt": "入力して他の旅行者を探しましょう",
+  "searchEmpty": "旅行者が見つかりませんでした",
+  "userFollow": "フォローする",
+  "userUnfollow": "フォロー解除",
+  "userPrivateText": "このプロフィールは非公開です。{username}をフォローして旅行の写真を見ましょう。",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "フォロー状態を更新できませんでした"
 }

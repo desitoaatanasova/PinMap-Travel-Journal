@@ -968,4 +968,110 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get journalPdfError => 'PDF не можа да се изтегли';
+
+  @override
+  String get wishEmpty => 'Няма запазени дестинации';
+
+  @override
+  String get wishEmptyHint =>
+      'Докоснете иконата със сърце на места или държави, за да ги запазите';
+
+  @override
+  String get wishCountryBadge => 'Държава';
+
+  @override
+  String get wishRemoveTitle => 'Премахване от желанията';
+
+  @override
+  String wishRemoveText(String name) {
+    return 'Да се премахне ли $name от желанията ви?';
+  }
+
+  @override
+  String get profileTagline => 'Любител на пътуванията';
+
+  @override
+  String get profileStatPlaces => 'Места';
+
+  @override
+  String get profileStatTrips => 'Пътувания';
+
+  @override
+  String get profileStatFollowers => 'Последователи';
+
+  @override
+  String get profileStatFollowing => 'Последвани';
+
+  @override
+  String get profileFindTravellers => 'Намерете пътешественици за следване';
+
+  @override
+  String get profilePhotos => 'Снимки от пътувания';
+
+  @override
+  String get profileJournals => 'Дневници';
+
+  @override
+  String get profileAdd => 'Добави';
+
+  @override
+  String get profileEdit => 'Редактирай профила';
+
+  @override
+  String get profileFirstName => 'Първо име';
+
+  @override
+  String get profileLastName => 'Фамилно име';
+
+  @override
+  String get profileBio => 'Биография';
+
+  @override
+  String get profilePhotoDone => 'Снимката е качена';
+
+  @override
+  String get profilePhotoError => 'Снимката не можа да се качи';
+
+  @override
+  String get profilePhotoDeleteError => 'Снимката не можа да се изтрие';
+
+  @override
+  String get profileSaved => 'Профилът е обновен';
+
+  @override
+  String get profileDeletePhotoTitle => 'Изтриване на снимка';
+
+  @override
+  String get profileDeletePhotoText =>
+      'Да се премахне ли тази снимка от профила ви?';
+
+  @override
+  String get searchTitle => 'Намери пътешественици';
+
+  @override
+  String get searchHint => 'Търси по потребителско име или име';
+
+  @override
+  String get searchError => 'Търсенето не бе успешно';
+
+  @override
+  String get searchPrompt =>
+      'Започнете да пишете, за да намерите други пътешественици';
+
+  @override
+  String get searchEmpty => 'Не са намерени пътешественици';
+
+  @override
+  String get userFollow => 'Последвай';
+
+  @override
+  String get userUnfollow => 'Спри да следиш';
+
+  @override
+  String userPrivateText(String username) {
+    return 'Този профил е частен. Последвайте $username, за да видите снимките от пътуванията.';
+  }
+
+  @override
+  String get userFollowError => 'Статусът на следване не можа да се обнови';
 }

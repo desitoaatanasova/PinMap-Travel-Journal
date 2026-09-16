@@ -1771,6 +1771,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not download PDF'**
   String get journalPdfError;
+
+  /// No description provided for @wishEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved destinations'**
+  String get wishEmpty;
+
+  /// No description provided for @wishEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart icon on places or countries to save them'**
+  String get wishEmptyHint;
+
+  /// No description provided for @wishCountryBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get wishCountryBadge;
+
+  /// No description provided for @wishRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Wishlist'**
+  String get wishRemoveTitle;
+
+  /// No description provided for @wishRemoveText.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from your wishlist?'**
+  String wishRemoveText(String name);
+
+  /// No description provided for @profileTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel enthusiast'**
+  String get profileTagline;
+
+  /// No description provided for @profileStatPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get profileStatPlaces;
+
+  /// No description provided for @profileStatTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips'**
+  String get profileStatTrips;
+
+  /// No description provided for @profileStatFollowers.
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get profileStatFollowers;
+
+  /// No description provided for @profileStatFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get profileStatFollowing;
+
+  /// No description provided for @profileFindTravellers.
+  ///
+  /// In en, this message translates to:
+  /// **'Find travellers to follow'**
+  String get profileFindTravellers;
+
+  /// No description provided for @profilePhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel Photos'**
+  String get profilePhotos;
+
+  /// No description provided for @profileJournals.
+  ///
+  /// In en, this message translates to:
+  /// **'Journals'**
+  String get profileJournals;
+
+  /// No description provided for @profileAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get profileAdd;
+
+  /// No description provided for @profileEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profileEdit;
+
+  /// No description provided for @profileFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get profileFirstName;
+
+  /// No description provided for @profileLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get profileLastName;
+
+  /// No description provided for @profileBio.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get profileBio;
+
+  /// No description provided for @profilePhotoDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo uploaded'**
+  String get profilePhotoDone;
+
+  /// No description provided for @profilePhotoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload photo'**
+  String get profilePhotoError;
+
+  /// No description provided for @profilePhotoDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete photo'**
+  String get profilePhotoDeleteError;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get profileSaved;
+
+  /// No description provided for @profileDeletePhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Photo'**
+  String get profileDeletePhotoTitle;
+
+  /// No description provided for @profileDeletePhotoText.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this photo from your profile?'**
+  String get profileDeletePhotoText;
+
+  /// No description provided for @searchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Travellers'**
+  String get searchTitle;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by username or name'**
+  String get searchHint;
+
+  /// No description provided for @searchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed'**
+  String get searchError;
+
+  /// No description provided for @searchPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to find other travellers'**
+  String get searchPrompt;
+
+  /// No description provided for @searchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No travellers found'**
+  String get searchEmpty;
+
+  /// No description provided for @userFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get userFollow;
+
+  /// No description provided for @userUnfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get userUnfollow;
+
+  /// No description provided for @userPrivateText.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile is private. Follow {username} to see their travel photos.'**
+  String userPrivateText(String username);
+
+  /// No description provided for @userFollowError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update follow status'**
+  String get userFollowError;
 }
 
 class _AppLocalizationsDelegate

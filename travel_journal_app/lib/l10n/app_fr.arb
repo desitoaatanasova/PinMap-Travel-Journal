@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "Impossible de télécharger le PDF"
+  "journalPdfError": "Impossible de télécharger le PDF",
+  "wishEmpty": "Aucune destination enregistrée",
+  "wishEmptyHint": "Touchez le cœur sur les lieux ou les pays pour les enregistrer",
+  "wishCountryBadge": "Pays",
+  "wishRemoveTitle": "Retirer de la liste d'envies",
+  "wishRemoveText": "Retirer {name} de votre liste d'envies ?",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "Passionné de voyage",
+  "profileStatPlaces": "Lieux",
+  "profileStatTrips": "Voyages",
+  "profileStatFollowers": "Abonnés",
+  "profileStatFollowing": "Abonnements",
+  "profileFindTravellers": "Trouvez des voyageurs à suivre",
+  "profilePhotos": "Photos de voyage",
+  "profileJournals": "Journaux",
+  "profileAdd": "Ajouter",
+  "profileEdit": "Modifier le profil",
+  "profileFirstName": "Prénom",
+  "profileLastName": "Nom",
+  "profileBio": "Bio",
+  "profilePhotoDone": "Photo téléversée",
+  "profilePhotoError": "Impossible de téléverser la photo",
+  "profilePhotoDeleteError": "Impossible de supprimer la photo",
+  "profileSaved": "Profil mis à jour",
+  "profileDeletePhotoTitle": "Supprimer la photo",
+  "profileDeletePhotoText": "Retirer cette photo de votre profil ?",
+  "searchTitle": "Trouver des voyageurs",
+  "searchHint": "Rechercher par pseudo ou nom",
+  "searchError": "Échec de la recherche",
+  "searchPrompt": "Tapez pour trouver d'autres voyageurs",
+  "searchEmpty": "Aucun voyageur trouvé",
+  "userFollow": "Suivre",
+  "userUnfollow": "Ne plus suivre",
+  "userPrivateText": "Ce profil est privé. Suivez {username} pour voir ses photos de voyage.",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "Impossible de mettre à jour le suivi"
 }

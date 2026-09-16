@@ -963,4 +963,109 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get journalPdfError => 'No se pudo descargar el PDF';
+
+  @override
+  String get wishEmpty => 'Sin destinos guardados';
+
+  @override
+  String get wishEmptyHint =>
+      'Toca el corazón en lugares o países para guardarlos';
+
+  @override
+  String get wishCountryBadge => 'País';
+
+  @override
+  String get wishRemoveTitle => 'Quitar de la lista de deseos';
+
+  @override
+  String wishRemoveText(String name) {
+    return '¿Quitar $name de tu lista de deseos?';
+  }
+
+  @override
+  String get profileTagline => 'Amante de los viajes';
+
+  @override
+  String get profileStatPlaces => 'Lugares';
+
+  @override
+  String get profileStatTrips => 'Viajes';
+
+  @override
+  String get profileStatFollowers => 'Seguidores';
+
+  @override
+  String get profileStatFollowing => 'Seguidos';
+
+  @override
+  String get profileFindTravellers => 'Encuentra viajeros a quienes seguir';
+
+  @override
+  String get profilePhotos => 'Fotos de viaje';
+
+  @override
+  String get profileJournals => 'Diarios';
+
+  @override
+  String get profileAdd => 'Añadir';
+
+  @override
+  String get profileEdit => 'Editar perfil';
+
+  @override
+  String get profileFirstName => 'Nombre';
+
+  @override
+  String get profileLastName => 'Apellido';
+
+  @override
+  String get profileBio => 'Biografía';
+
+  @override
+  String get profilePhotoDone => 'Foto subida';
+
+  @override
+  String get profilePhotoError => 'No se pudo subir la foto';
+
+  @override
+  String get profilePhotoDeleteError => 'No se pudo eliminar la foto';
+
+  @override
+  String get profileSaved => 'Perfil actualizado';
+
+  @override
+  String get profileDeletePhotoTitle => 'Eliminar foto';
+
+  @override
+  String get profileDeletePhotoText => '¿Quitar esta foto de tu perfil?';
+
+  @override
+  String get searchTitle => 'Encontrar viajeros';
+
+  @override
+  String get searchHint => 'Buscar por usuario o nombre';
+
+  @override
+  String get searchError => 'Falló la búsqueda';
+
+  @override
+  String get searchPrompt => 'Escribe para encontrar a otros viajeros';
+
+  @override
+  String get searchEmpty => 'No se encontraron viajeros';
+
+  @override
+  String get userFollow => 'Seguir';
+
+  @override
+  String get userUnfollow => 'Dejar de seguir';
+
+  @override
+  String userPrivateText(String username) {
+    return 'Este perfil es privado. Sigue a $username para ver sus fotos de viaje.';
+  }
+
+  @override
+  String get userFollowError =>
+      'No se pudo actualizar el estado de seguimiento';
 }

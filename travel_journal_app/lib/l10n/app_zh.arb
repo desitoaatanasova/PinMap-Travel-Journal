@@ -412,5 +412,48 @@
       "n": { "type": "int" }
     }
   },
-  "journalPdfError": "无法下载PDF"
+  "journalPdfError": "无法下载PDF",
+  "wishEmpty": "没有已保存的目的地",
+  "wishEmptyHint": "点击地点或国家上的爱心以保存",
+  "wishCountryBadge": "国家",
+  "wishRemoveTitle": "从心愿单移除",
+  "wishRemoveText": "从心愿单中移除{name}？",
+  "@wishRemoveText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileTagline": "旅行爱好者",
+  "profileStatPlaces": "地点",
+  "profileStatTrips": "行程",
+  "profileStatFollowers": "粉丝",
+  "profileStatFollowing": "关注",
+  "profileFindTravellers": "寻找要关注的旅行者",
+  "profilePhotos": "旅行照片",
+  "profileJournals": "日记",
+  "profileAdd": "添加",
+  "profileEdit": "编辑资料",
+  "profileFirstName": "名",
+  "profileLastName": "姓",
+  "profileBio": "简介",
+  "profilePhotoDone": "照片已上传",
+  "profilePhotoError": "无法上传照片",
+  "profilePhotoDeleteError": "无法删除照片",
+  "profileSaved": "资料已更新",
+  "profileDeletePhotoTitle": "删除照片",
+  "profileDeletePhotoText": "从你的主页移除这张照片？",
+  "searchTitle": "寻找旅行者",
+  "searchHint": "按用户名或姓名搜索",
+  "searchError": "搜索失败",
+  "searchPrompt": "输入以寻找其他旅行者",
+  "searchEmpty": "未找到旅行者",
+  "userFollow": "关注",
+  "userUnfollow": "取消关注",
+  "userPrivateText": "该主页为私密。关注{username}以查看旅行照片。",
+  "@userPrivateText": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "userFollowError": "无法更新关注状态"
 }

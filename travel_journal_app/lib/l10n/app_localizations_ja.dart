@@ -928,4 +928,107 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get journalPdfError => 'PDFをダウンロードできませんでした';
+
+  @override
+  String get wishEmpty => '保存した目的地がありません';
+
+  @override
+  String get wishEmptyHint => '場所や国のハートをタップして保存しましょう';
+
+  @override
+  String get wishCountryBadge => '国';
+
+  @override
+  String get wishRemoveTitle => 'ウィッシュリストから削除';
+
+  @override
+  String wishRemoveText(String name) {
+    return '$nameをウィッシュリストから削除しますか？';
+  }
+
+  @override
+  String get profileTagline => '旅行愛好家';
+
+  @override
+  String get profileStatPlaces => '場所';
+
+  @override
+  String get profileStatTrips => '旅行';
+
+  @override
+  String get profileStatFollowers => 'フォロワー';
+
+  @override
+  String get profileStatFollowing => 'フォロー中';
+
+  @override
+  String get profileFindTravellers => 'フォローする旅行者を探す';
+
+  @override
+  String get profilePhotos => '旅行の写真';
+
+  @override
+  String get profileJournals => '日記';
+
+  @override
+  String get profileAdd => '追加';
+
+  @override
+  String get profileEdit => 'プロフィールを編集';
+
+  @override
+  String get profileFirstName => '名';
+
+  @override
+  String get profileLastName => '姓';
+
+  @override
+  String get profileBio => '自己紹介';
+
+  @override
+  String get profilePhotoDone => '写真をアップロードしました';
+
+  @override
+  String get profilePhotoError => '写真をアップロードできませんでした';
+
+  @override
+  String get profilePhotoDeleteError => '写真を削除できませんでした';
+
+  @override
+  String get profileSaved => 'プロフィールを更新しました';
+
+  @override
+  String get profileDeletePhotoTitle => '写真を削除';
+
+  @override
+  String get profileDeletePhotoText => 'この写真をプロフィールから削除しますか？';
+
+  @override
+  String get searchTitle => '旅行者を探す';
+
+  @override
+  String get searchHint => 'ユーザー名や名前で検索';
+
+  @override
+  String get searchError => '検索に失敗しました';
+
+  @override
+  String get searchPrompt => '入力して他の旅行者を探しましょう';
+
+  @override
+  String get searchEmpty => '旅行者が見つかりませんでした';
+
+  @override
+  String get userFollow => 'フォローする';
+
+  @override
+  String get userUnfollow => 'フォロー解除';
+
+  @override
+  String userPrivateText(String username) {
+    return 'このプロフィールは非公開です。$usernameをフォローして旅行の写真を見ましょう。';
+  }
+
+  @override
+  String get userFollowError => 'フォロー状態を更新できませんでした';
 }

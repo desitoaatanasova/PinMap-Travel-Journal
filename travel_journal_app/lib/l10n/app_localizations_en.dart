@@ -960,4 +960,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalPdfError => 'Could not download PDF';
+
+  @override
+  String get wishEmpty => 'No saved destinations';
+
+  @override
+  String get wishEmptyHint =>
+      'Tap the heart icon on places or countries to save them';
+
+  @override
+  String get wishCountryBadge => 'Country';
+
+  @override
+  String get wishRemoveTitle => 'Remove from Wishlist';
+
+  @override
+  String wishRemoveText(String name) {
+    return 'Remove $name from your wishlist?';
+  }
+
+  @override
+  String get profileTagline => 'Travel enthusiast';
+
+  @override
+  String get profileStatPlaces => 'Places';
+
+  @override
+  String get profileStatTrips => 'Trips';
+
+  @override
+  String get profileStatFollowers => 'Followers';
+
+  @override
+  String get profileStatFollowing => 'Following';
+
+  @override
+  String get profileFindTravellers => 'Find travellers to follow';
+
+  @override
+  String get profilePhotos => 'Travel Photos';
+
+  @override
+  String get profileJournals => 'Journals';
+
+  @override
+  String get profileAdd => 'Add';
+
+  @override
+  String get profileEdit => 'Edit Profile';
+
+  @override
+  String get profileFirstName => 'First name';
+
+  @override
+  String get profileLastName => 'Last name';
+
+  @override
+  String get profileBio => 'Bio';
+
+  @override
+  String get profilePhotoDone => 'Photo uploaded';
+
+  @override
+  String get profilePhotoError => 'Could not upload photo';
+
+  @override
+  String get profilePhotoDeleteError => 'Could not delete photo';
+
+  @override
+  String get profileSaved => 'Profile updated';
+
+  @override
+  String get profileDeletePhotoTitle => 'Delete Photo';
+
+  @override
+  String get profileDeletePhotoText => 'Remove this photo from your profile?';
+
+  @override
+  String get searchTitle => 'Find Travellers';
+
+  @override
+  String get searchHint => 'Search by username or name';
+
+  @override
+  String get searchError => 'Search failed';
+
+  @override
+  String get searchPrompt => 'Start typing to find other travellers';
+
+  @override
+  String get searchEmpty => 'No travellers found';
+
+  @override
+  String get userFollow => 'Follow';
+
+  @override
+  String get userUnfollow => 'Unfollow';
+
+  @override
+  String userPrivateText(String username) {
+    return 'This profile is private. Follow $username to see their travel photos.';
+  }
+
+  @override
+  String get userFollowError => 'Could not update follow status';
 }

@@ -930,4 +930,107 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get journalPdfError => '无法下载PDF';
+
+  @override
+  String get wishEmpty => '没有已保存的目的地';
+
+  @override
+  String get wishEmptyHint => '点击地点或国家上的爱心以保存';
+
+  @override
+  String get wishCountryBadge => '国家';
+
+  @override
+  String get wishRemoveTitle => '从心愿单移除';
+
+  @override
+  String wishRemoveText(String name) {
+    return '从心愿单中移除$name？';
+  }
+
+  @override
+  String get profileTagline => '旅行爱好者';
+
+  @override
+  String get profileStatPlaces => '地点';
+
+  @override
+  String get profileStatTrips => '行程';
+
+  @override
+  String get profileStatFollowers => '粉丝';
+
+  @override
+  String get profileStatFollowing => '关注';
+
+  @override
+  String get profileFindTravellers => '寻找要关注的旅行者';
+
+  @override
+  String get profilePhotos => '旅行照片';
+
+  @override
+  String get profileJournals => '日记';
+
+  @override
+  String get profileAdd => '添加';
+
+  @override
+  String get profileEdit => '编辑资料';
+
+  @override
+  String get profileFirstName => '名';
+
+  @override
+  String get profileLastName => '姓';
+
+  @override
+  String get profileBio => '简介';
+
+  @override
+  String get profilePhotoDone => '照片已上传';
+
+  @override
+  String get profilePhotoError => '无法上传照片';
+
+  @override
+  String get profilePhotoDeleteError => '无法删除照片';
+
+  @override
+  String get profileSaved => '资料已更新';
+
+  @override
+  String get profileDeletePhotoTitle => '删除照片';
+
+  @override
+  String get profileDeletePhotoText => '从你的主页移除这张照片？';
+
+  @override
+  String get searchTitle => '寻找旅行者';
+
+  @override
+  String get searchHint => '按用户名或姓名搜索';
+
+  @override
+  String get searchError => '搜索失败';
+
+  @override
+  String get searchPrompt => '输入以寻找其他旅行者';
+
+  @override
+  String get searchEmpty => '未找到旅行者';
+
+  @override
+  String get userFollow => '关注';
+
+  @override
+  String get userUnfollow => '取消关注';
+
+  @override
+  String userPrivateText(String username) {
+    return '该主页为私密。关注$username以查看旅行照片。';
+  }
+
+  @override
+  String get userFollowError => '无法更新关注状态';
 }

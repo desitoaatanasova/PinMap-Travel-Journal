@@ -517,6 +517,93 @@ void main() {
       );
     });
 
+    test('social keys exist in all 8 ARBs', () {
+      const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
+      const expected = [
+        'wishEmpty',
+        'wishEmptyHint',
+        'wishCountryBadge',
+        'wishRemoveTitle',
+        'wishRemoveText',
+        'profileTagline',
+        'profileStatPlaces',
+        'profileStatTrips',
+        'profileStatFollowers',
+        'profileStatFollowing',
+        'profileFindTravellers',
+        'profilePhotos',
+        'profileJournals',
+        'profileAdd',
+        'profileEdit',
+        'profileFirstName',
+        'profileLastName',
+        'profileBio',
+        'profilePhotoDone',
+        'profilePhotoError',
+        'profilePhotoDeleteError',
+        'profileSaved',
+        'profileDeletePhotoTitle',
+        'profileDeletePhotoText',
+        'searchTitle',
+        'searchHint',
+        'searchError',
+        'searchPrompt',
+        'searchEmpty',
+        'userFollow',
+        'userUnfollow',
+        'userPrivateText',
+        'userFollowError',
+      ];
+      expect(expected, hasLength(33));
+      for (final code in codes) {
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        for (final key in expected) {
+          expect(map[key], isNotNull, reason: 'app_$code.arb missing $key');
+          expect(
+            map[key],
+            isA<String>(),
+            reason: 'app_$code.arb $key must be a string',
+          );
+        }
+      }
+    });
+
+    test('social placeholders resolve', () {
+      expect(
+        lookupAppLocalizations(const Locale('en')).wishRemoveText('Paris'),
+        'Remove Paris from your wishlist?',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('bg')).wishRemoveText('Париж'),
+        'Да се премахне ли Париж от желанията ви?',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('de')).userPrivateText('anna'),
+        'Dieses Profil ist privat. Folge anna, um die Reisefotos zu sehen.',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ja')).userFollow,
+        'フォローする',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('zh')).profileSaved,
+        '资料已更新',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('fr')).searchEmpty,
+        'Aucun voyageur trouvé',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('es')).profileStatFollowers,
+        'Seguidores',
+      );
+      expect(
+        lookupAppLocalizations(const Locale('it')).userUnfollow,
+        'Smetti di seguire',
+      );
+    });
+
     test('home/places keys resolve without English placeholders', () {
       expect(
         lookupAppLocalizations(const Locale('bg')).homeCountriesTitle,
