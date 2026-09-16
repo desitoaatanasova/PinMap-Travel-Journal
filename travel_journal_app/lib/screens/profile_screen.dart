@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/models/user_profile.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/image_compressor.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
@@ -66,6 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _uploadPhoto() async {
+    final l10n = AppLocalizations.of(context);
     final picker = ImagePicker();
     final file = await picker.pickImage(
       source: ImageSource.gallery,
@@ -93,21 +95,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await ProfileService.reloadProfile();
       if (!mounted) return;
       await _loadProfile();
-      showAppSnackBar(context, 'Photo uploaded');
+      showAppSnackBar(context, l10n.profilePhotoDone);
     } catch (e) {
       if (!mounted) return;
-      showAppSnackBar(context, 'Could not upload photo');
+      showAppSnackBar(context, l10n.profilePhotoError);
     } finally {
       if (mounted) setState(() => _uploadingPhoto = false);
     }
   }
 
   Future<void> _deletePhoto(int photoId) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showAppConfirmDialog(
       context,
-      title: 'Delete Photo',
-      content: 'Remove this photo from your profile?',
-      confirmText: 'Delete',
+      title: l10n.profileDeletePhotoTitle,
+      content: l10n.profileDeletePhotoText,
+      confirmText: l10n.settingsDelete,
+      cancelText: l10n.commonCancel,
       confirmColor: Colors.red,
     );
     if (confirmed != true) return;
@@ -118,12 +122,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await _loadProfile();
     } catch (e) {
       if (!mounted) return;
-      showAppSnackBar(context, 'Could not delete photo');
+      showAppSnackBar(context, l10n.profilePhotoDeleteError);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final profile = _profile;
 
     return Scaffold(
@@ -205,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ],
                                       const SizedBox(height: 4),
                                       Text(
-                                        'Travel enthusiast',
+                                        l10n.profileTagline,
                                         style: GoogleFonts.dmSans(
                                           fontSize: 11,
                                           color: AppTheme.warmOffWhite
@@ -225,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.space4),
-                      child: _buildStatsRow(context, profile),
+                      child: _buildStatsRow(context, profile, l10n),
                     ),
                   ),
                   SliverToBoxAdapter(
@@ -244,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppTheme.space4,
                       ),
-                      child: const SectionHeader(title: 'Travel Photos'),
+                      child: SectionHeader(title: l10n.profilePhotos),
                     ),
                   ),
                   SliverPadding(
@@ -276,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.space4,
                         ),
-                        child: const SectionHeader(title: 'Journals'),
+                        child: SectionHeader(title: l10n.profileJournals),
                       ),
                     ),
                     SliverPadding(
@@ -380,7 +385,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, UserProfile profile) {
+  Widget _buildStatsRow(
+    BuildContext context,
+    UserProfile profile,
+    AppLocalizations l10n,
+  ) {
     final placesCount =
         profile.placesVisited > 0
             ? profile.placesVisited
@@ -396,23 +405,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStat(context, '$placesCount', 'Places', Icons.public),
+          _buildStat(context, '$placesCount', l10n.profileStatPlaces, Icons.public),
           _buildStat(
             context,
             '${profile.tripsPlanned}',
-            'Trips',
+            l10n.profileStatTrips,
             Icons.luggage,
           ),
           _buildStat(
             context,
             '${profile.followersCount}',
-            'Followers',
+            l10n.profileStatFollowers,
             Icons.people,
           ),
           _buildStat(
             context,
             '${profile.followingCount}',
-            'Following',
+            l10n.profileStatFollowing,
             Icons.person_add,
           ),
         ],
@@ -448,6 +457,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -471,7 +481,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Icon(Icons.search, size: 20, color: AppTheme.warmGray),
             const SizedBox(width: AppTheme.space2),
             Text(
-              'Find travellers to follow',
+              l10n.profileFindTravellers,
               style: GoogleFonts.dmSans(fontSize: 14, color: AppTheme.warmGray),
             ),
           ],
@@ -481,6 +491,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUploadTile(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final primary = Theme.of(context).colorScheme.primary;
     return GestureDetector(
       onTap: _uploadingPhoto ? null : _uploadPhoto,
@@ -508,7 +519,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Add',
+                      l10n.profileAdd,
                       style: GoogleFonts.dmSans(fontSize: 12, color: primary),
                     ),
                   ],
@@ -654,13 +665,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         OutlinedButton.icon(
           onPressed: _showEditProfileDialog,
           icon: const Icon(Icons.person_outline, size: 20),
-          label: const Text('Edit Profile'),
+          label: Text(l10n.profileEdit),
           style: OutlinedButton.styleFrom(
             foregroundColor: colorScheme.primary,
             side: BorderSide(color: colorScheme.primary, width: 2),
@@ -676,7 +688,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
           icon: const Icon(Icons.settings, size: 20),
-          label: const Text('Settings'),
+          label: Text(l10n.settingsTitle),
           style: OutlinedButton.styleFrom(
             foregroundColor: colorScheme.onSurface,
             side: BorderSide(color: colorScheme.outlineVariant),
@@ -688,6 +700,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showEditProfileDialog() {
+    final l10n = AppLocalizations.of(context);
     final profile = _profile;
     if (profile == null) return;
     final firstNameController = TextEditingController(
@@ -703,7 +716,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Edit Profile',
+              l10n.profileEdit,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
@@ -715,26 +728,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   TextField(
                     controller: firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'First name',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.profileFirstName,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: AppTheme.space3),
                   TextField(
                     controller: lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last name',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.profileLastName,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: AppTheme.space3),
                   TextField(
                     controller: bioController,
                     maxLines: 3,
-                    decoration: const InputDecoration(
-                      labelText: 'Bio',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.profileBio,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ],
@@ -749,7 +762,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pop(dialogContext);
                 },
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -770,10 +783,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (dialogContext.mounted) Navigator.pop(dialogContext);
                   if (mounted) {
                     await _loadProfile();
-                    showAppSnackBar(context, 'Profile updated');
+                    showAppSnackBar(context, l10n.profileSaved);
                   }
                 },
-                child: Text('Save', style: GoogleFonts.dmSans()),
+                child: Text(l10n.commonSave, style: GoogleFonts.dmSans()),
               ),
             ],
           ),
