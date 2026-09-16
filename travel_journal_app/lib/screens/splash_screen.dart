@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/services/data_loader.dart';
@@ -63,6 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppTheme.bg,
       body: Container(
@@ -110,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: AppTheme.space2),
                   Text(
-                    'Travel journal',
+                    l10n.splashTagline,
                     style: GoogleFonts.dmSans(
                       fontSize: 18,
                       color: AppTheme.warmGray,
@@ -151,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen>
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    child: const Text('Get Started'),
+                    child: Text(l10n.splashGetStarted),
                   ),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -26,8 +27,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     if (name.isEmpty || !email.contains('@') || password.isEmpty) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
+        SnackBar(content: Text(l10n.authFillRequired)),
       );
       return;
     }
@@ -35,9 +37,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       final success = await AuthService.register(name, email, password);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       if (!success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration failed')),
+          SnackBar(content: Text(l10n.authRegisterFailed)),
         );
         return;
       }
@@ -45,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
       if (!result.allowHome) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not start session. Try again.')),
+          SnackBar(content: Text(l10n.authSessionFailed)),
         );
         return;
       }
@@ -53,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Some data failed to load (${result.failed.join(', ')}). Pull to retry.',
+              l10n.authPartialFail(result.failed.join(', ')),
             ),
           ),
         );
@@ -76,8 +79,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Prefer not to say',
   ];
 
+  String _genderLabel(String value, AppLocalizations l10n) {
+    switch (value) {
+      case 'Male':
+        return l10n.authGenderMale;
+      case 'Female':
+        return l10n.authGenderFemale;
+      case 'Non-binary':
+        return l10n.authGenderNonBinary;
+      default:
+        return l10n.authGenderPrefer;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppTheme.bg,
       body: SafeArea(
@@ -103,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: AppTheme.space6),
               // Welcome text
               Text(
-                'Create Account',
+                l10n.authCreateAccount,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -112,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: AppTheme.space2),
               Text(
-                'Start your travel journal',
+                l10n.authCreateSubtitle,
                 style: GoogleFonts.dmSans(
                   fontSize: 14,
                   color: AppTheme.warmGray,
@@ -132,18 +149,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // Name field
                     TextField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        hintText: 'Full Name',
-                        prefixIcon: Icon(Icons.person_outline),
+                      decoration: InputDecoration(
+                        hintText: l10n.authFullName,
+                        prefixIcon: const Icon(Icons.person_outline),
                       ),
                     ),
                     const SizedBox(height: AppTheme.space4),
                     // Email field
                     TextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
+                      decoration: InputDecoration(
+                        hintText: l10n.authEmail,
+                        prefixIcon: const Icon(Icons.email_outlined),
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -152,8 +169,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock_outline),
+                        hintText: l10n.authPassword,
+                        prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword
@@ -190,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return DropdownMenuItem<String>(
                               value: gender,
                               child: Text(
-                                gender,
+                                _genderLabel(gender, l10n),
                                 style: GoogleFonts.dmSans(
                                   color: AppTheme.darkBrown,
                                   fontSize: 14,
@@ -220,7 +237,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text('Sign Up'),
+                            : Text(l10n.authSignUp),
                       ),
                     ),
                   ],
@@ -232,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Already have an account? ',
+                    l10n.authHaveAccount,
                     style: GoogleFonts.dmSans(
                       color: AppTheme.warmGray,
                       fontSize: 14,
@@ -243,7 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      'Log In',
+                      l10n.authLogin,
                       style: GoogleFonts.dmSans(
                         color: AppTheme.primary,
                         fontSize: 14,

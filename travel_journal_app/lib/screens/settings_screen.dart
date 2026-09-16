@@ -283,7 +283,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         subtitle: Text(
-          _selectedLanguage,
+          LanguageService.endonymForLanguage(_selectedLanguage),
           style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.warmGray),
         ),
         trailing: Icon(Icons.chevron_right, color: AppTheme.warmGray),
@@ -532,7 +532,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final scheme = Theme.of(sheetContext).colorScheme;
                   return ListTile(
                     title: Text(
-                      lang,
+                      LanguageService.endonymForLanguage(lang),
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         fontWeight:

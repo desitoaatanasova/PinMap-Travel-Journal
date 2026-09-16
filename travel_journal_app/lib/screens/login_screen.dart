@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/auth_service.dart';
 import 'package:pinmap_travel_journal/services/data_loader.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
@@ -24,8 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
     if (email.isEmpty || password.isEmpty) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter valid credentials')),
+        SnackBar(content: Text(l10n.authEnterValid)),
       );
       return;
     }
@@ -33,9 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final success = await AuthService.login(email, password);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       if (!success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invalid credentials')),
+          SnackBar(content: Text(l10n.authInvalid)),
         );
         return;
       }
@@ -43,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       if (!result.allowHome) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not start session. Try again.')),
+          SnackBar(content: Text(l10n.authSessionFailed)),
         );
         return;
       }
@@ -51,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Some data failed to load (${result.failed.join(', ')}). Pull to retry.',
+              l10n.authPartialFail(result.failed.join(', ')),
             ),
           ),
         );
@@ -69,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppTheme.bg,
       body: SafeArea(
@@ -94,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: AppTheme.space6),
               // Welcome text
               Text(
-                'Welcome Back',
+                l10n.authWelcomeBack,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -103,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: AppTheme.space2),
               Text(
-                'Sign in to continue your journey',
+                l10n.authSignInSubtitle,
                 style: GoogleFonts.dmSans(
                   fontSize: 14,
                   color: AppTheme.warmGray,
@@ -123,9 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Email field
                     TextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
+                      decoration: InputDecoration(
+                        hintText: l10n.authEmail,
+                        prefixIcon: const Icon(Icons.email_outlined),
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -134,8 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock_outline),
+                        hintText: l10n.authPassword,
+                        prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword
@@ -160,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // TODO: Implement forgot password
                         },
                         child: Text(
-                          'Forgot Password?',
+                          l10n.authForgotPassword,
                           style: GoogleFonts.dmSans(
                             color: AppTheme.primary,
                             fontSize: 14,
@@ -183,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text('Log In'),
+                            : Text(l10n.authLogin),
                       ),
                     ),
                   ],
@@ -195,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account? ",
+                    l10n.authNoAccount,
                     style: GoogleFonts.dmSans(
                       color: AppTheme.warmGray,
                       fontSize: 14,
@@ -211,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Text(
-                      'Sign Up',
+                      l10n.authSignUp,
                       style: GoogleFonts.dmSans(
                         color: AppTheme.primary,
                         fontSize: 14,
