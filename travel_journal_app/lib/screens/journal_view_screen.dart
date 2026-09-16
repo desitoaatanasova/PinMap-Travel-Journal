@@ -6,6 +6,7 @@ import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/journal_pdf_export_service.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
+import 'package:pinmap_travel_journal/utils/journal_actions.dart';
 import 'package:pinmap_travel_journal/services/pdf_download.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/widgets/section_header.dart';
@@ -104,6 +105,77 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
     }
   }
 
+  Future<void> _toggleVisibility() async {
+    final journal = _journal;
+    if (journal == null) return;
+    final l10n = AppLocalizations.of(context);
+    final current = JournalService.getJournalById(journal.journalId) ?? journal;
+    final isPublic = current.visibility == 'public';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              isPublic ? l10n.journalRemoveTitle : l10n.journalPostTitle,
+              style: GoogleFonts.playfairDisplay(
+                color: Theme.of(ctx).colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              isPublic ? l10n.journalRemoveText : l10n.journalPostText,
+              style: GoogleFonts.dmSans(),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  l10n.commonCancel,
+                  style: GoogleFonts.dmSans(color: AppTheme.warmGray),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  isPublic ? l10n.journalRemoveShort : l10n.journalPost,
+                  style: GoogleFonts.dmSans(),
+                ),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      final newVis = await JournalService.updateVisibility(
+        current.journalId,
+        isPublic ? 'private' : 'public',
+      );
+      if (!mounted) return;
+      setState(() {
+        _journal = current.copyWith(visibility: newVis);
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isPublic ? l10n.journalRemoved : l10n.journalPosted,
+            style: GoogleFonts.dmSans(),
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.journalVisibilityError(e.toString()),
+            style: GoogleFonts.dmSans(),
+          ),
+        ),
+      );
+    }
+  }
+
   Color _pageColor(String? hex) {
     if (hex == null || hex.isEmpty) return const Color(0xFFFFFEF6);
     try {
@@ -144,6 +216,45 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                   onPressed: () => _downloadJournal(context, _journal!),
                   icon: const Icon(Icons.download),
                 ),
+          if (!widget.isPublic && _journal != null && !_loading)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (v) async {
+                final journal = _journal;
+                if (journal == null) return;
+                if (v == 'toggle') {
+                  await _toggleVisibility();
+                } else if (v == 'delete') {
+                  final deleted = await confirmDeleteJournal(context, journal);
+                  if (deleted && context.mounted) Navigator.pop(context);
+                }
+              },
+              itemBuilder: (_) {
+                final journal = _journal!;
+                final current =
+                    JournalService.getJournalById(journal.journalId) ?? journal;
+                final isPublic = current.visibility == 'public';
+                return [
+                  PopupMenuItem(
+                    value: 'toggle',
+                    child: Text(
+                      isPublic ? l10n.journalRemoveProfile : l10n.journalPost,
+                      style: GoogleFonts.dmSans(fontSize: 13),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text(
+                      l10n.journalDeleteAction,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ];
+              },
+            ),
         ],
       ),
       body:
@@ -157,7 +268,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                 ),
               )
               : _journal == null
-              ? Center(child: Text(l10n.journalNotFound, style: GoogleFonts.dmSans()))
+              ? Center(
+                child: Text(l10n.journalNotFound, style: GoogleFonts.dmSans()),
+              )
               : _buildContent(_journal!, l10n),
     );
   }

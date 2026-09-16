@@ -7,6 +7,7 @@ import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
 import 'package:pinmap_travel_journal/screens/journal_view_screen.dart';
+import 'package:pinmap_travel_journal/utils/journal_actions.dart';
 import 'package:pinmap_travel_journal/widgets/authenticated_image.dart';
 import 'package:pinmap_travel_journal/widgets/premium_card.dart';
 import 'package:pinmap_travel_journal/widgets/empty_state.dart';
@@ -237,8 +238,7 @@ class JournalScreen extends StatelessWidget {
     final isPublic = journal.visibility == 'public';
     final target = isPublic ? 'private' : 'public';
     final title = isPublic ? l10n.journalRemoveTitle : l10n.journalPostTitle;
-    final content =
-        isPublic ? l10n.journalRemoveText : l10n.journalPostText;
+    final content = isPublic ? l10n.journalRemoveText : l10n.journalPostText;
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
@@ -379,6 +379,7 @@ class JournalScreen extends StatelessWidget {
                   child: PopupMenuButton<String>(
                     onSelected: (v) {
                       if (v == 'toggle') _toggleVisibility(context, journal);
+                      if (v == 'delete') confirmDeleteJournal(context, journal);
                       if (v == 'view') {
                         Navigator.push(
                           context,
@@ -406,6 +407,16 @@ class JournalScreen extends StatelessWidget {
                           PopupMenuItem(
                             value: 'view',
                             child: Text(l10n.journalView),
+                          ),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              l10n.journalDeleteAction,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                color: Colors.red,
+                              ),
+                            ),
                           ),
                         ],
                   ),

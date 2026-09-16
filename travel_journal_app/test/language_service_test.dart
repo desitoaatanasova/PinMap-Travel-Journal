@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/models/journal.dart';
 import 'package:pinmap_travel_journal/services/language_service.dart';
 import 'package:pinmap_travel_journal/utils/category_label.dart';
+import 'package:pinmap_travel_journal/utils/journal_actions.dart';
 import 'package:pinmap_travel_journal/utils/trip_type_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,16 +67,10 @@ void main() {
       expect(LanguageService.endonymForLanguage('Italian'), 'Italiano');
       expect(LanguageService.endonymForLanguage('Portuguese'), 'English');
       expect(LanguageService.endonymForLanguage(null), 'English');
-      expect(
-        LanguageService.languageForEndonym('Български'),
-        'Bulgarian',
-      );
+      expect(LanguageService.languageForEndonym('Български'), 'Bulgarian');
       expect(LanguageService.languageForEndonym('日本語'), 'Japanese');
       expect(LanguageService.languageForEndonym('Português'), isNull);
-      expect(
-        LanguageService.endonymForLocale(const Locale('bg')),
-        'Български',
-      );
+      expect(LanguageService.endonymForLocale(const Locale('bg')), 'Български');
       expect(LanguageService.endonymForLocale(null), 'English');
     });
 
@@ -137,12 +133,9 @@ void main() {
       const codes = ['en', 'bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
       Set<String>? reference;
       for (final code in codes) {
-        final raw = File(
-          'lib/l10n/app_$code.arb',
-        ).readAsStringSync();
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
         final map = jsonDecode(raw) as Map<String, dynamic>;
-        final keys =
-            map.keys.where((k) => !k.startsWith('@')).toSet();
+        final keys = map.keys.where((k) => !k.startsWith('@')).toSet();
         if (reference == null) {
           reference = keys;
         } else {
@@ -160,16 +153,16 @@ void main() {
 
     test('no ARB uses English placeholders for translated keys', () {
       const translated = ['bg', 'de', 'es', 'fr', 'it', 'ja', 'zh'];
-      final enRaw = File(
-        'lib/l10n/app_en.arb',
-      ).readAsStringSync();
+      final enRaw = File('lib/l10n/app_en.arb').readAsStringSync();
       final enMap = jsonDecode(enRaw) as Map<String, dynamic>;
       for (final code in translated) {
-        final raw = File(
-          'lib/l10n/app_$code.arb',
-        ).readAsStringSync();
+        final raw = File('lib/l10n/app_$code.arb').readAsStringSync();
         final map = jsonDecode(raw) as Map<String, dynamic>;
-        for (final key in ['authWelcomeBack', 'authLogin', 'splashGetStarted']) {
+        for (final key in [
+          'authWelcomeBack',
+          'authLogin',
+          'splashGetStarted',
+        ]) {
           expect(
             map[key],
             isNot(equals(enMap[key])),
@@ -582,14 +575,8 @@ void main() {
         lookupAppLocalizations(const Locale('de')).userPrivateText('anna'),
         'Dieses Profil ist privat. Folge anna, um die Reisefotos zu sehen.',
       );
-      expect(
-        lookupAppLocalizations(const Locale('ja')).userFollow,
-        'フォローする',
-      );
-      expect(
-        lookupAppLocalizations(const Locale('zh')).profileSaved,
-        '资料已更新',
-      );
+      expect(lookupAppLocalizations(const Locale('ja')).userFollow, 'フォローする');
+      expect(lookupAppLocalizations(const Locale('zh')).profileSaved, '资料已更新');
       expect(
         lookupAppLocalizations(const Locale('fr')).searchEmpty,
         'Aucun voyageur trouvé',
@@ -705,16 +692,16 @@ void main() {
 
     test('supported identifiers map to translated labels', () {
       final bg = lookupAppLocalizations(const Locale('bg'));
-      expect(categoryLabel('Historical Sights', bg), 'Исторически забележителности');
+      expect(
+        categoryLabel('Historical Sights', bg),
+        'Исторически забележителности',
+      );
       expect(categoryLabel('Hidden Gems', bg), 'Скрити съкровища');
       expect(categoryLabel('My places', bg), 'Моите места');
       final ja = lookupAppLocalizations(const Locale('ja'));
       expect(categoryLabel('Close by', ja), '近隣');
       final de = lookupAppLocalizations(const Locale('de'));
-      expect(
-        categoryLabel('For the Art Lovers', de),
-        'Für Kunstliebhaber',
-      );
+      expect(categoryLabel('For the Art Lovers', de), 'Für Kunstliebhaber');
     });
 
     test('unknown identifiers fall back to the identifier itself', () {
@@ -753,6 +740,43 @@ void main() {
       final de = lookupAppLocalizations(const Locale('de'));
       expect(tripStyleLabel('Duo', de), 'Duo');
       expect(tripTypeLabel('', de), '');
+    });
+  });
+
+  group('confirmDeleteJournal', () {
+    Future<void> pumpDeleteButton(WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          supportedLocales: LanguageService.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: Builder(
+            builder:
+                (context) => ElevatedButton(
+                  onPressed:
+                      () => confirmDeleteJournal(
+                        context,
+                        const Journal(
+                          journalId: 1,
+                          title: 'Test',
+                          countryId: 0,
+                        ),
+                      ),
+                  child: const Text('delete-it'),
+                ),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('cancel leaves the journal untouched', (tester) async {
+      await pumpDeleteButton(tester);
+      await tester.tap(find.text('delete-it'));
+      await tester.pumpAndSettle();
+      expect(find.text('Delete Journal?'), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(find.text('Journal deleted'), findsNothing);
+      expect(find.text('Could not delete journal'), findsNothing);
     });
   });
 
