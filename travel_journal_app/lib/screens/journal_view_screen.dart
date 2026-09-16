@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/journal_pdf_export_service.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
@@ -63,6 +64,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
   }
 
   Future<void> _downloadJournal(BuildContext context, Journal journal) async {
+    final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _isDownloading = true);
     try {
@@ -87,7 +89,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
       setState(() => _isDownloading = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('PDF downloaded', style: GoogleFonts.dmSans()),
+          content: Text(l10n.planPdfDone, style: GoogleFonts.dmSans()),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -96,7 +98,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
       setState(() => _isDownloading = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Could not download PDF', style: GoogleFonts.dmSans()),
+          content: Text(l10n.journalPdfError, style: GoogleFonts.dmSans()),
         ),
       );
     }
@@ -115,11 +117,12 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          _journal?.title ?? 'Journal',
+          _journal?.title ?? l10n.navJournal,
           style: GoogleFonts.playfairDisplay(
             color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.bold,
@@ -137,7 +140,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                   ),
                 )
                 : IconButton(
-                  tooltip: 'Download Journal',
+                  tooltip: l10n.journalDownload,
                   onPressed: () => _downloadJournal(context, _journal!),
                   icon: const Icon(Icons.download),
                 ),
@@ -154,16 +157,16 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                 ),
               )
               : _journal == null
-              ? Center(child: Text('Not found', style: GoogleFonts.dmSans()))
-              : _buildContent(_journal!),
+              ? Center(child: Text(l10n.journalNotFound, style: GoogleFonts.dmSans()))
+              : _buildContent(_journal!, l10n),
     );
   }
 
-  Widget _buildContent(Journal journal) {
+  Widget _buildContent(Journal journal, AppLocalizations l10n) {
     if (journal.pages.isEmpty) {
       return Center(
         child: Text(
-          'No pages',
+          l10n.journalNoPages,
           style: GoogleFonts.dmSans(color: AppTheme.warmGray),
         ),
       );
@@ -176,7 +179,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
           padding: const EdgeInsets.all(AppTheme.space4),
           child: Column(
             children: [
-              SectionHeader(title: 'Page ${page.pageNumber}'),
+              SectionHeader(title: l10n.journalPageTitle(page.pageNumber)),
               const SizedBox(height: AppTheme.space3),
               Expanded(
                 child: Container(

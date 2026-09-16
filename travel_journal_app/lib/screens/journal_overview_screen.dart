@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
@@ -28,19 +29,19 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
     });
   }
 
-  String _countryName(int countryId) {
+  String _countryName(int countryId, AppLocalizations l10n) {
     final country =
         CountryService.getAllCountries()
             .where((c) => c.countryId == countryId)
             .firstOrNull;
-    return country?.name ?? 'Unknown';
+    return country?.name ?? l10n.journalUnknown;
   }
 
   void _showNoJournalSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'No journal yet for this country.',
+          AppLocalizations.of(context).journalNoneForCountry,
           style: GoogleFonts.dmSans(),
         ),
         duration: const Duration(seconds: 2),
@@ -59,6 +60,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
   }
 
   Future<void> _downloadJournalFlow() async {
+    final l10n = AppLocalizations.of(context);
     await JournalService.loadJournals();
     if (!mounted) return;
     final journals = JournalService.getAllJournals();
@@ -90,7 +92,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   child: Text(
-                    'Choose country',
+                    l10n.journalChooseCountry,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -105,7 +107,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                       for (final entry in byCountry.entries)
                         ListTile(
                           title: Text(
-                            _countryName(entry.key),
+                            _countryName(entry.key, l10n),
                             style: GoogleFonts.dmSans(
                               fontWeight: FontWeight.w600,
                               color:
@@ -113,7 +115,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${entry.value.length} journal${entry.value.length == 1 ? '' : 's'}',
+                            l10n.journalCount(entry.value.length),
                             style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                           ),
                           trailing: const Icon(Icons.chevron_right),
@@ -131,6 +133,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
   }
 
   Future<void> _openForCountry(int countryId, List<Journal> journals) async {
+    final l10n = AppLocalizations.of(context);
     if (journals.isEmpty) {
       _showNoJournalSnackBar();
       return;
@@ -154,7 +157,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   child: Text(
-                    _countryName(countryId),
+                    _countryName(countryId, l10n),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -170,7 +173,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                         ListTile(
                           title: Text(
                             journal.title.isEmpty
-                                ? 'Untitled journal'
+                                ? l10n.journalUntitled
                                 : journal.title,
                             style: GoogleFonts.dmSans(
                               fontWeight: FontWeight.w600,
@@ -179,7 +182,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${journal.pages.length} page${journal.pages.length == 1 ? '' : 's'}',
+                            l10n.journalPageCount(journal.pages.length),
                             style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                           ),
                           trailing: const Icon(Icons.download),
@@ -204,6 +207,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
 
   Future<void> _postToProfileFlow() async {
     if (_postingVisibility) return;
+    final l10n = AppLocalizations.of(context);
     await JournalService.loadJournals();
     if (!mounted) return;
     final journals = JournalService.getAllJournals();
@@ -211,7 +215,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'No journals yet to post.',
+            l10n.journalNoneToPost,
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -243,7 +247,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   child: Text(
-                    'Choose country',
+                    l10n.journalChooseCountry,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -258,7 +262,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                       for (final entry in byCountry.entries)
                         ListTile(
                           title: Text(
-                            _countryName(entry.key),
+                            _countryName(entry.key, l10n),
                             style: GoogleFonts.dmSans(
                               fontWeight: FontWeight.w600,
                               color:
@@ -266,7 +270,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${entry.value.length} journal${entry.value.length == 1 ? '' : 's'}',
+                            l10n.journalCount(entry.value.length),
                             style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                           ),
                           trailing: const Icon(Icons.chevron_right),
@@ -284,11 +288,12 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
   }
 
   Future<void> _postForCountry(int countryId, List<Journal> journals) async {
+    final l10n = AppLocalizations.of(context);
     if (journals.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'No journals yet to post.',
+            l10n.journalNoneToPost,
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -315,7 +320,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.space4),
                   child: Text(
-                    _countryName(countryId),
+                    _countryName(countryId, l10n),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -337,7 +342,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                           ),
                           title: Text(
                             journal.title.isEmpty
-                                ? 'Untitled journal'
+                                ? l10n.journalUntitled
                                 : journal.title,
                             style: GoogleFonts.dmSans(
                               fontWeight: FontWeight.w600,
@@ -346,11 +351,13 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${journal.pages.length} page${journal.pages.length == 1 ? '' : 's'} • ${journal.visibility == 'public' ? 'Public' : 'Private'}',
+                            '${l10n.journalPageCount(journal.pages.length)} • ${journal.visibility == 'public' ? l10n.journalPublic : l10n.journalPrivate}',
                             style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                           ),
                           trailing: Text(
-                            journal.visibility == 'public' ? 'Remove' : 'Post',
+                            journal.visibility == 'public'
+                                ? l10n.journalRemoveShort
+                                : l10n.journalPost,
                             style: GoogleFonts.dmSans(
                               fontWeight: FontWeight.w600,
                               color: Theme.of(sheetContext).colorScheme.primary,
@@ -379,6 +386,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
 
   Future<void> _confirmAndToggleVisibility(Journal journal) async {
     if (_postingVisibility) return;
+    final l10n = AppLocalizations.of(context);
     final current = JournalService.getJournalById(journal.journalId) ?? journal;
     final isPublic = current.visibility == 'public';
     final target = isPublic ? 'private' : 'public';
@@ -387,30 +395,28 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
       builder:
           (ctx) => AlertDialog(
             title: Text(
-              isPublic ? 'Remove from Profile?' : 'Post to Profile?',
+              isPublic ? l10n.journalRemoveTitle : l10n.journalPostTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(ctx).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              isPublic
-                  ? 'This will make your journal private and hide it from your profile.'
-                  : 'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.',
+              isPublic ? l10n.journalRemoveText : l10n.journalPostText,
               style: GoogleFonts.dmSans(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  isPublic ? 'Remove' : 'Post',
+                  isPublic ? l10n.journalRemoveShort : l10n.journalPost,
                   style: GoogleFonts.dmSans(),
                 ),
               ),
@@ -425,7 +431,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            isPublic ? 'Removed from profile' : 'Posted to profile',
+            isPublic ? l10n.journalRemoved : l10n.journalPosted,
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -436,7 +442,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Could not update visibility: $e',
+            l10n.journalVisibilityError(e.toString()),
             style: GoogleFonts.dmSans(),
           ),
           duration: const Duration(seconds: 2),
@@ -449,6 +455,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final allCountries = CountryService.getAllCountries();
 
     return Scaffold(
@@ -461,7 +468,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                'Journal Overview',
+                l10n.journalOverviewTitle,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -483,7 +490,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                     child: OutlinedButton.icon(
                       onPressed: _downloadJournalFlow,
                       icon: const Icon(Icons.download, size: 18),
-                      label: const Text('Download Journal'),
+                      label: Text(l10n.journalDownload),
                     ),
                   ),
                   const SizedBox(width: AppTheme.space2),
@@ -491,7 +498,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                     child: OutlinedButton.icon(
                       onPressed: _postToProfileFlow,
                       icon: const Icon(Icons.person_add, size: 18),
-                      label: const Text('Post to Profile'),
+                      label: Text(l10n.journalPost),
                     ),
                   ),
                 ],
@@ -503,8 +510,8 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
             SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.menu_book_outlined,
-                message: 'No countries loaded yet',
-                buttonText: 'Explore Map',
+                message: l10n.journalNoCountries,
+                buttonText: l10n.journalExploreMap,
                 onButtonPressed: () {
                   // Navigate to home/map tab
                 },
@@ -527,6 +534,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
   }
 
   Widget _buildCountryCard(BuildContext context, Country country) {
+    final l10n = AppLocalizations.of(context);
     final isVisited = VisitedService.isCountryVisited(country.countryId);
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space4),
@@ -596,7 +604,7 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${country.cityPins.length} cities',
+                      l10n.journalCityCount(country.cityPins.length),
                       style: GoogleFonts.dmSans(
                         fontSize: 12,
                         color: AppTheme.warmGray,
@@ -639,7 +647,9 @@ class _JournalOverviewPageState extends State<JournalOverviewPage> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              isVisited ? 'Visited' : 'Mark visited',
+                              isVisited
+                                  ? l10n.visitedLabel
+                                  : l10n.placeMarkVisited,
                               style: GoogleFonts.dmSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/journal.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/journal_service.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/screens/journal_editor_screen.dart';
@@ -14,12 +15,12 @@ import 'package:pinmap_travel_journal/theme/app_theme.dart';
 class JournalScreen extends StatelessWidget {
   const JournalScreen({super.key});
 
-  String _countryName(int countryId) {
+  String _countryName(int countryId, AppLocalizations l10n) {
     final country =
         CountryService.getAllCountries()
             .where((c) => c.countryId == countryId)
             .firstOrNull;
-    return country?.name ?? 'Unknown';
+    return country?.name ?? l10n.journalUnknown;
   }
 
   @override
@@ -38,11 +39,12 @@ class JournalScreen extends StatelessWidget {
   }
 
   Widget _buildScaffold(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final journals = JournalService.getAllJournals();
 
     final grouped = <String, List<Journal>>{};
     for (final journal in journals) {
-      final name = _countryName(journal.countryId);
+      final name = _countryName(journal.countryId, l10n);
       grouped.putIfAbsent(name, () => []).add(journal);
     }
 
@@ -56,7 +58,7 @@ class JournalScreen extends StatelessWidget {
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                'Journal',
+                l10n.navJournal,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -79,8 +81,8 @@ class JournalScreen extends StatelessWidget {
             SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.menu_book_outlined,
-                message: 'No journal entries yet',
-                buttonText: 'Start Writing',
+                message: l10n.journalEmpty,
+                buttonText: l10n.journalStartWriting,
                 onButtonPressed: () {
                   Navigator.push(
                     context,
@@ -157,6 +159,7 @@ class JournalScreen extends StatelessWidget {
   }
 
   Widget _buildNewJournalCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -203,7 +206,7 @@ class JournalScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'New Journal',
+                        l10n.journalNew,
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -212,7 +215,7 @@ class JournalScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: AppTheme.space1),
                       Text(
-                        'Start documenting your journey',
+                        l10n.journalNewHint,
                         style: GoogleFonts.dmSans(
                           fontSize: 14,
                           color: Colors.white.withValues(alpha: 0.85),
@@ -230,13 +233,12 @@ class JournalScreen extends StatelessWidget {
   }
 
   Future<void> _toggleVisibility(BuildContext context, Journal journal) async {
+    final l10n = AppLocalizations.of(context);
     final isPublic = journal.visibility == 'public';
     final target = isPublic ? 'private' : 'public';
-    final title = isPublic ? 'Remove from Profile?' : 'Post to Profile?';
+    final title = isPublic ? l10n.journalRemoveTitle : l10n.journalPostTitle;
     final content =
-        isPublic
-            ? 'This will make your journal private and hide it from your profile.'
-            : 'This will make your journal visible on your profile. Public journals are visible to anyone who can view your profile.';
+        isPublic ? l10n.journalRemoveText : l10n.journalPostText;
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
@@ -253,14 +255,14 @@ class JournalScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  isPublic ? 'Remove' : 'Post',
+                  isPublic ? l10n.journalRemoveShort : l10n.journalPost,
                   style: GoogleFonts.dmSans(),
                 ),
               ),
@@ -274,7 +276,7 @@ class JournalScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              isPublic ? 'Removed from profile' : 'Posted to profile',
+              isPublic ? l10n.journalRemoved : l10n.journalPosted,
               style: GoogleFonts.dmSans(),
             ),
           ),
@@ -285,7 +287,7 @@ class JournalScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Could not update visibility: $e',
+              l10n.journalVisibilityError(e.toString()),
               style: GoogleFonts.dmSans(),
             ),
           ),
@@ -295,6 +297,7 @@ class JournalScreen extends StatelessWidget {
   }
 
   Widget _buildJournalCard(BuildContext context, Journal journal) {
+    final l10n = AppLocalizations.of(context);
     final isPublic = journal.visibility == 'public';
     final cover = journal.coverImage;
     Widget coverWidget;
@@ -361,7 +364,7 @@ class JournalScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        'Public',
+                        l10n.journalPublic,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -395,14 +398,14 @@ class JournalScreen extends StatelessWidget {
                             value: 'toggle',
                             child: Text(
                               isPublic
-                                  ? 'Remove from Profile'
-                                  : 'Post to Profile',
+                                  ? l10n.journalRemoveProfile
+                                  : l10n.journalPost,
                               style: GoogleFonts.dmSans(fontSize: 13),
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'view',
-                            child: Text('View'),
+                            child: Text(l10n.journalView),
                           ),
                         ],
                   ),
@@ -435,7 +438,7 @@ class JournalScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${journal.pages.length} pages',
+                      l10n.journalPageCount(journal.pages.length),
                       style: GoogleFonts.dmSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
