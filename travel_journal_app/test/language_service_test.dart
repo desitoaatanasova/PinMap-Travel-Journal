@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/language_service.dart';
 import 'package:pinmap_travel_journal/utils/category_label.dart';
+import 'package:pinmap_travel_journal/utils/trip_type_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -443,6 +444,38 @@ void main() {
       final bg = lookupAppLocalizations(const Locale('bg'));
       expect(categoryLabel('Unknown Category', bg), 'Unknown Category');
       expect(categoryLabel('', bg), '');
+    });
+  });
+
+  group('tripTypeLabel', () {
+    test('canonical identifiers stay unchanged in English', () {
+      final l10n = lookupAppLocalizations(const Locale('en'));
+      expect(tripStyleLabel('Solo', l10n), 'Solo');
+      expect(tripStyleLabel('Group', l10n), 'Group');
+      expect(tripTypeLabel('Historical', l10n), 'Historical');
+      expect(tripTypeLabel('Art', l10n), 'Art');
+      expect(tripTypeLabel('Hidden Gems', l10n), 'Hidden Gems');
+      expect(tripTypeLabel('Mixed', l10n), 'Mixed');
+    });
+
+    test('identifiers map to translated labels', () {
+      final bg = lookupAppLocalizations(const Locale('bg'));
+      expect(tripStyleLabel('Solo', bg), 'Сам');
+      expect(tripStyleLabel('Group', bg), 'Група');
+      expect(tripTypeLabel('Historical', bg), 'Историческо');
+      expect(tripTypeLabel('Mixed', bg), 'Смесено');
+      expect(
+        tripTypeLabel('Hidden Gems', bg),
+        categoryLabel('Hidden Gems', bg),
+      );
+      final ja = lookupAppLocalizations(const Locale('ja'));
+      expect(tripTypeLabel('Art', ja), 'アート');
+    });
+
+    test('unknown identifiers fall back safely', () {
+      final de = lookupAppLocalizations(const Locale('de'));
+      expect(tripStyleLabel('Duo', de), 'Duo');
+      expect(tripTypeLabel('', de), '');
     });
   });
 

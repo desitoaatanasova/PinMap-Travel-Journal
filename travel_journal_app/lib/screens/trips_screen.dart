@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/trip_type_label.dart';
 import 'package:pinmap_travel_journal/services/trip_service.dart';
 import 'package:pinmap_travel_journal/screens/new_trip_screen.dart';
 import 'package:pinmap_travel_journal/screens/trip_plan_screen.dart';
@@ -30,6 +32,7 @@ class _TripsScreenState extends State<TripsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       extendBody: true,
       body: ValueListenableBuilder<int>(
@@ -44,7 +47,7 @@ class _TripsScreenState extends State<TripsScreen> {
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
-                    'Trips',
+                    l10n.navTrips,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -72,7 +75,7 @@ class _TripsScreenState extends State<TripsScreen> {
                         );
                       },
                       icon: const Icon(Icons.add_location_alt),
-                      label: const Text('New Trip'),
+                      label: Text(l10n.tripsNewTrip),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.space3,
@@ -107,7 +110,7 @@ class _TripsScreenState extends State<TripsScreen> {
                         ),
                         const SizedBox(height: AppTheme.space4),
                         Text(
-                          'No trips yet',
+                          l10n.tripsEmptyTitle,
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 20,
                             color: AppTheme.warmGray,
@@ -115,7 +118,7 @@ class _TripsScreenState extends State<TripsScreen> {
                         ),
                         const SizedBox(height: AppTheme.space2),
                         Text(
-                          'Tap "New Trip" to start planning',
+                          l10n.tripsEmptyHint,
                           style: GoogleFonts.dmSans(
                             fontSize: 14,
                             color: AppTheme.warmGray,
@@ -143,6 +146,7 @@ class _TripsScreenState extends State<TripsScreen> {
   }
 
   Widget _buildDraftCard(BuildContext context, Trip draft) {
+    final l10n = AppLocalizations.of(context);
     return PremiumCard(
       padding: EdgeInsets.zero,
       onTap: () async {
@@ -191,7 +195,7 @@ class _TripsScreenState extends State<TripsScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'AI draft ready — tap to review & save',
+                    l10n.tripsDraftHint,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
                       color: AppTheme.warmGray,
@@ -208,6 +212,7 @@ class _TripsScreenState extends State<TripsScreen> {
   }
 
   Widget _buildTripCard(BuildContext context, Trip trip) {
+    final l10n = AppLocalizations.of(context);
     final duration = trip.endDate.difference(trip.startDate).inDays + 1;
     return PremiumCard(
       padding: EdgeInsets.zero,
@@ -267,7 +272,7 @@ class _TripsScreenState extends State<TripsScreen> {
                       ),
                     ),
                     Text(
-                      ' ($duration days)',
+                      ' (${l10n.tripDurationDays(duration)})',
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         color: AppTheme.warmGray,
@@ -285,7 +290,7 @@ class _TripsScreenState extends State<TripsScreen> {
                     ),
                     const SizedBox(width: AppTheme.space2),
                     Text(
-                      trip.travelStyle,
+                      tripStyleLabel(trip.travelStyle, l10n),
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         color: AppTheme.warmGray,
@@ -307,7 +312,7 @@ class _TripsScreenState extends State<TripsScreen> {
                           ),
                         ),
                         child: Text(
-                          trip.tripType,
+                          tripTypeLabel(trip.tripType, l10n),
                           style: GoogleFonts.dmSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

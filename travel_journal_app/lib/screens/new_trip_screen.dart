@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/trip.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
+import 'package:pinmap_travel_journal/utils/trip_type_label.dart';
 import 'package:pinmap_travel_journal/services/api_client.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/social_service.dart';
@@ -219,7 +221,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 ),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  date != null ? formatPickerDate(date) : 'Select',
+                  date != null
+                      ? formatPickerDate(date)
+                      : AppLocalizations.of(context).tripSelect,
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     color:
@@ -309,6 +313,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   Future<void> _openCityMultiSelect() async {
+    final l10n = AppLocalizations.of(context);
     final country = _selectedCountry;
     if (country == null) return;
     final selected = await showModalBottomSheet<Set<int>>(
@@ -341,7 +346,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Choose cities to visit',
+                              l10n.tripSheetCities,
                               style: GoogleFonts.playfairDisplay(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -350,7 +355,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                             ),
                           ),
                           Text(
-                            '${current.length} selected',
+                            l10n.tripSelectedCount(current.length),
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
                               color: AppTheme.warmGray,
@@ -367,7 +372,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           if (_countryCities.isNotEmpty) ...[
                             _buildCityGroupTitle(
                               context,
-                              'Cities in ${country.name}',
+                              l10n.tripCitiesIn(country.name),
                             ),
                             ..._countryCities.map(
                               (city) => _buildCityCheckTile(
@@ -383,7 +388,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                             const SizedBox(height: AppTheme.space4),
                             _buildCityGroupTitle(
                               context,
-                              'Nearby in neighbouring countries',
+                              l10n.tripNearbyCities,
                             ),
                             ..._nearbyCities.map(
                               (city) => _buildCityCheckTile(
@@ -406,8 +411,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           icon: const Icon(Icons.check),
                           label: Text(
                             current.isEmpty
-                                ? 'Done'
-                                : 'Add ${current.length} city(ies)',
+                                ? l10n.tripSheetDone
+                                : l10n.tripAddCities(current.length),
                           ),
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
@@ -501,6 +506,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   Future<void> _openCitySearch({required bool isArrival}) async {
+    final l10n = AppLocalizations.of(context);
     if (_availableCities.isEmpty) return;
     final result = await showModalBottomSheet<String>(
       context: context,
@@ -541,9 +547,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         autofocus: true,
                         onChanged:
                             (value) => setSheetState(() => filter = value),
-                        decoration: const InputDecoration(
-                          hintText: 'Search cities',
-                          prefixIcon: Icon(Icons.search),
+                        decoration: InputDecoration(
+                          hintText: l10n.tripSearchCities,
+                          prefixIcon: const Icon(Icons.search),
                         ),
                       ),
                     ),
@@ -649,16 +655,15 @@ class _NewTripScreenState extends State<NewTripScreen> {
     Object error,
     String countryName,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final message =
-        error is ApiException
-            ? error.message
-            : 'Something went wrong generating your trip.';
+        error is ApiException ? error.message : l10n.tripGenFailFallback;
     await showDialog<void>(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              "Couldn't Generate Trip",
+              l10n.tripGenFailTitle,
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
@@ -669,7 +674,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(color: AppTheme.warmGray),
                 ),
               ),
@@ -679,7 +684,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   _generateTripPlan();
                 },
                 child: Text(
-                  'Retry',
+                  l10n.commonRetry,
                   style: GoogleFonts.dmSans(
                     color: Theme.of(dialogContext).colorScheme.primary,
                   ),
@@ -691,7 +696,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   _createBasicItinerary(countryName);
                 },
                 child: Text(
-                  'Create basic itinerary without AI',
+                  l10n.tripGenBasic,
                   style: GoogleFonts.dmSans(
                     color: Theme.of(dialogContext).colorScheme.primary,
                   ),
@@ -734,7 +739,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Cannot change trip duration here. Please create a new trip to change days.',
+            AppLocalizations.of(context).tripDurationLocked,
             style: GoogleFonts.dmSans(),
           ),
         ),
@@ -793,13 +798,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final countries = CountryService.getAllCountries();
 
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          _isEditing ? 'Edit Trip' : 'New Trip',
+          _isEditing ? l10n.tripFormTitleEdit : l10n.tripFormTitleNew,
           style: GoogleFonts.playfairDisplay(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -813,13 +819,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionTitle(context, 'Destination'),
+            _buildSectionTitle(context, l10n.tripSectionDestination),
             const SizedBox(height: AppTheme.space2),
             DropdownButtonFormField<int>(
               initialValue: _selectedCountryId,
-              decoration: const InputDecoration(
-                hintText: 'Choose a country',
-                prefixIcon: Icon(Icons.public),
+              decoration: InputDecoration(
+                hintText: l10n.tripChooseCountry,
+                prefixIcon: const Icon(Icons.public),
               ),
               items:
                   countries.map((c) {
@@ -844,10 +850,10 @@ class _NewTripScreenState extends State<NewTripScreen> {
             _buildPickerField(
               context,
               icon: Icons.location_city,
-              label: 'Choose cities to visit (optional)',
+              label: l10n.tripChooseCities,
               value:
                   _selectedCityNames.isEmpty
-                      ? 'Choose cities to visit (optional)'
+                      ? l10n.tripChooseCities
                       : _selectedCityNames.join(', '),
               onTap:
                   _selectedCountry == null
@@ -855,7 +861,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Choose a country first',
+                              l10n.tripCountryFirst,
                               style: GoogleFonts.dmSans(),
                             ),
                           ),
@@ -870,8 +876,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   child: _buildPickerField(
                     context,
                     icon: Icons.flight_land,
-                    label: 'Arrival city',
-                    value: _arrivalCity ?? 'Arrival city',
+                    label: l10n.tripArrivalCity,
+                    value: _arrivalCity ?? l10n.tripArrivalCity,
                     onTap: () => _openCitySearch(isArrival: true),
                     clearable: true,
                     onClear: () => setState(() => _arrivalCity = null),
@@ -882,8 +888,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   child: _buildPickerField(
                     context,
                     icon: Icons.flight_takeoff,
-                    label: 'Departure city',
-                    value: _departureCity ?? 'Departure city',
+                    label: l10n.tripDepartureCity,
+                    value: _departureCity ?? l10n.tripDepartureCity,
                     onTap: () => _openCitySearch(isArrival: false),
                     clearable: true,
                     onClear: () => setState(() => _departureCity = null),
@@ -892,14 +898,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ],
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle(context, 'Dates'),
+            _buildSectionTitle(context, l10n.tripSectionDates),
             const SizedBox(height: AppTheme.space2),
             Row(
               children: [
                 Expanded(
                   child: _buildDateField(
                     context,
-                    label: 'Start Date',
+                    label: l10n.tripStartDate,
                     date: _startDate,
                     onTap: () => _pickDate(isStart: true),
                   ),
@@ -908,7 +914,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 Expanded(
                   child: _buildDateField(
                     context,
-                    label: 'End Date',
+                    label: l10n.tripEndDate,
                     date: _endDate,
                     onTap: () => _pickDate(isStart: false),
                   ),
@@ -918,7 +924,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
             if (_numberOfDays > 0) ...[
               const SizedBox(height: AppTheme.space2),
               Text(
-                'Duration: $_numberOfDays days',
+                l10n.tripDurationLabel(_numberOfDays),
                 style: GoogleFonts.dmSans(
                   fontSize: 14,
                   color: AppTheme.warmGray,
@@ -926,7 +932,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ),
             ],
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle(context, 'Type of Vacation'),
+            _buildSectionTitle(context, l10n.tripSectionVacationType),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<String>(
               segments:
@@ -934,7 +940,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       .map(
                         (type) => ButtonSegment<String>(
                           value: type,
-                          label: Text(type),
+                          label: Text(tripTypeLabel(type, l10n)),
                         ),
                       )
                       .toList(),
@@ -962,19 +968,19 @@ class _NewTripScreenState extends State<NewTripScreen> {
               ),
             ),
             const SizedBox(height: AppTheme.space6),
-            _buildSectionTitle(context, 'Travel Style'),
+            _buildSectionTitle(context, l10n.tripSectionTravelStyle),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<bool>(
-              segments: const [
+              segments: [
                 ButtonSegment<bool>(
                   value: true,
-                  label: Text('Solo'),
-                  icon: Icon(Icons.person),
+                  label: Text(tripStyleLabel('Solo', l10n)),
+                  icon: const Icon(Icons.person),
                 ),
                 ButtonSegment<bool>(
                   value: false,
-                  label: Text('Group'),
-                  icon: Icon(Icons.group),
+                  label: Text(tripStyleLabel('Group', l10n)),
+                  icon: const Icon(Icons.group),
                 ),
               ],
               selected: {_isSolo},
@@ -1003,7 +1009,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ),
             if (!_isSolo) ...[
               const SizedBox(height: AppTheme.space6),
-              _buildSectionTitle(context, 'Travel Companions'),
+              _buildSectionTitle(context, l10n.tripSectionCompanions),
               const SizedBox(height: AppTheme.space2),
               _buildParticipantsSection(context),
             ],
@@ -1026,8 +1032,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       : Icon(_isEditing ? Icons.save : Icons.auto_awesome),
               label: Text(
                 _generating
-                    ? 'Generating...'
-                    : (_isEditing ? 'Save Trip' : 'Generate Trip Plan'),
+                    ? l10n.tripGenerating
+                    : (_isEditing ? l10n.tripSave : l10n.tripGenerate),
               ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.space3),
@@ -1060,7 +1066,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
           ),
         ),
         child: Text(
-          'No friends found yet. Follow other travellers (and let them follow you back) and they will appear here to add as trip companions.',
+          AppLocalizations.of(context).tripNoFriendsHint,
           style: GoogleFonts.dmSans(fontSize: 13, color: AppTheme.warmGray),
         ),
       );
