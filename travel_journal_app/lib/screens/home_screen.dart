@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/location.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
 import 'package:pinmap_travel_journal/services/location_search_service.dart';
@@ -113,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       extendBody: true,
       body: Stack(
@@ -161,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Search country or city...',
+                      hintText: l10n.homeSearchHint,
                       hintStyle: GoogleFonts.dmSans(
                         color: AppTheme.warmGray,
                         fontSize: 14,
@@ -291,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Countries',
+                            l10n.homeCountriesTitle,
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -311,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Retry',
+                                    l10n.commonRetry,
                                     style: GoogleFonts.dmSans(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -324,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             )
                           else
                             Text(
-                              '${_countries.length} countries',
+                              l10n.homeCountriesCount(_countries.length),
                               style: GoogleFonts.dmSans(
                                 fontSize: 12,
                                 color: AppTheme.warmGray,
@@ -357,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: AppTheme.space2),
                                 Text(
-                                  'Could not load countries',
+                                  l10n.homeLoadError,
                                   style: GoogleFonts.dmSans(
                                     fontSize: 14,
                                     color: AppTheme.warmGray,
@@ -365,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: AppTheme.space2),
                                 Text(
-                                  'Tap to retry',
+                                  l10n.homeTapRetry,
                                   style: GoogleFonts.dmSans(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,

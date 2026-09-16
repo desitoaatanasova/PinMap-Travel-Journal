@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pinmap_travel_journal/models/country.dart';
 import 'package:pinmap_travel_journal/models/country_theme.dart';
 import 'package:pinmap_travel_journal/models/map_marker.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/services/country_theme_service.dart';
 import 'package:pinmap_travel_journal/services/wishlist_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
@@ -212,6 +213,7 @@ class _CountryPageState extends State<CountryPage> {
   }
 
   Widget _buildActionButtons(CountryTheme theme) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
@@ -228,7 +230,7 @@ class _CountryPageState extends State<CountryPage> {
             onPressed: () => _showRatingDialog(theme),
             icon: Icon(Icons.star, color: theme.accentColor, size: 20),
             label: Text(
-              _rating > 0 ? '$_rating/5' : 'Rate',
+              _rating > 0 ? '$_rating/5' : l10n.countryRate,
               style: GoogleFonts.dmSans(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -260,8 +262,8 @@ class _CountryPageState extends State<CountryPage> {
                   SnackBar(
                     content: Text(
                       _isVisited
-                          ? '${widget.country.name} marked as visited'
-                          : '${widget.country.name} no longer marked as visited',
+                          ? l10n.countryMarkedVisited(widget.country.name)
+                          : l10n.countryUnmarkedVisited(widget.country.name),
                       style: GoogleFonts.dmSans(),
                     ),
                     duration: const Duration(seconds: 2),
@@ -275,7 +277,7 @@ class _CountryPageState extends State<CountryPage> {
               size: 20,
             ),
             label: Text(
-              _isVisited ? 'Visited' : 'Visited?',
+              _isVisited ? l10n.visitedLabel : l10n.countryVisitedPrompt,
               style: GoogleFonts.dmSans(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -307,8 +309,8 @@ class _CountryPageState extends State<CountryPage> {
                   SnackBar(
                     content: Text(
                       _isWishlisted
-                          ? '${widget.country.name} removed from wishlist'
-                          : '${widget.country.name} added to wishlist',
+                          ? l10n.wishlistRemoved(widget.country.name)
+                          : l10n.wishlistAdded(widget.country.name),
                       style: GoogleFonts.dmSans(),
                     ),
                     duration: const Duration(seconds: 2),
@@ -322,7 +324,7 @@ class _CountryPageState extends State<CountryPage> {
               size: 20,
             ),
             label: Text(
-              _isWishlisted ? 'Wishlisted' : 'Wishlist',
+              _isWishlisted ? l10n.countryWishlisted : l10n.countryWishlist,
               style: GoogleFonts.dmSans(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -335,6 +337,7 @@ class _CountryPageState extends State<CountryPage> {
   }
 
   Widget _buildDescription(BuildContext context, CountryTheme theme) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(AppTheme.space4),
       decoration: BoxDecoration(
@@ -346,7 +349,7 @@ class _CountryPageState extends State<CountryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'About ${widget.country.name}',
+            l10n.countryAbout(widget.country.name),
             style: GoogleFonts.playfairDisplay(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -368,11 +371,12 @@ class _CountryPageState extends State<CountryPage> {
   }
 
   Widget _buildCityList(BuildContext context, CountryTheme theme) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Major Cities',
+          l10n.countryMajorCities,
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -402,6 +406,7 @@ class _CountryPageState extends State<CountryPage> {
     CityPin city,
     CountryTheme theme,
   ) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -520,8 +525,8 @@ class _CountryPageState extends State<CountryPage> {
                         const SizedBox(width: 2),
                         Text(
                           VisitedService.isCityVisited(city.cityId)
-                              ? 'Visited'
-                              : 'Mark',
+                              ? l10n.visitedLabel
+                              : l10n.markShort,
                           style: GoogleFonts.dmSans(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -544,11 +549,12 @@ class _CountryPageState extends State<CountryPage> {
   }
 
   Widget _buildMiniMap(BuildContext context, CountryTheme theme) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Map Preview',
+          l10n.countryMapPreview,
           style: GoogleFonts.playfairDisplay(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -620,12 +626,13 @@ class _CountryPageState extends State<CountryPage> {
   }
 
   void _showRatingDialog(CountryTheme theme) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (dialogContext) => AlertDialog(
             title: Text(
-              'Rate ${widget.country.name}',
+              l10n.rateDialogTitle(widget.country.name),
               style: GoogleFonts.playfairDisplay(
                 color: Theme.of(dialogContext).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
@@ -658,7 +665,7 @@ class _CountryPageState extends State<CountryPage> {
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext),
                 child: Text(
-                  'Cancel',
+                  l10n.commonCancel,
                   style: GoogleFonts.dmSans(
                     color: Theme.of(dialogContext).colorScheme.primary,
                   ),

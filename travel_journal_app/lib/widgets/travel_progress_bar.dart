@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinmap_travel_journal/l10n/app_localizations.dart';
 import 'package:pinmap_travel_journal/theme/app_theme.dart';
 import 'package:pinmap_travel_journal/services/country_service.dart';
 import 'package:pinmap_travel_journal/services/visited_service.dart';
@@ -9,6 +10,7 @@ class TravelProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final countries = CountryService.getAllCountries();
     final total = countries.length;
     final visited =
@@ -38,7 +40,7 @@ class TravelProgressBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Travel Progress',
+                l10n.progressTitle,
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -46,7 +48,7 @@ class TravelProgressBar extends StatelessWidget {
                 ),
               ),
               Text(
-                '$visited / $total countries',
+                l10n.progressCount(visited, total),
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
