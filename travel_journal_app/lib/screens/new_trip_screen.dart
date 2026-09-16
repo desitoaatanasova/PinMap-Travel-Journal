@@ -935,6 +935,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
             _buildSectionTitle(context, l10n.tripSectionVacationType),
             const SizedBox(height: AppTheme.space2),
             SegmentedButton<String>(
+              selectedIcon: const Icon(Icons.check, size: 18),
               segments:
                   _vacationTypes
                       .map(
@@ -942,6 +943,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           value: type,
                           icon: const Icon(
                             Icons.check,
+                            size: 18,
                             color: Colors.transparent,
                           ),
                           label: Text(tripTypeLabel(type, l10n)),
