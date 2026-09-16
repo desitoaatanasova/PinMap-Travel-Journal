@@ -940,6 +940,10 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       .map(
                         (type) => ButtonSegment<String>(
                           value: type,
+                          icon: const Icon(
+                            Icons.check,
+                            color: Colors.transparent,
+                          ),
                           label: Text(tripTypeLabel(type, l10n)),
                         ),
                       )
