@@ -32,9 +32,12 @@ class SettingsService {
   static const List<String> supportedLanguages = [
     'English',
     'Bulgarian',
-    'German',
-    'French',
     'Spanish',
+    'French',
+    'German',
+    'Japanese',
+    'Chinese',
+    'Italian',
   ];
 
   static Future<UserSettings> getSettings() async {

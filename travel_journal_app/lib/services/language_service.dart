@@ -15,6 +15,17 @@ class LanguageService {
     'Italian': Locale('it'),
   };
 
+  static const Map<String, String> languageEndonyms = {
+    'English': 'English',
+    'Bulgarian': 'Български',
+    'Spanish': 'Español',
+    'French': 'Français',
+    'German': 'Deutsch',
+    'Japanese': '日本語',
+    'Chinese': '中文',
+    'Italian': 'Italiano',
+  };
+
   static List<Locale> get supportedLocales => languageLocales.values.toList();
 
   static List<String> get supportedLanguages => languageLocales.keys.toList();
@@ -42,6 +53,19 @@ class LanguageService {
       if (entry.value.languageCode == locale.languageCode) return entry.key;
     }
     return 'English';
+  }
+
+  static String endonymForLanguage(String? name) =>
+      languageEndonyms[name] ?? 'English';
+
+  static String endonymForLocale(Locale? locale) =>
+      endonymForLanguage(languageForLocale(locale));
+
+  static String? languageForEndonym(String endonym) {
+    for (final entry in languageEndonyms.entries) {
+      if (entry.value == endonym) return entry.key;
+    }
+    return null;
   }
 
   static Future<void> init() async {

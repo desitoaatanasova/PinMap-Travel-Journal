@@ -25,16 +25,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isProfilePrivate = false;
   ThemeMode _themeMode = ThemeMode.system;
   String _selectedLanguage = 'English';
-  final List<String> _languages = const [
-    'English',
-    'Bulgarian',
-    'Spanish',
-    'French',
-    'German',
-    'Japanese',
-    'Chinese',
-    'Italian',
-  ];
 
   @override
   void initState() {
@@ -537,7 +527,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(height: AppTheme.space4),
-                ..._languages.map((lang) {
+                ...LanguageService.supportedLanguages.map((lang) {
                   final selected = _selectedLanguage == lang;
                   final scheme = Theme.of(sheetContext).colorScheme;
                   return ListTile(

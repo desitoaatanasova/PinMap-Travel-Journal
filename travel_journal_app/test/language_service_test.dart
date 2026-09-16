@@ -31,6 +31,9 @@ void main() {
       expect(LanguageService.localeForLanguage(null), const Locale('en'));
       expect(LanguageService.localeForLanguage(''), const Locale('en'));
       expect(LanguageService.languageForLocale(const Locale('pt')), 'English');
+      expect(LanguageService.languageForLocale(const Locale('ru')), 'English');
+      expect(LanguageService.localeForCode('pt'), const Locale('en'));
+      expect(LanguageService.localeForCode('ru'), const Locale('en'));
     });
 
     test('locale codes resolve and round-trip', () {
@@ -44,6 +47,30 @@ void main() {
     test('supported locales cover all 8 picker languages', () {
       expect(LanguageService.supportedLocales, hasLength(8));
       expect(LanguageService.supportedLanguages, hasLength(8));
+    });
+
+    test('endonyms resolve per language without changing stored values', () {
+      expect(LanguageService.endonymForLanguage('English'), 'English');
+      expect(LanguageService.endonymForLanguage('Bulgarian'), 'Български');
+      expect(LanguageService.endonymForLanguage('Spanish'), 'Español');
+      expect(LanguageService.endonymForLanguage('French'), 'Français');
+      expect(LanguageService.endonymForLanguage('German'), 'Deutsch');
+      expect(LanguageService.endonymForLanguage('Japanese'), '日本語');
+      expect(LanguageService.endonymForLanguage('Chinese'), '中文');
+      expect(LanguageService.endonymForLanguage('Italian'), 'Italiano');
+      expect(LanguageService.endonymForLanguage('Portuguese'), 'English');
+      expect(LanguageService.endonymForLanguage(null), 'English');
+      expect(
+        LanguageService.languageForEndonym('Български'),
+        'Bulgarian',
+      );
+      expect(LanguageService.languageForEndonym('日本語'), 'Japanese');
+      expect(LanguageService.languageForEndonym('Português'), isNull);
+      expect(
+        LanguageService.endonymForLocale(const Locale('bg')),
+        'Български',
+      );
+      expect(LanguageService.endonymForLocale(null), 'English');
     });
 
     test('device locale resolves with English fallback', () {
